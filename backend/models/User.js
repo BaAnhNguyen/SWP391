@@ -5,11 +5,10 @@ const userSchema = new Schema(
     name: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String },
     role: {
       type: String,
       enum: ["Guest", "Member", "Staff", "Admin"],
-      default: "Guest",
+      default: "Member",
     },
     bloodGroup: {
       type: String,

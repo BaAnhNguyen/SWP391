@@ -1,9 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetch('http://localhost:5001/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          // Token is invalid, remove it
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.href = '/';
+  };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -36,7 +76,24 @@ function Header() {
             <li><Link to="/donation-process" className="nav-link">Donation Process</Link></li>
             <li><Link to="/upcoming-drives" className="nav-link">Upcoming Drives</Link></li>
             <li><Link to="/contact" className="nav-link">Contact</Link></li>
-            <li><Link to="/donate" className="nav-link btn btn-primary">Donate Now</Link></li>
+            
+            {loading ? (
+              <li><span className="nav-link">Loading...</span></li>
+            ) : user ? (
+              <>
+                <li className="user-info">
+                  <span className="welcome-text">Welcome, {user.name}!</span>
+                  <span className="user-role">({user.role})</span>
+                </li>
+                <li>
+                  <button onClick={handleLogout} className="nav-link btn btn-secondary">
+                    LOGOUT
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li><Link to="/login" className="nav-link btn btn-primary">LOGIN</Link></li>
+            )}
           </ul>
         </nav>
       </div>
