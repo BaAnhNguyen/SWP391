@@ -1,26 +1,33 @@
-// frontend/src/App.jsx
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthContext } from "./contexts/AuthContext";
 
-function App() {
-  const [donors, setDonors] = useState([]);
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import OAuth2Redirect from "./pages/OAuth2Redirect";
+import Dashboard from "./pages/Dashboard";
 
-  useEffect(() => {
-    axios.get('/api/donors')
-      .then(res => setDonors(res.data))
-      .catch(err => console.error(err));
-  }, []);
-
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Danh sách người hiến máu</h1>
-      <ul>
-        {donors.map(d => (
-          <li key={d.id}>{d.name} - Nhóm máu: {d.bloodType}</li>
-        ))}
-      </ul>
-    </div>
-  );
+function Protected({ children }) {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to="/login" replace />;
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
+        <Route
+          path="/"
+          element={
+            <Protected>
+              <Dashboard />
+            </Protected>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
