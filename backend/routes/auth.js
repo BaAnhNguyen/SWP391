@@ -21,13 +21,24 @@ router.get("/debug", (req, res) => {
   });
 });
 
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-    session: false,
-  })
-);
+// Google OAuth route with forced account selection
+router.get("/google", (req, res) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const redirectUri = "http://localhost:5001/api/auth/google/callback";
+  const scope = "profile email";
+  
+  // Construct Google OAuth URL with force account selection
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+    `client_id=${clientId}&` +
+    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+    `scope=${encodeURIComponent(scope)}&` +
+    `response_type=code&` +
+    `prompt=select_account&` +
+    `access_type=offline&` +
+    `include_granted_scopes=true`;
+  
+  res.redirect(googleAuthUrl);
+});
 router.get(
   "/google/callback",
   passport.authenticate("google", {

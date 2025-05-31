@@ -24,7 +24,7 @@ function Footer() {
         
         <div className="footer-section contact">
           <h3>Contact Us</h3>
-          <p><i className="icon">📍</i> 123 Blood Drive, Medical City</p>
+          <p><i className="icon">📍</i> 123 Nguyen Kiem, P.5, Go Vap</p>
           <p><i className="icon">📞</i> 0949730930</p>
           <p><i className="icon">✉️</i> baanhnguyenn@gmail.com</p>
           <div className="social-links">
