@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import "./Header.css";
 
 function Header() {
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,59 +70,48 @@ function Header() {
             <span></span>
             <span></span>
           </div>
-        </div>
-
-        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
+        </div>        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
           <ul>
             <li>
               <Link to="/" className="nav-link">
-                Home
+                {t('nav.home')}
               </Link>
             </li>
             <li>
               <Link to="/about" className="nav-link">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link to="/donation-process" className="nav-link">
-                Donation Process
-              </Link>
-            </li>
-            <li>
-              <Link to="/upcoming-drives" className="nav-link">
-                Upcoming Drives
+                {t('nav.about')}
               </Link>
             </li>
             <li>
               <Link to="/contact" className="nav-link">
-                Contact
+                {t('nav.contact')}
               </Link>
+            </li>            <li>
+              <LanguageSwitcher />
             </li>
-
             {loading ? (
               <li>
-                <span className="nav-link">Loading...</span>
+                <span className="nav-link">{t('nav.loading')}</span>
               </li>
             ) : user ? (
               <>
                 <li className="user-info">
-                  <span className="welcome-text">Welcome, {user.name}!</span>
+                  <span className="welcome-text">{t('nav.welcome', { name: user.name })}</span>
                   <span className="user-role">({user.role})</span>
-                </li>{" "}
+                </li>
                 <li>
                   <button
                     onClick={handleLogout}
                     className="nav-link btn btn-primary"
                   >
-                    LOGOUT
+                    {t('nav.logout')}
                   </button>
                 </li>
               </>
             ) : (
               <li>
                 <Link to="/login" className="nav-link btn btn-primary">
-                  LOGIN
+                  {t('nav.login')}
                 </Link>
               </li>
             )}

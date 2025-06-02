@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./Login.css";
 
 function Login() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
@@ -11,24 +13,16 @@ function Login() {
 
   return (
     <div className="login-container">
-      <div className="login-form">
-        <div className="login-header">
+      <div className="login-form">        <div className="login-header">
           <div className="logo-icon">❤</div>
-          <h2>Welcome to LifeSource</h2>
-          <p>Join our community of life-savers</p>
+          <h2>{t('login.title')}</h2>
+          <p>{t('login.subtitle')}</p>
         </div>
 
         <div className="form-body">
           <div className="welcome-message">
             <div className="stats-grid">
-              <div className="stat-item">
-                <span className="stat-number">3+</span>
-                <span className="stat-label">Lives Saved per Donation</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">15k+</span>
-                <span className="stat-label">Active Donors</span>
-              </div>
+              
             </div>
           </div>
 
@@ -45,17 +39,12 @@ function Login() {
               />
             )}
             {loading ? (
-              <div className="loading-spinner"></div>
-            ) : (
-              "Continue with Google"
+              <div className="loading-spinner"></div>            ) : (
+              t('login.googleButton')
             )}
-          </button>
-
-          <div className="login-footer">
+          </button>          <div className="login-footer">
             <p className="privacy-note">
-              By continuing, you agree to our{" "}
-              <a href="/terms">Terms of Service</a> and{" "}
-              <a href="/privacy">Privacy Policy</a>
+              {t('login.privacy')}
             </p>
           </div>
         </div>

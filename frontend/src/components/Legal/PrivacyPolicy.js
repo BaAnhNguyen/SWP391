@@ -1,11 +1,14 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./Legal.css";
 
 function PrivacyPolicy() {
+  const { t } = useTranslation();
+
   return (
     <div className="legal-container">
       <div className="legal-content">
-        <h1>Privacy Policy</h1>
+        <h1>{t('legal.privacy.title')}</h1>
 
         <section className="legal-section">
           <h2>1. Information We Collect</h2>
