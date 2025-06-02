@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import './Contact.css';
+import React, { useState } from "react";
+import "./Contact.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Implement form submission logic
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
   };
 
   return (
@@ -29,7 +29,10 @@ const Contact = () => {
           <div className="hero-content">
             <h1>Contact Us</h1>
             <h2>Get in Touch with LifeSource</h2>
-            <p>Have questions about blood donation? Want to organize a blood drive? We're here to help!</p>
+            <p>
+              Have questions about blood donation? Want to organize a blood
+              drive? We're here to help!
+            </p>
           </div>
         </div>
       </section>
@@ -64,7 +67,7 @@ const Contact = () => {
           <div className="form-container">
             <h2>Send Us a Message</h2>
             <p>We'll get back to you as soon as possible</p>
-            
+
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="form-group">
@@ -107,26 +110,11 @@ const Contact = () => {
                   required
                   rows="6"
                 ></textarea>
-              </div>
-              <button type="submit" className="submit-btn">Send Message</button>
+              </div>{" "}
+              <button type="submit" className="submit-btn">
+                Send Message
+              </button>
             </form>
-          </div>
-        </div>
-      </section>
-
-      <section className="contact-map">
-        <div className="container">
-          <div className="map-container">
-            <iframe
-              title="Location Map"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0584048621505!2d105.78034187499993!3d21.02880008061301!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135adc05e2c3cb3%3A0x33c6c6834c04859d!2zRlBUIFVuaXZlcnNpdHkgSGFub2kgKFRyxrDhu51uZyDEkOG6oWkgaOG7jWMgRlBUIEjDoCBO4buZaSk!5e0!3m2!1sen!2s!4v1685686466557!5m2!1sen!2s"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
           </div>
         </div>
       </section>
