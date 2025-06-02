@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BenefitsCarousel from '../BenefitsCarousel/BenefitsCarousel';
 import './HomePage.css';
 
 function HomePage() {
@@ -26,8 +27,10 @@ function HomePage() {
               alt="Blood Donation" 
             />
           </div>
-        </div>
-      </section>
+        </div>      </section>
+
+      {/* Benefits Carousel Section */}
+      <BenefitsCarousel />
 
       {/* Stats Section */}
       <section className="stats">
