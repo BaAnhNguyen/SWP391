@@ -1,0 +1,176 @@
+.benefits-carousel {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.carousel-header {
+  text-align: center;
+  margin-bottom: 60px;
+  color: white;
+}
+
+.carousel-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.carousel-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.carousel-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.carousel-slides {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  border-radius: 20px;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.benefit-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.carousel-slide h3 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.carousel-slide p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.carousel-arrow {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+  margin: 0 20px;
+  backdrop-filter: blur(4px);
+}
+
+.carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.carousel-dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .carousel-header h2 {
+    font-size: 2rem;
+  }
+
+  .carousel-slides {
+    height: 450px;
+  }
+
+  .carousel-slide {
+    padding: 20px;
+  }
+
+  .benefit-icon {
+    font-size: 3rem;
+  }
+
+  .carousel-slide h3 {
+    font-size: 1.5rem;
+  }
+
+  .carousel-slide p {
+    font-size: 1rem;
+  }
+
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-slides {
+    height: 500px;
+  }
+
+  .carousel-arrow {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    margin: 0 10px;
+  }
+
+  .carousel-header h2 {
+    font-size: 1.8rem;
+  }
+}
