@@ -13,6 +13,7 @@ const userSchema = new Schema(
       type: String,
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     },
+    city: { type: String },
     location: {
       type: {
         type: String,
