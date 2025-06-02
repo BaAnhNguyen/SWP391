@@ -25,8 +25,8 @@ function Footer() {
         <div className="footer-section contact">
           <h3>Contact Us</h3>
           <p><i className="icon">📍</i> 123 Nguyen Kiem, P.5, Go Vap</p>
-          <p><i className="icon">📞</i> 0949730930</p>
-          <p><i className="icon">✉️</i> baanhnguyenn@gmail.com</p>
+          <p><i className="icon">📞</i> 0123456789</p>
+          <p><i className="icon">✉️</i> blood_donation@gmail.com</p>
           <div className="social-links">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">FB</a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">TW</a>
