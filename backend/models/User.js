@@ -3,7 +3,6 @@ const { Schema, model } = require("mongoose");
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     role: {
       type: String,
@@ -14,9 +13,19 @@ const userSchema = new Schema(
       type: String,
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     },
-    location: { type: String },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number], // [lng, lat]
+      },
+    },
   },
   { timestamps: true }
 );
+//geo querry
+userSchema.index({ location: "2dsphere" });
 
 module.exports = model("User", userSchema);
