@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const generateToken = require("../utils/jwt");
+const bcrypt = require("bcryptjs");
 
 // Google callback (passport đã gắn req.user)
 exports.googleCallback = (req, res) => {
@@ -19,12 +20,11 @@ exports.getCurrentUser = async (req, res) => {
     res.json({
       id: user._id,
       name: user.name,
-      username: user.username,
       email: user.email,
       role: user.role,
       bloodGroup: user.bloodGroup,
       location: user.location,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
     });
   } catch (error) {
     console.error("Get current user error:", error);
