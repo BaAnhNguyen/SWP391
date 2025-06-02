@@ -1,40 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "./BenefitsCarousel.css";
 
 const BenefitsCarousel = () => {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const benefits = [
     {
       id: 1,
       icon: "❤️",
-      title: "Save Up to 3 Lives",
-      description:
-        "A single blood donation can help save up to three lives. Your donation is separated into red blood cells, plasma, and platelets, each helping different patients.",
+      title: t('benefits.health.title'),
+      description: t('benefits.health.description'),
       gradient: "linear-gradient(135deg, #ff6b6b, #ee5a6f)",
     },
     {
       id: 2,
       icon: "🔬",
-      title: "Free Health Screening",
-      description:
-        "Every donation includes a mini-physical with blood pressure, temperature, pulse, and hemoglobin level checks - completely free of charge.",
+      title: t('benefits.screening.title'),
+      description: t('benefits.screening.description'),
       gradient: "linear-gradient(135deg, #4ecdc4, #44a08d)",
     },
     {
       id: 3,
       icon: "🩸",
-      title: "Reduce Health Risks",
-      description:
-        "Regular blood donation may help maintain healthy iron levels and reduce oxidative stress in your body, promoting better overall health.",
+      title: t('benefits.community.title'),
+      description: t('benefits.community.description'),
       gradient: "linear-gradient(135deg, #a8edea, #fed6e3)",
-    },
-    {
+    },    {
       id: 4,
       icon: "💪",
-      title: "Boost Cardiovascular Health",
-      description:
-        "Donating blood can help improve blood flow and reduce the risk of heart disease by maintaining healthy iron levels.",
+      title: t('benefits.emergency.title'),
+      description: t('benefits.emergency.description'),
       gradient: "linear-gradient(135deg, #ffecd2, #fcb69f)",
     },
   ];
@@ -45,7 +42,7 @@ const BenefitsCarousel = () => {
     }, 6000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [benefits.length]);
 
   const handleDotClick = (index) => {
     setCurrentSlide(index);
@@ -61,10 +58,9 @@ const BenefitsCarousel = () => {
 
   return (
     <section className="benefits-carousel">
-      <div className="carousel-container">
-        <div className="carousel-header">
-          <h2>Benefits of Donating Blood</h2>
-          <p>Discover how your donation can make a difference</p>
+      <div className="carousel-container">        <div className="carousel-header">
+          <h2>{t('benefits.title')}</h2>
+          <p>{t('benefits.subtitle')}</p>
         </div>
 
         <div className="carousel-content">

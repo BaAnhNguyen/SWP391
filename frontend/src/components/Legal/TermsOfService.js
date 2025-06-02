@@ -1,11 +1,14 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./Legal.css";
 
 function TermsOfService() {
+  const { t } = useTranslation();
+
   return (
     <div className="legal-container">
       <div className="legal-content">
-        <h1>Terms of Service</h1>
+        <h1>{t('legal.terms.title')}</h1>
 
         <section className="legal-section">
           <h2>1. Acceptance of Terms</h2>

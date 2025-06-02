@@ -95,7 +95,7 @@ const resources = {
         // Login Page
       "login.title": "Welcome to LifeSource",
       "login.subtitle": "🌟 Join our mission to save lives through blood donation. Sign in with your Google account to get started!",
-      "login.googleButton": "🚀 Login with Google",
+      "login.googleButton": " Login with Google",
       "login.redirecting": "⏳ Redirecting...",
       "login.privacy": "🔒 By signing in, you agree to our terms of service and privacy policy. Your data is secure and protected.",
       "login.divider": "Or continue with email",
@@ -125,11 +125,16 @@ const resources = {
       // Donate Page
       "donate.title": "Donate Blood",
       "donate.description": "Thank you for choosing to donate blood and save lives!",
-      
-      // Language Switcher
+        // Language Switcher
       "language.switch": "Language",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt"
+      "language.vietnamese": "Tiếng Việt",
+      
+      // Legal Pages
+      "legal.terms.title": "Terms of Service",
+      "legal.terms.content": "Terms of Service content goes here...",
+      "legal.privacy.title": "Privacy Policy",
+      "legal.privacy.content": "Privacy Policy content goes here..."
     }
   },
   vi: {
@@ -223,7 +228,7 @@ const resources = {
         // Login Page
       "login.title": "Chào Mừng Đến Với LifeSource",
       "login.subtitle": "🌟 Tham gia sứ mệnh cứu sống thông qua hiến máu. Đăng nhập bằng tài khoản Google để bắt đầu!",
-      "login.googleButton": "🚀 Đăng Nhập Với Google",
+      "login.googleButton": " Đăng Nhập Với Google",
       "login.redirecting": "⏳ Đang chuyển hướng...",
       "login.privacy": "🔒 Bằng việc đăng nhập, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của chúng tôi. Dữ liệu của bạn được bảo mật và bảo vệ.",
       "login.divider": "Hoặc tiếp tục với email",
@@ -253,11 +258,16 @@ const resources = {
       // Donate Page
       "donate.title": "Hiến Máu",
       "donate.description": "Cảm ơn bạn đã chọn hiến máu và cứu sống!",
-      
-      // Language Switcher
+        // Language Switcher
       "language.switch": "Ngôn Ngữ",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt"
+      "language.vietnamese": "Tiếng Việt",
+      
+      // Legal Pages
+      "legal.terms.title": "Điều Khoản Dịch Vụ",
+      "legal.terms.content": "Nội dung Điều Khoản Dịch Vụ ở đây...",
+      "legal.privacy.title": "Chính Sách Bảo Mật",
+      "legal.privacy.content": "Nội dung Chính Sách Bảo Mật ở đây..."
     }
   }
 };

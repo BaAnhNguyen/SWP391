@@ -1,32 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './Footer.css';
 
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
       <div className="container footer-container">
         <div className="footer-section about">
-          <h3>About LifeSource</h3>
-          <p>We are dedicated to ensuring a safe and adequate blood supply for our community. Your donation can save up to 3 lives!</p>
+          <h3>{t('footer.about')}</h3>
+          <p>{t('footer.aboutText')}</p>
         </div>
         
         <div className="footer-section links">
-          <h3>Quick Links</h3>
+          <h3>{t('footer.quickLinks')}</h3>
           <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/donation-process">Donation Process</Link></li>
-            <li><Link to="/upcoming-drives">Upcoming Drives</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/">{t('nav.home')}</Link></li>
+            <li><Link to="/about">{t('nav.about')}</Link></li>
+            <li><Link to="/donation-process">{t('nav.donationProcess')}</Link></li>
+            <li><Link to="/upcoming-drives">{t('nav.upcomingDrives')}</Link></li>
+            <li><Link to="/contact">{t('nav.contact')}</Link></li>
           </ul>
         </div>
         
         <div className="footer-section contact">
-          <h3>Contact Us</h3>
-          <p><i className="icon">📍</i> 123 Nguyen Kiem, P.5, Go Vap</p>
-          <p><i className="icon">📞</i> 0123456789</p>
-          <p><i className="icon">✉️</i> blood_donation@gmail.com</p>
+          <h3>{t('footer.contact')}</h3>
+          <p><i className="icon">📍</i> {t('footer.address')}</p>
+          <p><i className="icon">📞</i> {t('footer.phone')}</p>
+          <p><i className="icon">✉️</i> {t('footer.email')}</p>
           <div className="social-links">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">FB</a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">TW</a>
@@ -36,7 +39,7 @@ function Footer() {
       </div>
       
       <div className="copyright">
-        <p>&copy; {new Date().getFullYear()} SWP391</p>
+        <p>{t('footer.rights')}</p>
       </div>
     </footer>
   );

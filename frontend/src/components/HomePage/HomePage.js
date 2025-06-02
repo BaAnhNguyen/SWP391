@@ -1,21 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import BenefitsCarousel from '../BenefitsCarousel/BenefitsCarousel';
 import './HomePage.css';
 
 function HomePage() {
+  const { t } = useTranslation();
+
   return (
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero">
         <div className="container hero-container">
           <div className="hero-content">
-            <h1>Give the Gift of Life</h1>
-            <h2>Your Blood Can Save Lives</h2>
-            <p>
-              Every day, thousands of people need blood transfusions to survive. 
-              Your donation can make a significant difference in someone's life.
-            </p>            <div className="hero-buttons">
+            <h1>{t('home.hero.title')}</h1>
+            <h2>{t('home.hero.subtitle2')}</h2>
+            <p>{t('home.hero.subtitle')}</p>
+            <div className="hero-buttons">
               <Link 
                 to="/donate" 
                 className="btn btn-primary"
@@ -26,9 +27,9 @@ function HomePage() {
                   }
                 }}
               >
-                Donate Now
+                {t('home.hero.donateButton')}
               </Link>
-              <Link to="/donation-process" className="btn btn-outline">Learn More</Link>
+              <Link to="/donation-process" className="btn btn-outline">{t('home.hero.learnMore')}</Link>
             </div>
           </div>
           <div className="hero-image">
@@ -37,142 +38,115 @@ function HomePage() {
               alt="Blood Donation" 
             />
           </div>
-        </div>      </section>
-
-      {/* Benefits Carousel Section */}
-      <BenefitsCarousel />
-
-      {/* Stats Section */}
-      <section className="stats">
-        <div className="container stats-container">
-          <div className="stat-item">
-            <h3>4.5M</h3>
-            <p>Annual Blood Donations</p>
-          </div>
-          <div className="stat-item">
-            <h3>13.5M</h3>
-            <p>Lives Saved Each Year</p>
-          </div>
-          <div className="stat-item">
-            <h3>3 Lives</h3>
-            <p>Saved Per Donation</p>
-          </div>
-          <div className="stat-item">
-            <h3>Every 2 Sec</h3>
-            <p>Someone Needs Blood</p>
-          </div>
         </div>
-      </section>
+      </section>      {/* Benefits Carousel Section */}
+      <BenefitsCarousel />
 
       {/* Blood Types Section */}
       <section className="blood-types">
         <div className="container">
-          <h2>Blood Types & Compatibility</h2>
+          <h2>{t('bloodTypes.title')}</h2>
           <p className="section-description">
-            Understanding blood types is crucial for successful transfusions. 
-            Here's a quick guide to blood type compatibility.
+            {t('bloodTypes.description')}
           </p>
           
           <div className="blood-types-grid">
-            <div className="blood-type-card">
-              <div className="blood-type">A+</div>
+            <div className="blood-type-card">              <div className="blood-type">A+</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> A+, AB+</p>
-                <p><strong>Can receive from:</strong> A+, A-, O+, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.aPlus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.aPlus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">A-</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> A+, A-, AB+, AB-</p>
-                <p><strong>Can receive from:</strong> A-, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.aMinus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.aMinus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">B+</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> B+, AB+</p>
-                <p><strong>Can receive from:</strong> B+, B-, O+, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.bPlus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.bPlus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">B-</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> B+, B-, AB+, AB-</p>
-                <p><strong>Can receive from:</strong> B-, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.bMinus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.bMinus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">AB+</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> AB+ only</p>
-                <p><strong>Can receive from:</strong> All Blood Types</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.abPlus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.abPlus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">AB-</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> AB+, AB-</p>
-                <p><strong>Can receive from:</strong> A-, B-, AB-, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.abMinus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.abMinus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">O+</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> A+, B+, AB+, O+</p>
-                <p><strong>Can receive from:</strong> O+, O-</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.oPlus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.oPlus.receiveFrom')}</p>
               </div>
             </div>
             
             <div className="blood-type-card">
               <div className="blood-type">O-</div>
               <div className="compatibility">
-                <p><strong>Can donate to:</strong> All Blood Types</p>
-                <p><strong>Can receive from:</strong> O- only</p>
-                <p className="special-note">Universal Donor</p>
+                <p><strong>{t('bloodTypes.canDonateTo')}</strong> {t('bloodTypes.oMinus.donateTo')}</p>
+                <p><strong>{t('bloodTypes.canReceiveFrom')}</strong> {t('bloodTypes.oMinus.receiveFrom')}</p>
+                <p className="special-note">{t('bloodTypes.universalDonor')}</p>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Donation Process Section */}
+      </section>      {/* Donation Process Section */}
       <section className="donation-process">
         <div className="container">
-          <h2>The Donation Process</h2>
+          <h2>{t('donationProcess.title')}</h2>
           <p className="section-description">
-            Donating blood is a simple and straightforward process that takes about an hour from start to finish.
+            {t('donationProcess.description')}
           </p>
           
           <div className="process-steps">
             <div className="step">
               <div className="step-number">1</div>
-              <h3>Registration</h3>
-              <p>Present ID and answer basic health questions</p>
+              <h3>{t('donationProcess.step1.title')}</h3>
+              <p>{t('donationProcess.step1.description')}</p>
             </div>
             
             <div className="step">
               <div className="step-number">2</div>
-              <h3>Health Screening</h3>
-              <p>Quick physical (temperature, blood pressure, pulse, hemoglobin)</p>
+              <h3>{t('donationProcess.step2.title')}</h3>
+              <p>{t('donationProcess.step2.description')}</p>
             </div>
             
             <div className="step">
               <div className="step-number">3</div>
-              <h3>Blood Donation</h3>
-              <p>The actual donation takes only 8-10 minutes</p>
+              <h3>{t('donationProcess.step3.title')}</h3>
+              <p>{t('donationProcess.step3.description')}</p>
             </div>
             
             <div className="step">
               <div className="step-number">4</div>
-              <h3>Refreshments</h3>
-              <p>Rest and enjoy snacks to replenish fluids and energy</p>
+              <h3>{t('donationProcess.step4.title')}</h3>
+              <p>{t('donationProcess.step4.description')}</p>
             </div>
           </div>
         </div>
@@ -181,19 +155,19 @@ function HomePage() {
       {/* Testimonials Section */}
       <section className="testimonials">
         <div className="container">
-          <h2>Donor Testimonials</h2>
+          <h2>{t('testimonials.title')}</h2>
           <div className="testimonials-container">
             <div className="testimonial">
-              <div className="quote">"I've been donating blood for over 10 years now. It's just an hour of my time, but it means the world to someone in need."</div>
-              <div className="author">- Sarah Johnson</div>
+              <div className="quote">{t('testimonials.quote1')}</div>
+              <div className="author">{t('testimonials.author1')}</div>
             </div>
             <div className="testimonial">
-              <div className="quote">"After my son's accident, he needed multiple transfusions. Now I donate regularly to give back and help others like him."</div>
-              <div className="author">- Michael Rodriguez</div>
+              <div className="quote">{t('testimonials.quote2')}</div>
+              <div className="author">{t('testimonials.author2')}</div>
             </div>
             <div className="testimonial">
-              <div className="quote">"It's such a simple way to make a big difference. I feel great knowing my donation directly helps save lives!"</div>
-              <div className="author">- Priya Patel</div>
+              <div className="quote">{t('testimonials.quote3')}</div>
+              <div className="author">{t('testimonials.author3')}</div>
             </div>
           </div>
         </div>
@@ -202,9 +176,9 @@ function HomePage() {
       {/* CTA Section */}
       <section className="cta">
         <div className="container cta-container">
-          <h2>Ready to Make a Difference?</h2>
-          <p>Schedule your blood donation appointment today and join our community of lifesavers.</p>
-          <Link to="/donate" className="btn btn-primary">Donate Now</Link>
+          <h2>{t('cta.title')}</h2>
+          <p>{t('cta.description')}</p>
+          <Link to="/donate" className="btn btn-primary">{t('cta.button')}</Link>
         </div>
       </section>
     </div>

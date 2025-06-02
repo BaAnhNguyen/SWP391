@@ -157,7 +157,20 @@
   transform: rotate(-135deg);
 }
 
-/* Media queries */
+/* Language Switcher Styles */
+.nav-menu li:has(.language-switcher) {
+  display: flex;
+  align-items: center;
+}
+
+.language-switcher .language-select {
+  margin: 0;
+  border-color: #e74c3c;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+/* Mobile responsive for language switcher */
 @media (max-width: 768px) {
   .mobile-menu-icon {
     display: block;
@@ -205,5 +218,10 @@
 
   .user-role {
     font-size: 0.85rem;
+  }
+
+  .language-switcher .language-select {
+    font-size: 12px;
+    padding: 5px 10px;
   }
 }

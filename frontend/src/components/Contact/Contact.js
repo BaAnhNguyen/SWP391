@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./Contact.css";
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,16 +25,12 @@ const Contact = () => {
   };
 
   return (
-    <div className="contact-page">
-      <section className="contact-hero">
+    <div className="contact-page">      <section className="contact-hero">
         <div className="container">
           <div className="hero-content">
-            <h1>Contact Us</h1>
-            <h2>Get in Touch with LifeSource</h2>
-            <p>
-              Have questions about blood donation? Want to organize a blood
-              drive? We're here to help!
-            </p>
+            <h1>{t('contact.title')}</h1>
+            <h2>{t('contact.getInTouch')}</h2>
+            <p>{t('contact.subtitle')}</p>
           </div>
         </div>
       </section>
@@ -42,19 +40,18 @@ const Contact = () => {
           <div className="info-grid">
             <div className="info-card">
               <div className="info-icon">📞</div>
-              <h3>Phone</h3>
+              <h3>{t('contact.phone')}</h3>
               <p>+1 (123) 456-7890</p>
-              <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
+              <p>{t('contact.hours')}</p>
             </div>
             <div className="info-card">
               <div className="info-icon">✉️</div>
-              <h3>Email</h3>
-              <p>info@lifesource.com</p>
-              <p>support@lifesource.com</p>
+              <h3>{t('contact.email')}</h3>
+              <p>info@lifesource.com</p>              <p>support@lifesource.com</p>
             </div>
             <div className="info-card">
               <div className="info-icon">📍</div>
-              <h3>Location</h3>
+              <h3>{t('contact.location')}</h3>
               <p>123 Blood Center Drive</p>
               <p>Medical District, City, 12345</p>
             </div>
@@ -65,8 +62,8 @@ const Contact = () => {
       <section className="contact-form">
         <div className="container">
           <div className="form-container">
-            <h2>Send Us a Message</h2>
-            <p>We'll get back to you as soon as possible</p>
+            <h2>{t('contact.sendMessage')}</h2>
+            <p>{t('contact.responseTime')}</p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
@@ -74,17 +71,16 @@ const Contact = () => {
                   <input
                     type="text"
                     name="name"
-                    placeholder="Your Name"
+                    placeholder={t('contact.form.name')}
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <input
+                <div className="form-group">                  <input
                     type="email"
                     name="email"
-                    placeholder="Your Email"
+                    placeholder={t('contact.form.email')}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -95,7 +91,7 @@ const Contact = () => {
                 <input
                   type="text"
                   name="subject"
-                  placeholder="Subject"
+                  placeholder={t('contact.form.subject')}
                   value={formData.subject}
                   onChange={handleChange}
                   required
@@ -104,15 +100,15 @@ const Contact = () => {
               <div className="form-group">
                 <textarea
                   name="message"
-                  placeholder="Your Message"
+                  placeholder={t('contact.form.message')}
                   value={formData.message}
                   onChange={handleChange}
                   required
                   rows="6"
                 ></textarea>
-              </div>{" "}
+              </div>
               <button type="submit" className="submit-btn">
-                Send Message
+                {t('contact.form.submit')}
               </button>
             </form>
           </div>
