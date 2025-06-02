@@ -10,22 +10,19 @@ function Login() {
     setLoading(true);
     window.location.href = "http://localhost:5001/api/auth/google";
   };
-
   return (
     <div className="login-container">
-      <div className="login-form">        <div className="login-header">
+      <div className="login-form">
+        {" "}
+        <div className="login-header">
           <div className="logo-icon">❤</div>
-          <h2>{t('login.title')}</h2>
-          <p>{t('login.subtitle')}</p>
+          <h2>{t("login.title")}</h2>
+          <p>{t("login.subtitle")}</p>
         </div>
-
         <div className="form-body">
           <div className="welcome-message">
-            <div className="stats-grid">
-              
-            </div>
+            <div className="stats-grid"></div>
           </div>
-
           <button
             onClick={handleGoogleLogin}
             className="google-login-btn"
@@ -39,13 +36,13 @@ function Login() {
               />
             )}
             {loading ? (
-              <div className="loading-spinner"></div>            ) : (
-              t('login.googleButton')
+              <div className="loading-spinner"></div>
+            ) : (
+              t("login.googleButton")
             )}
-          </button>          <div className="login-footer">
-            <p className="privacy-note">
-              {t('login.privacy')}
-            </p>
+          </button>{" "}
+          <div className="login-footer">
+            <p className="privacy-note">{t("login.privacy")}</p>
           </div>
         </div>
       </div>
