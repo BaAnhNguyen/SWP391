@@ -75,10 +75,10 @@
 }
 
 .btn {
-  padding: 8px 16px;
+  padding: 8px 20px;
   border-radius: 5px;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 500;
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
@@ -87,7 +87,7 @@
 
 .btn-primary {
   background-color: #e74c3c;
-  color: white;
+  color: white !important;
 }
 
 .btn-primary:hover {
@@ -157,12 +157,25 @@
   transform: rotate(-135deg);
 }
 
-/* Media queries */
+/* Language Switcher Styles */
+.nav-menu li:has(.language-switcher) {
+  display: flex;
+  align-items: center;
+}
+
+.language-switcher .language-select {
+  margin: 0;
+  border-color: #e74c3c;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+/* Mobile responsive for language switcher */
 @media (max-width: 768px) {
   .mobile-menu-icon {
     display: block;
   }
-  
+
   .nav-menu {
     position: absolute;
     top: 70px;
@@ -172,37 +185,43 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
   }
-  
+
   .nav-menu.active {
     left: 0;
   }
-  
+
   .nav-menu ul {
     flex-direction: column;
     padding: 20px 0;
   }
-  
+
   .nav-menu li {
     margin: 0;
     padding: 12px 20px;
     border-bottom: 1px solid #f1f1f1;
   }
-    .nav-menu li:last-child {
+
+  .nav-menu li:last-child {
     border-bottom: none;
     padding-top: 20px;
   }
-  
+
   .user-info {
     margin: 0;
     align-items: flex-start;
     padding: 12px 20px;
   }
-  
+
   .welcome-text {
     font-size: 1rem;
   }
-  
+
   .user-role {
     font-size: 0.85rem;
+  }
+
+  .language-switcher .language-select {
+    font-size: 12px;
+    padding: 5px 10px;
   }
 }
