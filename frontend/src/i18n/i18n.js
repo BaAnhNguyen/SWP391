@@ -1,0 +1,281 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+// Translation resources
+const resources = {
+  en: {
+    translation: {
+      // Header Navigation
+      "nav.home": "Home",
+      "nav.about": "About Us",
+      "nav.donationProcess": "Donation Process",
+      "nav.upcomingDrives": "Upcoming Drives",
+      "nav.contact": "Contact",
+      "nav.login": "LOGIN",
+      "nav.logout": "LOGOUT",
+      "nav.welcome": "Welcome, {{name}}!",
+      "nav.loading": "Loading...",
+      
+      // Home Page
+      "home.hero.title": "Give the Gift of Life",
+      "home.hero.subtitle2": "Your Blood Can Save Lives",
+      "home.hero.subtitle": "Every day, thousands of people need blood transfusions to survive. Your donation can make a significant difference in someone's life.",
+      "home.hero.donateButton": "Donate Now",
+      "home.hero.learnMore": "Learn More",        // Benefits Section
+      "benefits.title": "Benefits of Donating Blood",
+      "benefits.subtitle": "Discover how your donation can make a difference",
+      "benefits.health.title": "Save Up to 3 Lives",
+      "benefits.health.description": "A single blood donation can help save up to three lives. Your donation is separated into red blood cells, plasma, and platelets, each helping different patients.",
+      "benefits.screening.title": "Free Health Screening",
+      "benefits.screening.description": "Every donation includes a mini-physical with blood pressure, temperature, pulse, and hemoglobin level checks - completely free of charge.",
+      "benefits.community.title": "Reduce Health Risks",
+      "benefits.community.description": "Regular blood donation may help maintain healthy iron levels and reduce oxidative stress in your body, promoting better overall health.",
+      "benefits.emergency.title": "Boost Cardiovascular Health",
+      "benefits.emergency.description": "Donating blood can help improve blood flow and reduce the risk of heart disease by maintaining healthy iron levels.",
+        // Blood Types Section
+      "bloodTypes.title": "Blood Types & Compatibility",
+      "bloodTypes.description": "Understanding blood types is crucial for successful transfusions. Here's a quick guide to blood type compatibility.",
+      "bloodTypes.canDonateTo": "Can donate to:",
+      "bloodTypes.canReceiveFrom": "Can receive from:",
+      "bloodTypes.universalDonor": "Universal Donor",
+      "bloodTypes.allTypes": "All Blood Types",
+      "bloodTypes.aPlus.donateTo": "A+, AB+",
+      "bloodTypes.aPlus.receiveFrom": "A+, A-, O+, O-",
+      "bloodTypes.aMinus.donateTo": "A+, A-, AB+, AB-",
+      "bloodTypes.aMinus.receiveFrom": "A-, O-",
+      "bloodTypes.bPlus.donateTo": "B+, AB+",
+      "bloodTypes.bPlus.receiveFrom": "B+, B-, O+, O-",
+      "bloodTypes.bMinus.donateTo": "B+, B-, AB+, AB-",
+      "bloodTypes.bMinus.receiveFrom": "B-, O-",
+      "bloodTypes.abPlus.donateTo": "AB+ only",
+      "bloodTypes.abPlus.receiveFrom": "All Blood Types",
+      "bloodTypes.abMinus.donateTo": "AB+, AB-",
+      "bloodTypes.abMinus.receiveFrom": "A-, B-, AB-, O-",
+      "bloodTypes.oPlus.donateTo": "A+, B+, AB+, O+",
+      "bloodTypes.oPlus.receiveFrom": "O+, O-",
+      "bloodTypes.oMinus.donateTo": "All Blood Types",
+      "bloodTypes.oMinus.receiveFrom": "O- only",
+
+      // Donation Process Section
+      "donationProcess.title": "The Donation Process",
+      "donationProcess.description": "Donating blood is a simple and straightforward process that takes about an hour from start to finish.",
+      "donationProcess.step1.title": "Registration",
+      "donationProcess.step1.description": "Present ID and answer basic health questions",
+      "donationProcess.step2.title": "Health Screening",
+      "donationProcess.step2.description": "Quick physical (temperature, blood pressure, pulse, hemoglobin)",
+      "donationProcess.step3.title": "Blood Donation",
+      "donationProcess.step3.description": "The actual donation takes only 8-10 minutes",
+      "donationProcess.step4.title": "Refreshments",
+      "donationProcess.step4.description": "Rest and enjoy snacks to replenish fluids and energy",
+
+      // Testimonials Section
+      "testimonials.title": "Donor Testimonials",
+      "testimonials.quote1": "I've been donating blood for over 10 years now. It's just an hour of my time, but it means the world to someone in need.",
+      "testimonials.author1": "- Sarah Johnson",
+      "testimonials.quote2": "After my son's accident, he needed multiple transfusions. Now I donate regularly to give back and help others like him.",
+      "testimonials.author2": "- Michael Rodriguez",
+      "testimonials.quote3": "It's such a simple way to make a big difference. I feel great knowing my donation directly helps save lives!",
+      "testimonials.author3": "- Priya Patel",
+
+      // CTA Section
+      "cta.title": "Ready to Make a Difference?",
+      "cta.description": "Schedule your blood donation appointment today and join our community of lifesavers.",
+      "cta.button": "Donate Now",
+
+      // Footer
+      "footer.about": "About LifeSource",
+      "footer.aboutText": "LifeSource is dedicated to connecting blood donors with those in need, making it easier than ever to save lives through voluntary blood donation.",
+      "footer.quickLinks": "Quick Links",
+      "footer.contact": "Contact Info",
+      "footer.address": "123 Medical Center Dr, Healthcare City, HC 12345",
+      "footer.phone": "Phone: (555) 123-4567",
+      "footer.email": "Email: info@lifesource.com",
+      "footer.rights": "© 2024 LifeSource. All rights reserved.",
+        // Login Page
+      "login.title": "Welcome to LifeSource",
+      "login.subtitle": "🌟 Join our mission to save lives through blood donation. Sign in with your Google account to get started!",
+      "login.googleButton": "🚀 Login with Google",
+      "login.redirecting": "⏳ Redirecting...",
+      "login.privacy": "🔒 By signing in, you agree to our terms of service and privacy policy. Your data is secure and protected.",
+      "login.divider": "Or continue with email",
+      "login.email": "Email Address",
+      "login.password": "Password",
+      "login.loginButton": "Sign In",
+      "login.noAccount": "Don't have an account?",
+      "login.signUp": "Sign up here",
+        // Contact Page
+      "contact.title": "Get in Touch",
+      "contact.subtitle": "Have questions about blood donation? We're here to help.",
+      "contact.getInTouch": "Get in Touch with LifeSource",
+      "contact.phone": "Phone",
+      "contact.email": "Email",
+      "contact.location": "Location",
+      "contact.hours": "Monday - Friday: 8:00 AM - 6:00 PM",
+      "contact.sendMessage": "Send Us a Message",
+      "contact.responseTime": "We'll get back to you as soon as possible",
+      "contact.form.name": "Your Name",
+      "contact.form.email": "Email Address",
+      "contact.form.subject": "Subject",
+      "contact.form.message": "Message",
+      "contact.form.submit": "Send Message",
+      "contact.info.title": "Contact Information",
+      "contact.info.description": "Reach out to us through any of the following methods:",
+      
+      // Donate Page
+      "donate.title": "Donate Blood",
+      "donate.description": "Thank you for choosing to donate blood and save lives!",
+      
+      // Language Switcher
+      "language.switch": "Language",
+      "language.english": "English",
+      "language.vietnamese": "Tiếng Việt"
+    }
+  },
+  vi: {
+    translation: {
+      // Header Navigation
+      "nav.home": "Trang Chủ",
+      "nav.about": "Về Chúng Tôi",
+      "nav.donationProcess": "Quy Trình Hiến Máu",
+      "nav.upcomingDrives": "Chương Trình Sắp Tới",
+      "nav.contact": "Liên Hệ",
+      "nav.login": "ĐĂNG NHẬP",
+      "nav.logout": "ĐĂNG XUẤT",
+      "nav.welcome": "Chào mừng, {{name}}!",
+      "nav.loading": "Đang tải...",
+        // Home Page
+      "home.hero.title": "Tặng Món Quà Của Sự Sống",
+      "home.hero.subtitle2": "Máu Của Bạn Có Thể Cứu Sống",
+      "home.hero.subtitle": "Mỗi ngày, hàng ngàn người cần truyền máu để sống sót. Việc hiến máu của bạn có thể tạo ra sự khác biệt đáng kể trong cuộc sống của ai đó.",
+      "home.hero.donateButton": "Hiến Máu Ngay",
+      "home.hero.learnMore": "Tìm Hiểu Thêm",
+        // Benefits Section
+      "benefits.title": "Lợi Ích Của Việc Hiến Máu",
+      "benefits.subtitle": "Khám phá cách hiến máu của bạn có thể tạo ra sự khác biệt",
+      "benefits.health.title": "Cứu Tới 3 Mạng Sống",
+      "benefits.health.description": "Một lần hiến máu có thể giúp cứu tới ba mạng sống. Máu hiến của bạn được tách thành hồng cầu, huyết tương và tiểu cầu, mỗi thành phần giúp đỡ các bệnh nhân khác nhau.",
+      "benefits.screening.title": "Khám Sức Khỏe Miễn Phí",
+      "benefits.screening.description": "Mỗi lần hiến máu bao gồm kiểm tra sức khỏe cơ bản với huyết áp, nhiệt độ, mạch và mức hemoglobin - hoàn toàn miễn phí.",
+      "benefits.community.title": "Giảm Rủi Ro Sức Khỏe",
+      "benefits.community.description": "Hiến máu thường xuyên có thể giúp duy trì mức sắt khỏe mạnh và giảm stress oxy hóa trong cơ thể, thúc đẩy sức khỏe tổng thể tốt hơn.",
+      "benefits.emergency.title": "Tăng Cường Sức Khỏe Tim Mạch",
+      "benefits.emergency.description": "Hiến máu có thể giúp cải thiện lưu lượng máu và giảm nguy cơ bệnh tim bằng cách duy trì mức sắt khỏe mạnh.",
+        // Blood Types Section
+      "bloodTypes.title": "Nhóm Máu & Tương Thích",
+      "bloodTypes.description": "Hiểu về nhóm máu là rất quan trọng cho việc truyền máu thành công. Đây là hướng dẫn nhanh về tính tương thích của nhóm máu.",
+      "bloodTypes.canDonateTo": "Có thể hiến cho:",
+      "bloodTypes.canReceiveFrom": "Có thể nhận từ:",
+      "bloodTypes.universalDonor": "Người Cho Máu Toàn Cầu",
+      "bloodTypes.allTypes": "Tất Cả Nhóm Máu",
+      "bloodTypes.aPlus.donateTo": "A+, AB+",
+      "bloodTypes.aPlus.receiveFrom": "A+, A-, O+, O-",
+      "bloodTypes.aMinus.donateTo": "A+, A-, AB+, AB-",
+      "bloodTypes.aMinus.receiveFrom": "A-, O-",
+      "bloodTypes.bPlus.donateTo": "B+, AB+",
+      "bloodTypes.bPlus.receiveFrom": "B+, B-, O+, O-",
+      "bloodTypes.bMinus.donateTo": "B+, B-, AB+, AB-",
+      "bloodTypes.bMinus.receiveFrom": "B-, O-",
+      "bloodTypes.abPlus.donateTo": "Chỉ AB+",
+      "bloodTypes.abPlus.receiveFrom": "Tất Cả Nhóm Máu",
+      "bloodTypes.abMinus.donateTo": "AB+, AB-",
+      "bloodTypes.abMinus.receiveFrom": "A-, B-, AB-, O-",
+      "bloodTypes.oPlus.donateTo": "A+, B+, AB+, O+",
+      "bloodTypes.oPlus.receiveFrom": "O+, O-",
+      "bloodTypes.oMinus.donateTo": "Tất Cả Nhóm Máu",
+      "bloodTypes.oMinus.receiveFrom": "Chỉ O-",
+
+      // Donation Process Section
+      "donationProcess.title": "Quy Trình Hiến Máu",
+      "donationProcess.description": "Hiến máu là một quy trình đơn giản và dễ hiểu, mất khoảng một giờ từ đầu đến cuối.",
+      "donationProcess.step1.title": "Đăng Ký",
+      "donationProcess.step1.description": "Xuất trình CMND và trả lời các câu hỏi sức khỏe cơ bản",
+      "donationProcess.step2.title": "Kiểm Tra Sức Khỏe",
+      "donationProcess.step2.description": "Khám nhanh (nhiệt độ, huyết áp, mạch, hemoglobin)",
+      "donationProcess.step3.title": "Hiến Máu",
+      "donationProcess.step3.description": "Việc hiến máu thực tế chỉ mất 8-10 phút",
+      "donationProcess.step4.title": "Nghỉ Ngơi",
+      "donationProcess.step4.description": "Nghỉ ngơi và thưởng thức đồ ăn nhẹ để bổ sung chất lỏng và năng lượng",
+
+      // Testimonials Section
+      "testimonials.title": "Lời Chứng Thực Từ Người Hiến Máu",
+      "testimonials.quote1": "Tôi đã hiến máu hơn 10 năm nay. Chỉ mất một giờ của tôi, nhưng có ý nghĩa rất lớn đối với ai đó đang cần.",
+      "testimonials.author1": "- Sarah Johnson",
+      "testimonials.quote2": "Sau tai nạn của con trai tôi, cậu ấy cần nhiều lần truyền máu. Giờ tôi hiến máu thường xuyên để đền đáp và giúp đỡ những người khác như cậu ấy.",
+      "testimonials.author2": "- Michael Rodriguez",
+      "testimonials.quote3": "Đây là cách đơn giản để tạo ra sự khác biệt lớn. Tôi cảm thấy tuyệt vời khi biết việc hiến máu của mình trực tiếp giúp cứu sống!",
+      "testimonials.author3": "- Priya Patel",
+
+      // CTA Section
+      "cta.title": "Sẵn Sàng Tạo Ra Sự Khác Biệt?",
+      "cta.description": "Lên lịch cuộc hẹn hiến máu của bạn ngay hôm nay và tham gia cộng đồng những người cứu sống.",
+      "cta.button": "Hiến Máu Ngay",
+
+      // Footer
+      "footer.about": "Về LifeSource",
+      "footer.aboutText": "LifeSource tận tâm kết nối những người hiến máu với những người cần thiết, giúp việc cứu sống thông qua hiến máu tình nguyện trở nên dễ dàng hơn bao giờ hết.",
+      "footer.quickLinks": "Liên Kết Nhanh",
+      "footer.contact": "Thông Tin Liên Hệ",
+      "footer.address": "123 Đường Trung Tâm Y Tế, Thành Phố Y Tế, YT 12345",
+      "footer.phone": "Điện thoại: (555) 123-4567",
+      "footer.email": "Email: info@lifesource.com",
+      "footer.rights": "© 2024 LifeSource. Tất cả quyền được bảo lưu.",
+        // Login Page
+      "login.title": "Chào Mừng Đến Với LifeSource",
+      "login.subtitle": "🌟 Tham gia sứ mệnh cứu sống thông qua hiến máu. Đăng nhập bằng tài khoản Google để bắt đầu!",
+      "login.googleButton": "🚀 Đăng Nhập Với Google",
+      "login.redirecting": "⏳ Đang chuyển hướng...",
+      "login.privacy": "🔒 Bằng việc đăng nhập, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của chúng tôi. Dữ liệu của bạn được bảo mật và bảo vệ.",
+      "login.divider": "Hoặc tiếp tục với email",
+      "login.email": "Địa Chỉ Email",
+      "login.password": "Mật Khẩu",
+      "login.loginButton": "Đăng Nhập",
+      "login.noAccount": "Chưa có tài khoản?",
+      "login.signUp": "Đăng ký tại đây",
+        // Contact Page
+      "contact.title": "Liên Hệ",
+      "contact.subtitle": "Có câu hỏi về hiến máu? Chúng tôi sẵn sàng giúp đỡ.",
+      "contact.getInTouch": "Liên Hệ Với LifeSource",
+      "contact.phone": "Điện Thoại",
+      "contact.email": "Email",
+      "contact.location": "Địa Điểm",
+      "contact.hours": "Thứ Hai - Thứ Sáu: 8:00 AM - 6:00 PM",
+      "contact.sendMessage": "Gửi Tin Nhắn Cho Chúng Tôi",
+      "contact.responseTime": "Chúng tôi sẽ phản hồi bạn sớm nhất có thể",
+      "contact.form.name": "Tên Của Bạn",
+      "contact.form.email": "Địa Chỉ Email",
+      "contact.form.subject": "Chủ Đề",
+      "contact.form.message": "Tin Nhắn",
+      "contact.form.submit": "Gửi Tin Nhắn",
+      "contact.info.title": "Thông Tin Liên Hệ",
+      "contact.info.description": "Liên hệ với chúng tôi qua bất kỳ phương thức nào sau đây:",
+      
+      // Donate Page
+      "donate.title": "Hiến Máu",
+      "donate.description": "Cảm ơn bạn đã chọn hiến máu và cứu sống!",
+      
+      // Language Switcher
+      "language.switch": "Ngôn Ngữ",
+      "language.english": "English",
+      "language.vietnamese": "Tiếng Việt"
+    }
+  }
+};
+
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    debug: false,
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+    },
+    interpolation: {
+      escapeValue: false, // React already escapes values
+    },
+  });
+
+export default i18n;
