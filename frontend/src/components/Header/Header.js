@@ -27,8 +27,9 @@ function Header() {
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
+          // Store user data in localStorage for AdminOnly component
+          localStorage.setItem("user", JSON.stringify(userData));
         } else {
-          // Token is invalid, remove it
           localStorage.removeItem("token");
           localStorage.removeItem("user");
         }
@@ -40,7 +41,6 @@ function Header() {
     }
     setLoading(false);
   };
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -50,6 +50,39 @@ function Header() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const renderAuthButtons = () => {
+    if (loading) {
+      return <div className="nav-link">{t("nav.loading")}</div>;
+    }
+
+    if (user) {
+      return (
+        <div className="auth-buttons">
+          <div className="user-welcome">
+            <Link to="/profile" className="profile-link">
+              {t("nav.welcome", { name: user.name })}
+            </Link>
+          </div>
+          {user.role === "Admin" && (
+            <Link to="/admin" className="nav-link admin-link">
+              {t("nav.adminPanel")}
+            </Link>
+          )}
+          <button onClick={handleLogout} className="logout-btn">
+            {t("nav.logout")}
+          </button>
+        </div>
+      );
+    }
+    return (
+      <div className="auth-buttons">
+        <Link to="/login" className="login-btn">
+          {t("nav.login")}
+        </Link>
+      </div>
+    );
   };
 
   return (
@@ -70,52 +103,30 @@ function Header() {
             <span></span>
             <span></span>
           </div>
-        </div>        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
+        </div>
+
+        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
           <ul>
             <li>
               <Link to="/" className="nav-link">
-                {t('nav.home')}
+                {t("nav.home")}
               </Link>
             </li>
             <li>
               <Link to="/about" className="nav-link">
-                {t('nav.about')}
+                {t("nav.about")}
               </Link>
             </li>
             <li>
               <Link to="/contact" className="nav-link">
-                {t('nav.contact')}
+                {t("nav.contact")}
               </Link>
-            </li>            <li>
+            </li>
+            <li>
               <LanguageSwitcher />
             </li>
-            {loading ? (
-              <li>
-                <span className="nav-link">{t('nav.loading')}</span>
-              </li>
-            ) : user ? (
-              <>
-                <li className="user-info">
-                  <span className="welcome-text">{t('nav.welcome', { name: user.name })}</span>
-                  <span className="user-role">({user.role})</span>
-                </li>
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="nav-link btn btn-primary"
-                  >
-                    {t('nav.logout')}
-                  </button>
-                </li>
-              </>
-            ) : (
-              <li>
-                <Link to="/login" className="nav-link btn btn-primary">
-                  {t('nav.login')}
-                </Link>
-              </li>
-            )}
           </ul>
+          <div className="auth-section">{renderAuthButtons()}</div>
         </nav>
       </div>
     </header>

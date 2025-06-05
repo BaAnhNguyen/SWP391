@@ -1,7 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./App.css";
-import "./i18n/i18n"; // Import i18n configuration
+import "./i18n/i18n";
 import HomePage from "./components/HomePage/HomePage";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
@@ -11,6 +16,13 @@ import Contact from "./components/Contact/Contact";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import TermsOfService from "./components/Legal/TermsOfService";
 import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
+import Profile from "./components/Profile/Profile";
+import AdminPanel from "./components/AdminPanel/AdminPanel";
+
+function AdminOnly({ children }) {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  return user.role === "Admin" ? children : <Navigate to="/" replace />;
+}
 
 function App() {
   const { t } = useTranslation();
@@ -27,14 +39,30 @@ function App() {
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RequireAuth>
+                <AdminOnly>
+                  <AdminPanel />
+                </AdminOnly>
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/donate"
             element={
               <RequireAuth>
-                {/* Replace this with your Donate component when you create it */}
                 <div style={{ minHeight: "100vh", padding: "20px" }}>
-                  <h1>{t('donate.title')}</h1>
-                  <p>{t('donate.description')}</p>
-                  {/* Add your donation form/content here */}
+                  <h1>{t("donate.title")}</h1>
+                  <p>{t("donate.description")}</p>
                 </div>
               </RequireAuth>
             }
