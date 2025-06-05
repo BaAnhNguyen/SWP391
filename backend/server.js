@@ -8,6 +8,7 @@ require("./config/passport");
 
 const authRoutes = require("./routes/auth");
 const userRouter = require("./routes/user");
+const donateRegistrationRoutes = require("./routes/donateRegistration");
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use(passport.initialize());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRouter);
+
+app.use("/api/donateRegistration", donateRegistrationRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -51,13 +54,13 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/swp391";
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📱 Health check: http://localhost:${PORT}/api/health`);
+      console.log(` Server running on port ${PORT}`);
+      console.log(` Health check: http://localhost:${PORT}/api/health`);
     });
   })
   .catch((err) => {
-    console.error("❌ Database connection error:", err);
+    console.error(" Database connection error:", err);
     process.exit(1);
   });
