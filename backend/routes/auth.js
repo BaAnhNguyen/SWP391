@@ -50,6 +50,6 @@ router.get(
 );
 
 // Get current user information
-router.get("/me", auth, ctrl.getCurrentUser);
+router.get("/me", auth.protect, ctrl.getCurrentUser);
 
 module.exports = router;
