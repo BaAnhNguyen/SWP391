@@ -75,8 +75,7 @@ const resources = {
       "home.hero.subtitle":
         "Every day, thousands of people need blood transfusions to survive. Your donation can make a significant difference in someone's life.",
       "home.hero.donateButton": "Donate Now",
-      "home.hero.learnMore": "Learn More", // Benefits Section
-      "benefits.title": "Benefits of Donating Blood",
+      "home.hero.learnMore": "Learn More", // Benefits Section      "benefits.title": "Benefits of Donating Blood",
       "benefits.subtitle": "Discover how your donation can make a difference",
       "benefits.health.title": "Save Up to 3 Lives",
       "benefits.health.description":
@@ -90,6 +89,12 @@ const resources = {
       "benefits.emergency.title": "Boost Cardiovascular Health",
       "benefits.emergency.description":
         "Donating blood can help improve blood flow and reduce the risk of heart disease by maintaining healthy iron levels.",
+      "benefits.renewal.title": "Regular Blood Renewal",
+      "benefits.renewal.description":
+        "Donating blood promotes the production of new blood cells, helping your body maintain healthy blood cell levels.",
+      "benefits.hemochromatosis.title": "Reduces Risk of Hemochromatosis",
+      "benefits.hemochromatosis.description":
+        "Regular blood donation can help reduce iron overload and decrease the risk of hemochromatosis, especially in men.",
       // Blood Types Section
       "bloodTypes.title": "Blood Types & Compatibility",
       "bloodTypes.description":
