@@ -17,6 +17,8 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
@@ -52,15 +54,18 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/swp391";
 
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("✅ Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(` Server running on port ${PORT}`);
-      console.log(` Health check: http://localhost:${PORT}/api/health`);
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📱 Health check: http://localhost:${PORT}/api/health`);
     });
   })
   .catch((err) => {
-    console.error(" Database connection error:", err);
+    console.error("❌ Database connection error:", err);
     process.exit(1);
   });

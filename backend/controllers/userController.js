@@ -41,7 +41,7 @@ exports.updateMe = async (req, res) => {
 
     let updates = { name, bloodGroup };
 
-    // Handle city and location updates
+    // Handle city updates
     if (city) {
       updates.city = city;
       try {

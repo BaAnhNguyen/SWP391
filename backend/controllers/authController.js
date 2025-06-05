@@ -23,7 +23,7 @@ exports.getCurrentUser = async (req, res) => {
       email: user.email,
       role: user.role,
       bloodGroup: user.bloodGroup,
-      location: user.location,
+      city: user.city,
       createdAt: user.createdAt,
     });
   } catch (error) {
