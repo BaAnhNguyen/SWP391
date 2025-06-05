@@ -8,6 +8,12 @@ function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filterText, setFilterText] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [sortField, setSortField] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
 
   const fetchUsers = async () => {
     try {
@@ -106,6 +112,71 @@ function AdminPanel() {
     }
   };
 
+  // Sorting function
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+  // Filter and sort users
+  const filteredUsers = users.filter((user) => {
+    const searchText = filterText.toLowerCase();
+    const matchesSearch = (
+      user.name.toLowerCase().includes(searchText) ||
+      user.email.toLowerCase().includes(searchText) ||
+      user.role.toLowerCase().includes(searchText)
+    );
+    
+    // Apply role filter if not set to 'all'
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    
+    return matchesSearch && matchesRole;
+  });
+
+  // Apply sorting
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    if (sortField === 'role') {
+      const roleOrder = { Admin: 1, Staff: 2, Member: 3 };
+      if (sortDirection === 'asc') {
+        return roleOrder[a.role] - roleOrder[b.role];
+      } else {
+        return roleOrder[b.role] - roleOrder[a.role];
+      }
+    }
+
+    let valA = a[sortField];
+    let valB = b[sortField];
+
+    // Handle string comparisons
+    if (typeof valA === 'string') {
+      valA = valA.toLowerCase();
+      valB = valB.toLowerCase();
+    }
+
+    if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+    if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+  // Calculate user statistics
+  const userStats = {
+    total: users.length,
+    admin: users.filter(user => user.role === 'Admin').length,
+    staff: users.filter(user => user.role === 'Staff').length,
+    member: users.filter(user => user.role === 'Member').length
+  };
+
+  // Get current users for pagination
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   if (loading)
     return (
       <div className="admin-panel">
@@ -126,9 +197,88 @@ function AdminPanel() {
       <p>{t("admin.description")}</p>
 
       <div className="admin-sections">
-        <div className="admin-section">
-          <h2>{t("admin.users.title")}</h2>
+        <div className="admin-section">          <div className="admin-section-header">
+            <h2>{t("admin.users.title")}</h2>
+            <button 
+              onClick={fetchUsers} 
+              className="admin-refresh-btn"
+              title="Refresh User Data"
+            >
+              ↻
+            </button>
+          </div>
+          
+          <div className="admin-stats">
+            <div className="stat-card">
+              <div className="stat-value">{userStats.total}</div>
+              <div className="stat-label">Total Users</div>
+            </div>
+            <div className="stat-card admin">
+              <div className="stat-value">{userStats.admin}</div>
+              <div className="stat-label">Admins</div>
+            </div>
+            <div className="stat-card staff">
+              <div className="stat-value">{userStats.staff}</div>
+              <div className="stat-label">Staff</div>
+            </div>
+            <div className="stat-card member">
+              <div className="stat-value">{userStats.member}</div>
+              <div className="stat-label">Members</div>
+            </div>
+          </div>
+          
           <div className="admin-card">
+            <div className="admin-filter-sort"><div className="admin-search-container">
+                <input
+                  type="text"
+                  placeholder={t("admin.users.search")}
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                  className="admin-search"
+                />
+                {filterText && (
+                  <button 
+                    onClick={() => setFilterText('')}
+                    className="admin-search-clear"
+                    aria-label="Clear search"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>              <div className="admin-filters">
+                <div className="admin-filter">
+                  <span>Role:</span>
+                  <select 
+                    value={roleFilter} 
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                    className="admin-filter-select"
+                  >
+                    <option value="all">All Roles</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Member">Member</option>
+                  </select>
+                </div>
+              </div>
+              <div className="admin-sort">
+                <span>{t("admin.users.sortBy")}:</span>
+                <select
+                  value={sortField}
+                  onChange={(e) => handleSort(e.target.value)}
+                  className="admin-sort-select"
+                >
+                  <option value="name">{t("admin.users.name")}</option>
+                  <option value="email">{t("admin.users.email")}</option>
+                  <option value="role">{t("admin.users.role")}</option>
+                </select>
+                <button
+                  onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+                  className="admin-sort-direction"
+                >
+                  {sortDirection === 'asc' ? '↑' : '↓'}
+                </button>
+              </div>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -139,14 +289,14 @@ function AdminPanel() {
                 </tr>
               </thead>
               <tbody>
-                {users.length === 0 ? (
+                {currentUsers.length === 0 ? (
                   <tr>
                     <td colSpan="4" style={{ textAlign: "center" }}>
                       {t("admin.users.noUsers")}
                     </td>
                   </tr>
                 ) : (
-                  users.map((u) => (
+                  currentUsers.map((u) => (
                     <tr key={u._id || u.id}>
                       <td>{u.name}</td>
                       <td>{u.email}</td>
@@ -176,7 +326,77 @@ function AdminPanel() {
                   ))
                 )}
               </tbody>
-            </table>
+            </table>            <div className="admin-pagination">
+              {totalPages > 1 && (
+                <>
+                  <button 
+                    onClick={() => paginate(1)} 
+                    disabled={currentPage === 1}
+                    className="admin-page-nav"
+                    title="First Page"
+                  >
+                    «
+                  </button>
+                  <button 
+                    onClick={() => paginate(currentPage - 1)} 
+                    disabled={currentPage === 1}
+                    className="admin-page-nav"
+                    title="Previous Page"
+                  >
+                    ‹
+                  </button>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => {
+                    // Show limited page buttons with ellipsis for large page counts
+                    const pageNum = i + 1;
+                    if (
+                      pageNum === 1 || 
+                      pageNum === totalPages || 
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                    ) {
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => paginate(pageNum)}
+                          className={`admin-page-btn ${currentPage === pageNum ? "active" : ""}`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    } else if (
+                      pageNum === currentPage - 2 || 
+                      pageNum === currentPage + 2
+                    ) {
+                      return <span key={i} className="admin-page-ellipsis">…</span>;
+                    }
+                    return null;
+                  })}
+                  
+                  <button 
+                    onClick={() => paginate(currentPage + 1)} 
+                    disabled={currentPage === totalPages}
+                    className="admin-page-nav"
+                    title="Next Page"
+                  >
+                    ›
+                  </button>
+                  <button 
+                    onClick={() => paginate(totalPages)} 
+                    disabled={currentPage === totalPages}
+                    className="admin-page-nav"
+                    title="Last Page"
+                  >
+                    »
+                  </button>
+                </>
+              )}
+              
+              {totalPages > 0 && (
+                <span className="admin-page-info">
+                  {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, sortedUsers.length)} of {sortedUsers.length}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
