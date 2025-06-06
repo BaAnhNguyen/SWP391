@@ -1,5 +1,6 @@
 const User = require("../models/User");
-const fetch = require("node-fetch");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 //get current user profile
 exports.getMe = async (req, res) => {
   try {
