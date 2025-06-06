@@ -9,6 +9,7 @@ require("./config/passport");
 const authRoutes = require("./routes/auth");
 const userRouter = require("./routes/user");
 const donateRegistrationRoutes = require("./routes/donateRegistration");
+const needRequestRoutes = require("./routes/needRequest");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRouter);
 
 app.use("/api/donateRegistration", donateRegistrationRoutes);
+app.use("/api/needRequest", needRequestRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -59,13 +61,13 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📱 Health check: http://localhost:${PORT}/api/health`);
+      console.log(` Server running on port ${PORT}`);
+      console.log(` Health check: http://localhost:${PORT}/api/health`);
     });
   })
   .catch((err) => {
-    console.error("❌ Database connection error:", err);
+    console.error(" Database connection error:", err);
     process.exit(1);
   });

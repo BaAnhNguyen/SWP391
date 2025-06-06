@@ -1,19 +1,23 @@
 const router = require("express").Router();
-const ctrl = require("../controllers/donateRegistrationController");
+const { model } = require("mongoose");
+const ctrl = require("../controllers/needRequestController");
 const { protect, restrictTo } = require("../middlewares/auth");
 
 router.use(protect);
 
-//member
-router.post("/", ctrl.create);
-router.get("/me", ctrl.listMine);
+//list (all)
+router.get("/", ctrl.listAll);
 
-//Staff/admin
-router.get("/", restrictTo("Staff", "Admin"), ctrl.listAll);
+//create
+router.post("/", ctrl.create);
+
+//update status (staff/admin)
 router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
 
-//all
-router.delete("/:id", ctrl.delete);
+//update (all)
 router.patch("/:id", ctrl.update);
+
+//delelte (all)
+router.delete("/:id", ctrl.delete);
 
 module.exports = router;
