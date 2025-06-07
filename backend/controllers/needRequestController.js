@@ -35,7 +35,7 @@ exports.listAll = async (req, res) => {
   }
 };
 
-//update status (staff /admmin)
+//update status (staff)
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;

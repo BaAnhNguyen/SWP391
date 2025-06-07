@@ -5,19 +5,19 @@ const { protect, restrictTo } = require("../middlewares/auth");
 
 router.use(protect);
 
-//list (all)
+//list all need requests
 router.get("/", ctrl.listAll);
 
-//create
+//create new need request
 router.post("/", ctrl.create);
 
-//update status (staff/admin)
-router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
+//update need request status (staff only)
+router.patch("/:id/status", restrictTo("Staff"), ctrl.updateStatus);
 
-//update (all)
-router.patch("/:id", ctrl.update);
+//update need request details (staff and member)
+router.patch("/:id", restrictTo("Staff", "Member"), ctrl.update);
 
-//delelte (all)
-router.delete("/:id", ctrl.delete);
+//delete need request (staff and member)
+router.delete("/:id", restrictTo("Staff", "Member"), ctrl.delete);
 
 module.exports = router;
