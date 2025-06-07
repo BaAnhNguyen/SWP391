@@ -4,16 +4,16 @@ const { protect, restrictTo } = require("../middlewares/auth");
 
 router.use(protect);
 
-//member
-router.post("/", ctrl.create);
-router.get("/me", ctrl.listMine);
+//member routes
+router.post("/", ctrl.create); //create new donation registration
+router.get("/me", ctrl.listMine); //list user's own donations
 
-//Staff/admin
-router.get("/", restrictTo("Staff", "Admin"), ctrl.listAll);
-router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
+//staff routes
+router.get("/", restrictTo("Staff"), ctrl.listAll); //list all donations
+router.patch("/:id/status", restrictTo("Staff"), ctrl.updateStatus); //update donation status
 
-//all
-router.delete("/:id", ctrl.delete);
-router.patch("/:id", ctrl.update);
+//shared routes (staff and member)
+router.delete("/:id", restrictTo("Staff", "Member"), ctrl.delete); //delete donation
+router.patch("/:id", restrictTo("Staff", "Member"), ctrl.update); //update donation details
 
 module.exports = router;

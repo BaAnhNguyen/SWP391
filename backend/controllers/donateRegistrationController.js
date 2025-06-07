@@ -43,7 +43,7 @@ exports.listMine = async (req, res) => {
   }
 };
 
-//view all donation (admin/staff)
+//view all donation (admin)
 exports.listAll = async (req, res) => {
   try {
     const regs = await DonationRegistration.find()
@@ -55,7 +55,7 @@ exports.listAll = async (req, res) => {
   }
 };
 
-//delete (member delete when status = Pending, staff,admin delete any reg)
+//delete (member delete when status = Pending, staff delete any reg)
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,7 +78,7 @@ exports.delete = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-//update status (admin/staff)
+//update status (staff)
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
