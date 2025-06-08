@@ -21,7 +21,7 @@ exports.getMe = async (req, res) => {
 //update
 exports.updateMe = async (req, res) => {
   try {
-    const { name, bloodGroup, city } = req.body;
+    const { name, bloodGroup, address } = req.body;
 
     // Validate required fields
     if (!name) {
@@ -42,18 +42,28 @@ exports.updateMe = async (req, res) => {
 
     let updates = { name, bloodGroup };
 
-    // Handle city updates
-    if (city) {
-      updates.city = city;
+    // Handle address updates
+    if (address) {
+      updates.address = address;
+
       try {
-        // Format city name for Vietnamese cities
-        const formattedCity = city
+        // Construct a detailed address string for geocoding
+        const addressParts = [
+          address.street,
+          address.ward,
+          address.district,
+          address.city,
+          address.country || "Vietnam",
+        ].filter(Boolean); // Remove empty/undefined values
+
+        const formattedAddress = addressParts
+          .join(", ")
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
           .replace(/[đĐ]/g, "d") // Replace đ/Đ with d
           .replace(/\s+/g, "+"); // Replace spaces with +
 
-        const url = `https://nominatim.openstreetmap.org/search?q=${formattedCity},Vietnam&format=json&limit=1`;
+        const url = `https://nominatim.openstreetmap.org/search?q=${formattedAddress}&format=json&limit=1`;
 
         console.log("Fetching location for URL:", url); // Debug log
 
@@ -82,7 +92,7 @@ exports.updateMe = async (req, res) => {
             updates.location = undefined;
           }
         } else {
-          console.log("No location data found for city:", city);
+          console.log("No location data found for address:", formattedAddress);
           updates.location = undefined;
         }
       } catch (error) {
