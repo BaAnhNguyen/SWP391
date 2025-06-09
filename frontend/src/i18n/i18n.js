@@ -255,6 +255,8 @@ const resources = {
       "needRequest.nav.viewAllRequests": "View All Requests",
       "needRequest.nav.viewMyRequests": "View My Requests",
       "needRequest.memberNotice": "As a member, you can only see your own blood donation requests.",
+
+      "common.delete": "Delete",
     },
   },
   vi: {
@@ -480,11 +482,13 @@ const resources = {
       "needRequest.component.wholeBlood": "Máu Toàn Phần",
       "needRequest.component.plasma": "Huyết Tương",
       "needRequest.component.platelets": "Tiểu Cầu",      "needRequest.component.redCells": "Hồng Cầu",
-        "needRequest.nav.createRequest": "Tạo Yêu Cầu",
+      "needRequest.nav.createRequest": "Tạo Yêu Cầu",
       "needRequest.nav.viewRequests": "Xem Yêu Cầu",
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice": "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
+    
+      "common.delete": "Xóa",
     },
   },
 };
