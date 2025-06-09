@@ -8,12 +8,9 @@ router.use(protect);
 router.get("/me", ctrl.getMe);
 router.patch("/me", ctrl.updateMe);
 
-//admin staff
-router.use(restrictTo("Staff", "Admin"));
-router.get("/", ctrl.getAll);
-
 //admin
 router.use(restrictTo("Admin"));
+router.get("/", ctrl.getAll);
 router.patch("/:id/role", ctrl.updateRole);
 router.delete("/:id", ctrl.delete);
 

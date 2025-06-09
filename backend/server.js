@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const userRouter = require("./routes/user");
 const donateRegistrationRoutes = require("./routes/donateRegistration");
 const needRequestRoutes = require("./routes/needRequest");
+const donationHistoryRoutes = require("./routes/donationHistory");
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use("/api/user", userRouter);
 
 app.use("/api/donateRegistration", donateRegistrationRoutes);
 app.use("/api/needRequest", needRequestRoutes);
+
+app.use("api.history", donationHistoryRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

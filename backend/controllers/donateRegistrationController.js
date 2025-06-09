@@ -1,6 +1,8 @@
 const DonationRegistration = require("../models/DonationRegistration");
 const User = require("../models/User");
-//create donation
+const DonationHistory = require("../models/DonationHistory");
+
+//member create donation
 exports.create = async (req, res) => {
   try {
     const { bloodGroup, component, readyDate } = req.body;
@@ -43,7 +45,7 @@ exports.listMine = async (req, res) => {
   }
 };
 
-//view all donation (admin)
+//view all donation (staff)
 exports.listAll = async (req, res) => {
   try {
     const regs = await DonationRegistration.find()
@@ -78,7 +80,7 @@ exports.delete = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-//update status (staff)
+//rejected status (staff)
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -107,6 +109,56 @@ exports.updateStatus = async (req, res) => {
   }
 };
 
+// approved status (staff)
+exports.approve = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reg = await DonationRegistration.findById(id);
+    if (!reg || reg.status !== "Pending")
+      return res.status(400).json({ message: "Invalid registration" });
+
+    reg.status = "Approved";
+    reg.approvedBy = req.user_id;
+    reg.approvedAt = new Date();
+    await reg.save();
+    res.json(reg);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+// complet status + history note + eligible date
+exports.complete = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const reg = await DonationRegistration.findById(id);
+    if (!reg || reg.status !== "Approved")
+      return res.status(400).json({ message: "Must be approved first" });
+
+    const donationDate = new Date();
+    const qty = quantity || 1;
+    const nextEligibleDate = calNextEligible(reg.component, donationDate);
+
+    await DonationHistory.create({
+      userId: reg.userId,
+      donationDate,
+      bloodGroup: reg.bloodGroup,
+      component: reg.component,
+      quantity: qty,
+      nextEligibleDate: nextEligibleDate,
+    });
+
+    reg.status = "Completed";
+    reg.completedBy = req.user._id;
+    reg.completedAt = new Date();
+    await reg.save();
+
+    res.json({ message: "Completed", nextEligibleDate: nextEligibleDate });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 //update reg
 exports.update = async (req, res) => {
   try {
@@ -132,3 +184,13 @@ exports.update = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+//helper": calculate next eligible date
+function calNextEligible(component, fromDate) {
+  let day = 56;
+  if (component === "Plasma") day = 28;
+  else if (component === "{Platelets") day = 7;
+  const d = new Date(fromDate);
+  d.setDate(d.getDate() + day);
+  return d;
+}
