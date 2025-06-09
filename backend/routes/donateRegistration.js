@@ -11,6 +11,8 @@ router.get("/me", ctrl.listMine); //list user's own donations
 //staff routes
 router.get("/", restrictTo("Staff"), ctrl.listAll); //list all donations
 router.patch("/:id/status", restrictTo("Staff"), ctrl.updateStatus); //update donation status
+router.patch("/:id/approve", restrictTo("Staff"), ctrl.approve);
+router.post("/:id/complete", restrictTo("Staff"), ctrl.complete);
 
 //shared routes (staff and member)
 router.delete("/:id", restrictTo("Staff", "Member"), ctrl.delete); //delete donation

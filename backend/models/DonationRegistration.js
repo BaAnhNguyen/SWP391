@@ -23,13 +23,17 @@ const donationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Rejected"],
+      enum: ["Pending", "Approved", "Rejected", "Completed", "Cancelled"],
       default: "Pending",
     },
     rejectionReason: {
       type: String,
       default: "",
     },
+    approvedBy: { type: Types.ObjectId, ref: "User" },
+    approvedAt: { type: Date },
+    completedBy: { type: Types.ObjectId, ref: "User" },
+    completedAt: { type: Date },
   },
   { timestamps: true }
 );
