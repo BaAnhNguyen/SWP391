@@ -5,8 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 // Translation resources
 const resources = {
   en: {
-    translation: {
-      // Header Navigation
+    translation: {      // Header Navigation
       "nav.home": "Home",
       "nav.about": "About Us",
       "nav.donationProcess": "Donation Process",
@@ -18,6 +17,7 @@ const resources = {
       "nav.loading": "Loading...",
       "nav.adminPanel": "Admin Panel",
       "nav.profile": "Profile",
+      "nav.bloodRequests": "Blood Requests",
 
       // Profile Page
       "profile.title": "Profile Settings",
@@ -45,9 +45,11 @@ const resources = {
       "admin.users.name": "Name",
       "admin.users.email": "Email",
       "admin.users.role": "Role",
-      "admin.users.actions": "Actions",
-      "admin.users.noUsers": "No users found",
+      "admin.users.actions": "Actions",      "admin.users.noUsers": "No users found",
       "admin.users.delete": "Delete",
+      "admin.users.role.admin": "Admin",
+      "admin.users.role.staff": "Staff",
+      "admin.users.role.member": "Member",
       "admin.confirmRoleChange": "Are you sure you want to change this user's role to {{role}}?",
 
 
@@ -206,18 +208,56 @@ const resources = {
       // Language Switcher
       "language.switch": "Language",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt",
-
-      // Legal Pages
+      "language.vietnamese": "Tiếng Việt",      // Legal Pages
       "legal.terms.title": "Terms of Service",
       "legal.terms.content": "Terms of Service content goes here...",
       "legal.privacy.title": "Privacy Policy",
       "legal.privacy.content": "Privacy Policy content goes here...",
+      
+      // Need Request
+      "needRequest.title": "Blood Need Request",
+      "needRequest.description": "Request blood donations for patients in need. Our community of donors is ready to help.",
+      "needRequest.bloodGroup": "Blood Group",
+      "needRequest.selectBloodGroup": "Select blood group",
+      "needRequest.component": "Blood Component",
+      "needRequest.selectComponent": "Select component",
+      "needRequest.units": "Units Required",
+      "needRequest.reason": "Reason for Request",
+      "needRequest.reasonPlaceholder": "Please explain why this blood is needed (e.g., surgery, accident, ongoing treatment)",      "needRequest.submit": "Submit Request",
+      "needRequest.submitting": "Submitting...",
+      "needRequest.successMessage": "Your blood request has been submitted successfully. Our team will process it as soon as possible.",
+      "needRequest.submitError": "Error submitting your request. Please try again.",
+      
+      "needRequest.listTitleAll": "All Blood Need Requests",
+      "needRequest.listTitleMy": "My Blood Need Requests",
+      "needRequest.filterByStatus": "Filter by Status",
+      "needRequest.allStatuses": "All Statuses",
+      "needRequest.status.open": "Open",
+      "needRequest.status.fulfilled": "Fulfilled",
+      "needRequest.status.expired": "Expired",
+      "needRequest.noRequests": "No blood requests found",
+      "needRequest.requestedBy": "Requested by",
+      "needRequest.unit": "Unit",
+      "needRequest.units": "Units",
+      "needRequest.markFulfilled": "Mark as Fulfilled",
+      "needRequest.markExpired": "Mark as Expired",
+      "needRequest.confirmDelete": "Are you sure you want to delete this request?",
+      "needRequest.deleteError": "Error deleting request",
+      "needRequest.updateError": "Error updating request status",
+      "needRequest.fetchError": "Error fetching blood requests",
+      
+      "needRequest.component.wholeBlood": "Whole Blood",
+      "needRequest.component.plasma": "Plasma",
+      "needRequest.component.platelets": "Platelets",      "needRequest.component.redCells": "Red Cells",
+        "needRequest.nav.createRequest": "Create Request",
+      "needRequest.nav.viewRequests": "View Requests",
+      "needRequest.nav.viewAllRequests": "View All Requests",
+      "needRequest.nav.viewMyRequests": "View My Requests",
+      "needRequest.memberNotice": "As a member, you can only see your own blood donation requests.",
     },
   },
   vi: {
-    translation: {
-      // Header Navigation
+    translation: {      // Header Navigation
       "nav.home": "Trang Chủ",
       "nav.about": "Về Chúng Tôi",
       "nav.donationProcess": "Quy Trình Hiến Máu",
@@ -229,6 +269,7 @@ const resources = {
       "nav.loading": "Đang tải...",
       "nav.adminPanel": "Quản Trị",
       "nav.profile": "Hồ Sơ",
+      "nav.bloodRequests": "Yêu Cầu Hiến Máu",
 
       // Profile Page
       "profile.title": "Cài Đặt Hồ Sơ",
@@ -256,9 +297,11 @@ const resources = {
       "admin.users.name": "Họ tên",
       "admin.users.email": "Email",
       "admin.users.role": "Vai trò",
-      "admin.users.actions": "Hành động",
-      "admin.users.noUsers": "Không tìm thấy người dùng nào",
+      "admin.users.actions": "Hành động",      "admin.users.noUsers": "Không tìm thấy người dùng nào",
       "admin.users.delete": "Xóa",
+      "admin.users.role.admin": "Quản trị viên",
+      "admin.users.role.staff": "Nhân viên",
+      "admin.users.role.member": "Thành viên",
       "admin.confirmRoleChange": "Bạn có chắc muốn thay đổi vai trò của người dùng này thành {{role}} không?",
 
 
@@ -395,13 +438,52 @@ const resources = {
       // Language Switcher
       "language.switch": "Ngôn Ngữ",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt",
-
-      // Legal Pages
+      "language.vietnamese": "Tiếng Việt",      // Legal Pages
       "legal.terms.title": "Điều Khoản Dịch Vụ",
       "legal.terms.content": "Nội dung Điều Khoản Dịch Vụ ở đây...",
       "legal.privacy.title": "Chính Sách Bảo Mật",
       "legal.privacy.content": "Nội dung Chính Sách Bảo Mật ở đây...",
+      
+      // Need Request
+      "needRequest.title": "Yêu Cầu Hiến Máu",
+      "needRequest.description": "Yêu cầu hiến máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
+      "needRequest.bloodGroup": "Nhóm Máu",
+      "needRequest.selectBloodGroup": "Chọn nhóm máu",
+      "needRequest.component": "Thành Phần Máu",
+      "needRequest.selectComponent": "Chọn thành phần",
+      "needRequest.units": "Số Lượng Đơn Vị",
+      "needRequest.reason": "Lý Do Yêu Cầu",
+      "needRequest.reasonPlaceholder": "Vui lòng giải thích lý do cần máu (ví dụ: phẫu thuật, tai nạn, điều trị liên tục)",
+      "needRequest.submit": "Gửi Yêu Cầu",
+      "needRequest.submitting": "Đang gửi...",
+      "needRequest.successMessage": "Yêu cầu hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",      "needRequest.submitError": "Lỗi khi gửi yêu cầu. Vui lòng thử lại.",
+      
+      "needRequest.listTitleAll": "Tất Cả Yêu Cầu Hiến Máu",
+      "needRequest.listTitleMy": "Yêu Cầu Hiến Máu Của Tôi",
+      "needRequest.filterByStatus": "Lọc theo Trạng Thái",
+      "needRequest.allStatuses": "Tất Cả Trạng Thái",
+      "needRequest.status.open": "Đang Mở",
+      "needRequest.status.fulfilled": "Đã Hoàn Thành",
+      "needRequest.status.expired": "Đã Hết Hạn",
+      "needRequest.noRequests": "Không tìm thấy yêu cầu hiến máu nào",
+      "needRequest.requestedBy": "Người yêu cầu",
+      "needRequest.unit": "Đơn Vị",
+      "needRequest.units": "Đơn Vị",
+      "needRequest.markFulfilled": "Đánh Dấu Hoàn Thành",
+      "needRequest.markExpired": "Đánh Dấu Hết Hạn",
+      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu này không?",
+      "needRequest.deleteError": "Lỗi khi xóa yêu cầu",
+      "needRequest.updateError": "Lỗi khi cập nhật trạng thái yêu cầu",
+      "needRequest.fetchError": "Lỗi khi lấy danh sách yêu cầu hiến máu",
+      
+      "needRequest.component.wholeBlood": "Máu Toàn Phần",
+      "needRequest.component.plasma": "Huyết Tương",
+      "needRequest.component.platelets": "Tiểu Cầu",      "needRequest.component.redCells": "Hồng Cầu",
+        "needRequest.nav.createRequest": "Tạo Yêu Cầu",
+      "needRequest.nav.viewRequests": "Xem Yêu Cầu",
+      "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
+      "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
+      "needRequest.memberNotice": "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
     },
   },
 };

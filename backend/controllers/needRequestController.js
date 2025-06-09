@@ -23,10 +23,23 @@ exports.create = async (req, res) => {
   }
 };
 
-// list all request
+// list all request (staff only)
 exports.listAll = async (req, res) => {
   try {
     const list = await NeedRequest.find()
+      .populate("createdBy", "name email")
+      .sort("-createdAt");
+    return res.json(list);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// list user's own requests (for members)
+exports.listUserRequests = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const list = await NeedRequest.find({ createdBy: userId })
       .populate("createdBy", "name email")
       .sort("-createdAt");
     return res.json(list);
