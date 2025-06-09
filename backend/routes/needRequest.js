@@ -6,7 +6,7 @@ const { protect, restrictTo } = require("../middlewares/auth");
 router.use(protect);
 
 //list all need requests (staff only)
-router.get("/all", restrictTo("Staff", "Admin"), ctrl.listAll);
+router.get("/all", restrictTo("Staff"), ctrl.listAll);
 
 //list user's own requests
 router.get("/my", ctrl.listUserRequests);
@@ -21,15 +21,15 @@ router.get("/", (req, res) => {
 });
 
 //create new need request
-router.post("/", ctrl.create);
+router.post("/",restrictTo("Member"), ctrl.create);
 
 //update need request status (staff and admin)
 router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
 
 //update need request details (staff, admin and member)
-router.patch("/:id", restrictTo("Staff", "Admin", "Member"), ctrl.update);
+router.patch("/:id", restrictTo("Staff","Member"), ctrl.update);
 
 //delete need request (staff, admin and member)
-router.delete("/:id", restrictTo("Staff", "Admin", "Member"), ctrl.delete);
+router.delete("/:id", restrictTo("Staff","Member"), ctrl.delete);
 
 module.exports = router;

@@ -5,7 +5,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 // Translation resources
 const resources = {
   en: {
-    translation: {      // Header Navigation
+    translation: {
+      // Header Navigation
       "nav.home": "Home",
       "nav.about": "About Us",
       "nav.donationProcess": "Donation Process",
@@ -31,16 +32,18 @@ const resources = {
       "profile.updating": "Updating...",
       "profile.loading": "Loading profile...",
       "profile.updateSuccess": "Profile updated successfully!",
-      "profile.blood.hint":"Choose your blood type. This information is important for matching with donation needs.",
-      "profile.city.hint":"Enter a city name. The location will be automatically geocoded.",
-      "profile.updating":"Updating...",
-      "profile.update":"Update profile",
+      "profile.blood.hint":
+        "Choose your blood type. This information is important for matching with donation needs.",
+      "profile.city.hint":
+        "Enter a city name. The location will be automatically geocoded.",
+      "profile.updating": "Updating...",
+      "profile.update": "Update profile",
 
       // Admin Panel
-      "admin.authError":"auth Error",
-      "admin.fetchError":"fetch Error",
-      "admin.updateError":"update Error",
-      "admin.confirmDelete":"Do you want to delete this user",
+      "admin.authError": "auth Error",
+      "admin.fetchError": "fetch Error",
+      "admin.updateError": "update Error",
+      "admin.confirmDelete": "Do you want to delete this user",
       "admin.deleteError": "Error deleting user. Please try again.",
       "admin.loading": "Loading admin panel...",
       "admin.title": "Admin Panel",
@@ -51,15 +54,15 @@ const resources = {
       "admin.users.role": "Role",
       "admin.users.actions": "Actions",
       "admin.users.search": "Search",
-      "admin.users.sortBy":"Sort",
+      "admin.users.sortBy": "Sort",
       "admin.users.noUsers": "No users found",
       "admin.users.delete": "Delete",
       "admin.users.role.admin": "Admin",
       "admin.users.role.staff": "Staff",
       "admin.users.role.member": "Member",
-      "admin.confirmRoleChange": "Are you sure you want to change this user's role to {{role}}?",
-      
-      
+      "admin.confirmRoleChange":
+        "Are you sure you want to change this user's role to {{role}}?",
+
       //Cần thiết thì thêm vào adminpanel để dùng
       // "admin.users.changeRole": "Change Role",
       // "admin.users.updateSuccess": "User role updated successfully!",
@@ -84,7 +87,7 @@ const resources = {
       "home.hero.subtitle":
         "Every day, thousands of people need blood transfusions to survive. Your donation can make a significant difference in someone's life.",
       "home.hero.donateButton": "Donate Now",
-      "home.hero.learnMore": "Learn More", // Benefits Section     
+      "home.hero.learnMore": "Learn More", // Benefits Section
       "benefits.title": "Benefits of Donating Blood",
       "benefits.subtitle": "Discover how your donation can make a difference",
       "benefits.health.title": "Save Up to 3 Lives",
@@ -216,7 +219,7 @@ const resources = {
       // Language Switcher
       "language.switch": "Language",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt",      // Legal Pages
+      "language.vietnamese": "Tiếng Việt", // Legal Pages
       "legal.terms.title": "Terms of Service",
       "legal.terms.content": "Terms of Service content goes here...",
       "legal.privacy.title": "Privacy Policy",
@@ -224,18 +227,23 @@ const resources = {
 
       // Need Request
       "needRequest.title": "Blood Need Request",
-      "needRequest.description": "Request blood donations for patients in need. Our community of donors is ready to help.",
+      "needRequest.description":
+        "Request blood donations for patients in need. Our community of donors is ready to help.",
       "needRequest.bloodGroup": "Blood Group",
       "needRequest.selectBloodGroup": "Select blood group",
       "needRequest.component": "Blood Component",
       "needRequest.selectComponent": "Select component",
       "needRequest.units": "Units Required",
       "needRequest.reason": "Reason for Request",
-      "needRequest.reasonPlaceholder": "Please explain why this blood is needed (e.g., surgery, accident, ongoing treatment)",      "needRequest.submit": "Submit Request",
+      "needRequest.reasonPlaceholder":
+        "Please explain why this blood is needed (e.g., surgery, accident, ongoing treatment)",
+      "needRequest.submit": "Submit Request",
       "needRequest.submitting": "Submitting...",
-      "needRequest.successMessage": "Your blood request has been submitted successfully. Our team will process it as soon as possible.",
-      "needRequest.submitError": "Error submitting your request. Please try again.",
-      
+      "needRequest.successMessage":
+        "Your blood request has been submitted successfully. Our team will process it as soon as possible.",
+      "needRequest.submitError":
+        "Error submitting your request. Please try again.",
+
       "needRequest.listTitleAll": "All Blood Need Requests",
       "needRequest.listTitleMy": "My Blood Need Requests",
       "needRequest.filterByStatus": "Filter by Status",
@@ -249,23 +257,27 @@ const resources = {
       "needRequest.units": "Units",
       "needRequest.markFulfilled": "Mark as Fulfilled",
       "needRequest.markExpired": "Mark as Expired",
-      "needRequest.confirmDelete": "Are you sure you want to delete this request?",
+      "needRequest.confirmDelete":
+        "Are you sure you want to delete this request?",
       "needRequest.deleteError": "Error deleting request",
       "needRequest.updateError": "Error updating request status",
       "needRequest.fetchError": "Error fetching blood requests",
-      
-      "needRequest.component.wholeBlood": "Whole Blood",
+      "needRequest.component.wholeblood": "Whole Blood",
       "needRequest.component.plasma": "Plasma",
-      "needRequest.component.platelets": "Platelets",      "needRequest.component.redCells": "Red Cells",
-        "needRequest.nav.createRequest": "Create Request",
+      "needRequest.component.platelets": "Platelets",
+      "needRequest.component.redcells": "Red Cells",
+      "needRequest.nav.createRequest": "Create Request",
       "needRequest.nav.viewRequests": "View Requests",
       "needRequest.nav.viewAllRequests": "View All Requests",
       "needRequest.nav.viewMyRequests": "View My Requests",
-      "needRequest.memberNotice": "As a member, you can only see your own blood donation requests.",
+      "needRequest.memberNotice":
+        "As a member, you can only see your own blood donation requests.",
+      "common.delete":"Delete",
     },
   },
   vi: {
-    translation: {      // Header Navigation
+    translation: {
+      // Header Navigation
       "nav.home": "Trang Chủ",
       "nav.about": "Về Chúng Tôi",
       "nav.donationProcess": "Quy Trình Hiến Máu",
@@ -291,10 +303,12 @@ const resources = {
       "profile.updating": "Đang cập nhật...",
       "profile.loading": "Đang tải hồ sơ...",
       "profile.updateSuccess": "Cập nhật hồ sơ thành công!",
-      "profile.blood.hint":"Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
-      "profile.city.hint":"Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
-      "profile.updating":"Đang cập nhật....",
-      "profile.update":"Cập nhật thông tin",
+      "profile.blood.hint":
+        "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
+      "profile.city.hint":
+        "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
+      "profile.updating": "Đang cập nhật....",
+      "profile.update": "Cập nhật thông tin",
 
       // Admin Panel
       "admin.authError": "Lỗi xác thực",
@@ -310,17 +324,16 @@ const resources = {
       "admin.users.email": "Email",
       "admin.users.role": "Vai trò",
       "admin.users.actions": "Hành động",
-      "admin.users.search":"Tìm kiếm",
-      "admin.users.sortBy":"Sắp xếp",
+      "admin.users.search": "Tìm kiếm",
+      "admin.users.sortBy": "Sắp xếp",
       "admin.users.noUsers": "Không tìm thấy người dùng nào",
       "admin.users.delete": "Xóa",
       "admin.users.role.admin": "Quản trị viên",
       "admin.users.role.staff": "Nhân viên",
       "admin.users.role.member": "Thành viên",
-      "admin.confirmRoleChange": "Bạn có chắc muốn thay đổi vai trò của người dùng này thành {{role}} không?",
-      
-      
-      
+      "admin.confirmRoleChange":
+        "Bạn có chắc muốn thay đổi vai trò của người dùng này thành {{role}} không?",
+
       // Home Page
       "home.hero.title": "Tặng Món Quà Của Sự Sống",
       "home.hero.subtitle2": "Máu Của Bạn Có Thể Cứu Sống",
@@ -453,26 +466,30 @@ const resources = {
       // Language Switcher
       "language.switch": "Ngôn Ngữ",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt",      // Legal Pages
+      "language.vietnamese": "Tiếng Việt", // Legal Pages
       "legal.terms.title": "Điều Khoản Dịch Vụ",
       "legal.terms.content": "Nội dung Điều Khoản Dịch Vụ ở đây...",
       "legal.privacy.title": "Chính Sách Bảo Mật",
       "legal.privacy.content": "Nội dung Chính Sách Bảo Mật ở đây...",
-      
+
       // Need Request
       "needRequest.title": "Yêu Cầu Hiến Máu",
-      "needRequest.description": "Yêu cầu hiến máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
+      "needRequest.description":
+        "Yêu cầu hiến máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
       "needRequest.bloodGroup": "Nhóm Máu",
       "needRequest.selectBloodGroup": "Chọn nhóm máu",
       "needRequest.component": "Thành Phần Máu",
       "needRequest.selectComponent": "Chọn thành phần",
       "needRequest.units": "Số Lượng Đơn Vị",
       "needRequest.reason": "Lý Do Yêu Cầu",
-      "needRequest.reasonPlaceholder": "Vui lòng giải thích lý do cần máu (ví dụ: phẫu thuật, tai nạn, điều trị liên tục)",
+      "needRequest.reasonPlaceholder":
+        "Vui lòng giải thích lý do cần máu (ví dụ: phẫu thuật, tai nạn, điều trị liên tục)",
       "needRequest.submit": "Gửi Yêu Cầu",
       "needRequest.submitting": "Đang gửi...",
-      "needRequest.successMessage": "Yêu cầu hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",      "needRequest.submitError": "Lỗi khi gửi yêu cầu. Vui lòng thử lại.",
-      
+      "needRequest.successMessage":
+        "Yêu cầu hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",
+      "needRequest.submitError": "Lỗi khi gửi yêu cầu. Vui lòng thử lại.",
+
       "needRequest.listTitleAll": "Tất Cả Yêu Cầu Hiến Máu",
       "needRequest.listTitleMy": "Yêu Cầu Hiến Máu Của Tôi",
       "needRequest.filterByStatus": "Lọc theo Trạng Thái",
@@ -486,19 +503,23 @@ const resources = {
       "needRequest.units": "Đơn Vị",
       "needRequest.markFulfilled": "Đánh Dấu Hoàn Thành",
       "needRequest.markExpired": "Đánh Dấu Hết Hạn",
-      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu này không?",
+      "needRequest.confirmDelete":
+        "Bạn có chắc chắn muốn xóa yêu cầu này không?",
       "needRequest.deleteError": "Lỗi khi xóa yêu cầu",
       "needRequest.updateError": "Lỗi khi cập nhật trạng thái yêu cầu",
       "needRequest.fetchError": "Lỗi khi lấy danh sách yêu cầu hiến máu",
-      
-      "needRequest.component.wholeBlood": "Máu Toàn Phần",
+
+      "needRequest.component.wholeblood": "Máu Toàn Phần",
       "needRequest.component.plasma": "Huyết Tương",
-      "needRequest.component.platelets": "Tiểu Cầu",      "needRequest.component.redCells": "Hồng Cầu",
-        "needRequest.nav.createRequest": "Tạo Yêu Cầu",
+      "needRequest.component.platelets": "Tiểu Cầu",
+      "needRequest.component.redcells": "Hồng Cầu",
+      "needRequest.nav.createRequest": "Tạo Yêu Cầu",
       "needRequest.nav.viewRequests": "Xem Yêu Cầu",
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
-      "needRequest.memberNotice": "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
+      "needRequest.memberNotice":
+        "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
+      "common.delete":"Xóa",  
     },
   },
 };

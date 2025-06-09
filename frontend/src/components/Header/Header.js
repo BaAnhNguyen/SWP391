@@ -64,6 +64,8 @@ function Header() {
             <Link to="/profile" className="profile-link">
               {t("nav.welcome", { name: user.name })}
             </Link>
+            <hr />
+            <div className="user-role">({user.role})</div>
           </div>
           {user.role === "Admin" && (
             <Link to="/admin" className="nav-link admin-link">
@@ -96,14 +98,14 @@ function Header() {
             </h1>
           </Link>
         </div>
-
         <div className="mobile-menu-icon" onClick={toggleMenu}>
           <div className={menuOpen ? "hamburger open" : "hamburger"}>
             <span></span>
             <span></span>
             <span></span>
           </div>
-        </div>        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
+        </div>{" "}
+        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
           <ul>
             <li>
               <Link to="/" className="nav-link">
@@ -114,7 +116,8 @@ function Header() {
               <Link to="/about" className="nav-link">
                 {t("nav.about")}
               </Link>
-            </li>            {user && (
+            </li>{" "}
+            {user && user.role!=="Admin" &&(
               <li>
                 <Link to="/blood-requests" className="nav-link">
                   {t("nav.bloodRequests")}

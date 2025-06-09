@@ -235,13 +235,24 @@
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 30px;
 }
 
 .user-welcome {
   display: flex;
+  flex-direction: column;
+  align-items: center; /* Căn giữa theo chiều ngang */
+  text-align: center;   /* Căn giữa chữ */
+  line-height: 1.2;
+}
+
+
+.user-role {
+  font-size: 0.85rem;
+  color: #888;
   align-items: center;
 }
+
 
 .profile-link {
   text-decoration: none;
