@@ -129,10 +129,10 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h1>My Profile</h1>
+      <h1>{t('profile.title')}</h1>
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-group">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">{t('profile.name')}</label>
           <input
             type="text"
             id="name"
@@ -144,7 +144,7 @@ function Profile() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t('profile.email')}</label>
           <input
             type="email"
             id="email"
@@ -156,14 +156,14 @@ function Profile() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="bloodGroup">Blood Group</label>{" "}
+          <label htmlFor="bloodGroup">{t('profile.bloodGroup')}</label>{" "}
           <select
             id="bloodGroup"
             name="bloodGroup"
             value={form.bloodGroup}
             onChange={handleChange}
           >
-            <option value="">Select Blood Group</option>
+            <option value="">{t('profile.selectBloodGroup')}</option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
             <option value="B+">B+</option>
@@ -174,30 +174,27 @@ function Profile() {
             <option value="O-">O-</option>
           </select>
           <div className="input-hint">
-            Choose your blood type. This information is important for matching
-            with donation needs.
+          <p>{t('profile.blood.hint')}</p>
           </div>
         </div>
 
         <div className="form-group">
           {" "}
-          <label htmlFor="city">Location</label>{" "}
+          <label htmlFor="city">{t('profile.location')}</label>{" "}
           <input
             type="text"
             id="city"
             name="city"
             value={form.city}
             onChange={handleChange}
-            placeholder="Enter your city (e.g., Ho Chi Minh City)"
           />
           <div className="input-hint">
-            Enter a city name in Vietnam. The location will be automatically
-            geocoded.
+            <p>{t('profile.city.hint')}</p>
           </div>
         </div>
 
         <button type="submit" className="update-button" disabled={loading}>
-          {loading ? "Updating..." : "Update Profile"}
+          {loading ? t('profile.updating') : t('profile.update')}
         </button>
       </form>
     </div>

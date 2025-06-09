@@ -31,7 +31,11 @@ const resources = {
       "profile.updating": "Updating...",
       "profile.loading": "Loading profile...",
       "profile.updateSuccess": "Profile updated successfully!",
-      
+      "profile.blood.hint":"Choose your blood type. This information is important for matching with donation needs.",
+      "profile.city.hint":"Enter a city name. The location will be automatically geocoded.",
+      "profile.updating":"Updating...",
+      "profile.update":"Update profile",
+
       // Admin Panel
       "admin.authError":"auth Error",
       "admin.fetchError":"fetch Error",
@@ -45,14 +49,17 @@ const resources = {
       "admin.users.name": "Name",
       "admin.users.email": "Email",
       "admin.users.role": "Role",
-      "admin.users.actions": "Actions",      "admin.users.noUsers": "No users found",
+      "admin.users.actions": "Actions",
+      "admin.users.search": "Search",
+      "admin.users.sortBy":"Sort",
+      "admin.users.noUsers": "No users found",
       "admin.users.delete": "Delete",
       "admin.users.role.admin": "Admin",
       "admin.users.role.staff": "Staff",
       "admin.users.role.member": "Member",
       "admin.confirmRoleChange": "Are you sure you want to change this user's role to {{role}}?",
-
-
+      
+      
       //Cần thiết thì thêm vào adminpanel để dùng
       // "admin.users.changeRole": "Change Role",
       // "admin.users.updateSuccess": "User role updated successfully!",
@@ -77,7 +84,8 @@ const resources = {
       "home.hero.subtitle":
         "Every day, thousands of people need blood transfusions to survive. Your donation can make a significant difference in someone's life.",
       "home.hero.donateButton": "Donate Now",
-      "home.hero.learnMore": "Learn More", // Benefits Section      "benefits.title": "Benefits of Donating Blood",
+      "home.hero.learnMore": "Learn More", // Benefits Section     
+      "benefits.title": "Benefits of Donating Blood",
       "benefits.subtitle": "Discover how your donation can make a difference",
       "benefits.health.title": "Save Up to 3 Lives",
       "benefits.health.description":
@@ -213,7 +221,7 @@ const resources = {
       "legal.terms.content": "Terms of Service content goes here...",
       "legal.privacy.title": "Privacy Policy",
       "legal.privacy.content": "Privacy Policy content goes here...",
-      
+
       // Need Request
       "needRequest.title": "Blood Need Request",
       "needRequest.description": "Request blood donations for patients in need. Our community of donors is ready to help.",
@@ -283,6 +291,10 @@ const resources = {
       "profile.updating": "Đang cập nhật...",
       "profile.loading": "Đang tải hồ sơ...",
       "profile.updateSuccess": "Cập nhật hồ sơ thành công!",
+      "profile.blood.hint":"Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
+      "profile.city.hint":"Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
+      "profile.updating":"Đang cập nhật....",
+      "profile.update":"Cập nhật thông tin",
 
       // Admin Panel
       "admin.authError": "Lỗi xác thực",
@@ -297,15 +309,18 @@ const resources = {
       "admin.users.name": "Họ tên",
       "admin.users.email": "Email",
       "admin.users.role": "Vai trò",
-      "admin.users.actions": "Hành động",      "admin.users.noUsers": "Không tìm thấy người dùng nào",
+      "admin.users.actions": "Hành động",
+      "admin.users.search":"Tìm kiếm",
+      "admin.users.sortBy":"Sắp xếp",
+      "admin.users.noUsers": "Không tìm thấy người dùng nào",
       "admin.users.delete": "Xóa",
       "admin.users.role.admin": "Quản trị viên",
       "admin.users.role.staff": "Nhân viên",
       "admin.users.role.member": "Thành viên",
       "admin.confirmRoleChange": "Bạn có chắc muốn thay đổi vai trò của người dùng này thành {{role}} không?",
-
-
-
+      
+      
+      
       // Home Page
       "home.hero.title": "Tặng Món Quà Của Sự Sống",
       "home.hero.subtitle2": "Máu Của Bạn Có Thể Cứu Sống",
