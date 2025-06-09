@@ -103,9 +103,7 @@ function Header() {
             <span></span>
             <span></span>
           </div>
-        </div>
-
-        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
+        </div>        <nav className={menuOpen ? "nav-menu active" : "nav-menu"}>
           <ul>
             <li>
               <Link to="/" className="nav-link">
@@ -116,7 +114,13 @@ function Header() {
               <Link to="/about" className="nav-link">
                 {t("nav.about")}
               </Link>
-            </li>
+            </li>            {user && (
+              <li>
+                <Link to="/blood-requests" className="nav-link">
+                  {t("nav.bloodRequests")}
+                </Link>
+              </li>
+            )}
             <li>
               <Link to="/contact" className="nav-link">
                 {t("nav.contact")}
