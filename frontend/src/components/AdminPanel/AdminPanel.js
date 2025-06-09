@@ -241,13 +241,14 @@ function AdminPanel() {
                     onClick={() => setFilterText('')}
                     className="admin-search-clear"
                     aria-label="Clear search"
-                  >
-                    ×
+                  > 
                   </button>
                 )}
-              </div>              <div className="admin-filters">
+              </div>
+
+              <div className="admin-filters">
                 <div className="admin-filter">
-                  <span>Role:</span>
+                   <span>{t("admin.users.role")}:</span>
                   <select 
                     value={roleFilter} 
                     onChange={(e) => setRoleFilter(e.target.value)}
