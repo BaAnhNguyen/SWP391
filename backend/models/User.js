@@ -13,7 +13,13 @@ const userSchema = new Schema(
       type: String,
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
     },
-    city: { type: String },
+    address: {
+      street: { type: String },
+      ward: { type: String },
+      district: { type: String },
+      city: { type: String },
+      country: { type: String, default: "Vietnam" },
+    },
     location: {
       type: {
         type: String,
