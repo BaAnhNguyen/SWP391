@@ -34,7 +34,7 @@ function HomePage() {
           </div>
           <div className="hero-image">
             <img 
-              src="https://img.freepik.com/free-photo/close-up-hand-holding-blood-drop_23-2148287765.jpg" 
+              src="/blood-donation-3.png" 
               alt="Blood Donation" 
             />
           </div>
