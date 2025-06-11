@@ -30,8 +30,6 @@ const donationSchema = new Schema(
       type: String,
       default: "",
     },
-    approvedBy: { type: Types.ObjectId, ref: "User" },
-    approvedAt: { type: Date },
     completedBy: { type: Types.ObjectId, ref: "User" },
     completedAt: { type: Date },
   },

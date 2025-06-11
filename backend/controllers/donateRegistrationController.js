@@ -102,14 +102,17 @@ exports.updateStatus = async (req, res) => {
     if (!reg)
       return res.status(404).json({ message: "Registration not found" });
 
-    if (status === "Rejected" && !rejectionReason) {
+    if (
+      (status === "Rejected" && !rejectionReason) ||
+      (status === "Cancelled" && !rejectionReason)
+    ) {
       return res
         .status(400)
         .json({ message: "Rejection reason is required when rejecting" });
     }
     reg.status = status;
 
-    if (status === "Rejected") {
+    if (status === "Rejected" || status === "Cancelled") {
       reg.rejectionReason = rejectionReason;
     } else {
       reg.rejectionReason = "";
@@ -130,8 +133,6 @@ exports.approve = async (req, res) => {
       return res.status(400).json({ message: "Invalid registration" });
 
     reg.status = "Approved";
-    reg.approvedBy = req.user_id;
-    reg.approvedAt = new Date();
     await reg.save();
     res.json(reg);
   } catch (err) {
