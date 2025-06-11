@@ -22,6 +22,18 @@ exports.create = async (req, res) => {
       return res.status(400).json({ message: "Blood group mismatch" });
     }
 
+    //validate readydate
+    const currentDay = new Date();
+    const readyDateObj = new Date(req.body.readyDate);
+    if (isNaN(readyDateObj.getTime())) {
+      return res.status(400).json({ message: "Invalid format date" });
+    }
+    if (readyDateObj < currentDay) {
+      return res
+        .status(400)
+        .json({ message: "Invalid date: date can not in the pass" });
+    }
+
     const reg = await DonationRegistration.create({
       userId,
       bloodGroup,
