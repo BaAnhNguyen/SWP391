@@ -19,6 +19,7 @@ import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 import Profile from "./components/Profile/Profile";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
 import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
+import DonationRegistration from "./components/DonationRegistration/DonationRegistration";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -56,14 +57,12 @@ function App() {
                 </AdminOnly>
               </RequireAuth>
             }
-          />          <Route
+          />
+          <Route
             path="/donate"
             element={
               <RequireAuth>
-                <div style={{ minHeight: "100vh", padding: "20px" }}>
-                  <h1>{t("donate.title")}</h1>
-                  <p>{t("donate.description")}</p>
-                </div>
+                <DonationRegistration />
               </RequireAuth>
             }
           />

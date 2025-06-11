@@ -213,9 +213,21 @@ const resources = {
         "Reach out to us through any of the following methods:",
 
       // Donate Page
-      "donate.title": "Donate Blood",
-      "donate.description":
-        "Thank you for choosing to donate blood and save lives!",
+      "donate.title": "Blood Donation Registration",
+      "donate.description": "Please fill out the form below to register your blood donation.",
+      "donate.date": "Donation Date",
+      "donate.bloodType": "Blood Type",
+      "donate.units": "Amount (units)",
+      "donate.donationType": "Donation Type",
+      "donate.type.wholeblood": "Whole Blood",
+      "donate.type.apheresis": "Apheresis",
+      "donate.type.superred": "SuperRed",
+      "donate.type.platelet": "Platelet",
+      "donate.type.plasma": "Plasma",
+      "donate.submit": "Register Donation",
+      "donate.success": "Registration successful!",
+      "donate.submitError": "Failed to register donation",
+
       // Language Switcher
       "language.switch": "Language",
       "language.english": "English",
@@ -461,8 +473,21 @@ const resources = {
         "Liên hệ với chúng tôi qua bất kỳ phương thức nào sau đây:",
 
       // Donate Page
-      "donate.title": "Hiến Máu",
-      "donate.description": "Cảm ơn bạn đã chọn hiến máu và cứu sống!",
+      "donate.title": "Đăng ký hiến máu",
+      "donate.description": "Vui lòng điền vào biểu mẫu dưới đây để đăng ký hiến máu.",
+      "donate.date": "Ngày hiến máu",
+      "donate.bloodType": "Nhóm máu",
+      "donate.units": "Số lượng (đơn vị)",
+      "donate.donationType": "Loại hiến máu",
+      "donate.type.wholeblood": "Máu toàn phần",
+      "donate.type.apheresis": "Apheresis",
+      "donate.type.superred": "SuperRed",
+      "donate.type.platelet": "Tiểu cầu",
+      "donate.type.plasma": "Huyết tương",
+      "donate.submit": "Đăng ký hiến máu",
+      "donate.success": "Đăng ký thành công!",
+      "donate.submitError": "Đăng ký hiến máu thất bại",
+
       // Language Switcher
       "language.switch": "Ngôn Ngữ",
       "language.english": "English",
