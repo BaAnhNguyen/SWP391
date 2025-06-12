@@ -10,6 +10,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
+  const [quantities, setQuantities] = useState({});
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -50,6 +51,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
   useEffect(() => {
     fetchRequests();
   }, [refresh]);
+  //approve/reject/cancel
   const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
     try {
       const token = localStorage.getItem("token");
@@ -87,6 +89,37 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }
   };
 
+  const handleComplete = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error(t("common.notAuthenticated"));
+
+      //change quantity if needed ,default 1
+      const qty = quantities[id] ?? 1;
+      if (!qty || qty < 1) {
+        return alert(t("donateRequest.invalidQuantity"));
+      }
+      const res = await fetch(
+        `${API_BASE_URL}/donateRegistration/${id}/complete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ quantity: qty }),
+        }
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || t("donateRequest.updateError"));
+      }
+      fetchRequests();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm(t("donateRequest.confirmDelete"))) return;
 
@@ -118,6 +151,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
   const toggleExpandRequest = (id) => {
     setExpandedRequestId(expandedRequestId === id ? null : id);
+  };
+
+  const handleQuantityChange = (id, value) => {
+    const v = parseInt(value, 10);
+    setQuantities((prev) => ({ ...prev, [id]: isNaN(v) ? "" : v }));
   };
 
   const filteredRequests =
@@ -271,10 +309,20 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 )}
                 {isStaff && request.status === "Approved" && (
                   <div className="admin-actions">
+                    <input
+                      type="number"
+                      min="1"
+                      value={quantities[request._id] ?? 1}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleQuantityChange(request._id, e.target.value);
+                      }}
+                      className="quantity-input"
+                    />
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleStatusUpdate(request._id, "Completed");
+                        handleComplete(request._id, "Completed");
                       }}
                       className="complete-button"
                     >
