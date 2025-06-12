@@ -23,8 +23,8 @@ exports.create = async (req, res) => {
     }
 
     //validate readydate
-    const currentDay = new Date();
-    const readyDateObj = new Date(req.body.readyDate);
+    const currentDay = setToStartOfDay(new Date());
+    const readyDateObj = setToStartOfDay(new Date(req.body.readyDate));
     if (isNaN(readyDateObj.getTime())) {
       return res.status(400).json({ message: "Invalid format date" });
     }
@@ -124,22 +124,6 @@ exports.updateStatus = async (req, res) => {
   }
 };
 
-// approved status (staff)
-exports.approve = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const reg = await DonationRegistration.findById(id);
-    if (!reg || reg.status !== "Pending")
-      return res.status(400).json({ message: "Invalid registration" });
-
-    reg.status = "Approved";
-    await reg.save();
-    res.json(reg);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-// complet status + history note + eligible date
 exports.complete = async (req, res) => {
   try {
     const { id } = req.params;
@@ -200,10 +184,16 @@ exports.update = async (req, res) => {
 
 //helper": calculate next eligible date
 function calNextEligible(component, fromDate) {
-  let day = 56;
-  if (component === "Plasma") day = 28;
-  else if (component === "{Platelets") day = 7;
+  let day = 84;
+  if (component === "Plasma") day = 14;
+  else if (component === "{Platelets") day = 14;
   const d = new Date(fromDate);
   d.setDate(d.getDate() + day);
+  return d;
+}
+
+function setToStartOfDay(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
   return d;
 }
