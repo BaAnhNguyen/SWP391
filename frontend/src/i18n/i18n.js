@@ -19,6 +19,8 @@ const resources = {
       "nav.adminPanel": "Admin Panel",
       "nav.profile": "Profile",
       "nav.bloodRequests": "Blood Requests",
+      "nav.donateBlood": "Donate Blood",
+      "nav.donationHistory": "Donation History",
 
       // Profile Page
       "profile.title": "Profile Settings",
@@ -214,7 +216,8 @@ const resources = {
 
       // Donate Page
       "donate.title": "Blood Donation Registration",
-      "donate.description": "Please fill out the form below to register your blood donation.",
+      "donate.description":
+        "Please fill out the form below to register your blood donation.",
       "donate.date": "Donation Date",
       "donate.bloodType": "Blood Type",
       "donate.units": "Amount (units)",
@@ -284,7 +287,64 @@ const resources = {
       "needRequest.nav.viewMyRequests": "View My Requests",
       "needRequest.memberNotice":
         "As a member, you can only see your own blood donation requests.",
-      "common.delete":"Delete",
+      "common.delete": "Delete",
+      "common.submitting": "Submitting...",
+      "common.notAuthenticated": "Not authenticated",
+      "common.refresh": "Refresh",
+
+      // Donate Request
+      "donateRequest.title": "Blood Donation Registration",
+      "donateRequest.description":
+        "Register to donate blood and help save lives. Your donation can make a difference.",
+      "donateRequest.bloodGroup": "Blood Group",
+      "donateRequest.selectBloodGroup": "Select blood group",
+      "donateRequest.component": "Blood Component",
+      "donateRequest.selectComponent": "Select component",
+      "donateRequest.donationDate": "Preferred Donation Date",
+      "donateRequest.submit": "Submit Registration",
+      "donateRequest.submitting": "Submitting...",
+      "donateRequest.successMessage":
+        "Your donation registration has been submitted successfully. Our team will contact you soon.",
+      "donateRequest.submitError":
+        "Error submitting your registration. Please try again.",
+
+      "donateRequest.listTitleAll": "All Donation Registrations",
+      "donateRequest.listTitleMy": "My Donation Registrations",
+      "donateRequest.filterByStatus": "Filter by Status",
+      "donateRequest.allStatuses": "All Statuses",
+      "donateRequest.status.open": "Open",
+      "donateRequest.status.approved": "Approved",
+      "donateRequest.status.completed": "Completed",
+      "donateRequest.status.cancelled": "Cancelled",
+      "donateRequest.status.pending": "Pending",
+      "donateRequest.status.rejected": "Rejected",
+      "donateRequest.markRejected": "Mark as Rejected",
+      "donateRequest.noRequests": "No donation registrations found",
+      "donateRequest.requestedBy": "Registered by",
+      "donateRequest.markApproved": "Mark as Approved",
+      "donateRequest.markCompleted": "Mark as Completed",
+      "donateRequest.markCancelled": "Mark as Cancelled",
+      "donateRequest.confirmDelete":
+        "Are you sure you want to delete this registration?",
+      "donateRequest.deleteError": "Error deleting registration",
+      "donateRequest.updateError": "Error updating registration status",
+      "donateRequest.fetchError": "Error fetching donation registrations",
+      "donateRequest.component.wholeblood": "Whole Blood",
+      "donateRequest.component.plasma": "Plasma",
+      "donateRequest.component.platelets": "Platelets",
+      "donateRequest.component.redcells": "Red Cells",
+      "donateRequest.nav.createRequest": "Register Donation",
+      "donateRequest.nav.viewRequests": "View Registrations",
+      "donateRequest.nav.viewAllRequests": "View All Registrations",
+      "donateRequest.nav.viewMyRequests": "View My Registrations",
+      "donateRequest.memberNotice":
+        "As a member, you can only see your own donation registrations.",
+
+      "donateRequest.historyTitleAll": "Tất Cả Lịch Sử Hiến Máu",
+      "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
+      "donateRequest.createdAt": "Tạo Lúc",
+      "donateRequest.completedAt": "Hoàn Thành Lúc",
+      "donateRequest.rejectionReason": "Lý Do Từ Chối",
     },
   },
   vi: {
@@ -302,6 +362,8 @@ const resources = {
       "nav.adminPanel": "Quản Trị",
       "nav.profile": "Hồ Sơ",
       "nav.bloodRequests": "Yêu Cầu Hiến Máu",
+      "nav.donateBlood": "Hiến Máu",
+      "nav.donationHistory": "Lịch Sử Hiến Máu",
 
       // Profile Page
       "profile.title": "Cài Đặt Hồ Sơ",
@@ -474,7 +536,8 @@ const resources = {
 
       // Donate Page
       "donate.title": "Đăng ký hiến máu",
-      "donate.description": "Vui lòng điền vào biểu mẫu dưới đây để đăng ký hiến máu.",
+      "donate.description":
+        "Vui lòng điền vào biểu mẫu dưới đây để đăng ký hiến máu.",
       "donate.date": "Ngày hiến máu",
       "donate.bloodType": "Nhóm máu",
       "donate.units": "Số lượng (đơn vị)",
@@ -544,7 +607,58 @@ const resources = {
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
         "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
-      "common.delete":"Xóa",  
+      "common.delete": "Xóa",
+      "common.submitting": "Đang gửi...",
+      "common.notAuthenticated": "Chưa xác thực",
+      "common.refresh": "Làm mới",
+
+      // Donate Request
+      "donateRequest.title": "Đăng Ký Hiến Máu",
+      "donateRequest.description":
+        "Đăng ký hiến máu và giúp cứu sống những người cần máu. Sự hiến tặng của bạn có thể tạo ra sự khác biệt.",
+      "donateRequest.bloodGroup": "Nhóm Máu",
+      "donateRequest.selectBloodGroup": "Chọn nhóm máu",
+      "donateRequest.component": "Thành Phần Máu",
+      "donateRequest.selectComponent": "Chọn thành phần",
+      "donateRequest.donationDate": "Ngày Hiến Máu Mong Muốn",
+      "donateRequest.submit": "Gửi Đăng Ký",
+      "donateRequest.submitting": "Đang gửi...",
+      "donateRequest.successMessage":
+        "Đăng ký hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ liên hệ với bạn sớm.",
+      "donateRequest.submitError": "Lỗi khi gửi đăng ký. Vui lòng thử lại.",
+
+      "donateRequest.listTitleAll": "Tất Cả Đăng Ký Hiến Máu",
+      "donateRequest.listTitleMy": "Đăng Ký Hiến Máu Của Tôi",
+      "donateRequest.filterByStatus": "Lọc theo Trạng Thái",
+      "donateRequest.allStatuses": "Tất Cả Trạng Thái",
+      "donateRequest.status.open": "Đang Mở",
+      "donateRequest.status.approved": "Đã Duyệt",
+      "donateRequest.status.completed": "Đã Hoàn Thành",
+      "donateRequest.status.cancelled": "Đã Hủy",
+      "donateRequest.status.pending": "Đang Chờ",
+      "donateRequest.status.rejected": "Đã Từ Chối",
+      "donateRequest.markRejected": "Đánh Dấu Từ Chối",
+      "donateRequest.noRequests": "Không tìm thấy đăng ký hiến máu nào",
+      "donateRequest.requestedBy": "Đăng ký bởi",
+      "donateRequest.markApproved": "Đánh Dấu Đã Duyệt",
+      "donateRequest.markCompleted": "Đánh Dấu Hoàn Thành",
+      "donateRequest.markCancelled": "Đánh Dấu Đã Hủy",
+      "donateRequest.confirmDelete":
+        "Bạn có chắc chắn muốn xóa đăng ký này không?",
+      "donateRequest.deleteError": "Lỗi khi xóa đăng ký",
+      "donateRequest.updateError": "Lỗi khi cập nhật trạng thái đăng ký",
+      "donateRequest.fetchError": "Lỗi khi lấy danh sách đăng ký hiến máu",
+
+      "donateRequest.component.wholeblood": "Máu Toàn Phần",
+      "donateRequest.component.plasma": "Huyết Tương",
+      "donateRequest.component.platelets": "Tiểu Cầu",
+      "donateRequest.component.redcells": "Hồng Cầu",
+      "donateRequest.nav.createRequest": "Đăng Ký Hiến Máu",
+      "donateRequest.nav.viewRequests": "Xem Đăng Ký",
+      "donateRequest.nav.viewAllRequests": "Xem Tất Cả Đăng Ký",
+      "donateRequest.nav.viewMyRequests": "Xem Đăng Ký Của Tôi",
+      "donateRequest.memberNotice":
+        "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
     },
   },
 };

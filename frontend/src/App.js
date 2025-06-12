@@ -19,7 +19,8 @@ import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 import Profile from "./components/Profile/Profile";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
 import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
-import DonationRegistration from "./components/DonationRegistration/DonationRegistration";
+import DonateRequestPage from "./components/DonateRequest/DonateRequestPage";
+import DonateRequestHistory from "./components/DonateRequest/DonateRequestHistory";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -57,12 +58,24 @@ function App() {
                 </AdminOnly>
               </RequireAuth>
             }
-          />
+          />{" "}
           <Route
             path="/donate"
             element={
               <RequireAuth>
-                <DonationRegistration />
+                <DonateRequestPage
+                  user={JSON.parse(localStorage.getItem("user")) || {}}
+                />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/donation-history"
+            element={
+              <RequireAuth>
+                <DonateRequestHistory
+                  user={JSON.parse(localStorage.getItem("user")) || {}}
+                />
               </RequireAuth>
             }
           />
@@ -70,7 +83,9 @@ function App() {
             path="/blood-requests"
             element={
               <RequireAuth>
-                <NeedRequestPage user={JSON.parse(localStorage.getItem("user")) || {}} />
+                <NeedRequestPage
+                  user={JSON.parse(localStorage.getItem("user")) || {}}
+                />
               </RequireAuth>
             }
           />

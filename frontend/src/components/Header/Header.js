@@ -117,10 +117,24 @@ function Header() {
                 {t("nav.about")}
               </Link>
             </li>{" "}
-            {user && user.role!=="Admin" &&(
+            {user && user.role !== "Admin" && (
               <li>
                 <Link to="/blood-requests" className="nav-link">
                   {t("nav.bloodRequests")}
+                </Link>
+              </li>
+            )}{" "}
+            {user && user.role !== "Admin" && (
+              <li>
+                <Link to="/donate" className="nav-link">
+                  {t("nav.donateBlood")}
+                </Link>
+              </li>
+            )}
+            {user && user.role !== "Admin" && (
+              <li>
+                <Link to="/donation-history" className="nav-link">
+                  {t("nav.donationHistory")}
                 </Link>
               </li>
             )}

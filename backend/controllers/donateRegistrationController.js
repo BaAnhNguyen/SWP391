@@ -62,7 +62,7 @@ exports.listAll = async (req, res) => {
   try {
     const regs = await DonationRegistration.find()
       .populate("userId", "name email bloodGroup")
-      .sort("-createAt");
+      .sort("-createdAt");
     return res.json(regs);
   } catch (err) {
     return res.status(500).json({ error: err.message });
