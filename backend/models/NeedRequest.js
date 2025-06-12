@@ -33,7 +33,7 @@ const needRequestSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["Open", "Fullfilled", "Expired"],
+    enum: ["Open", "Fulfilled", "Expired"],
     default: "Open",
   },
 });

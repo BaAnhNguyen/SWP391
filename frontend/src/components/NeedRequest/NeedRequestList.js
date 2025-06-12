@@ -120,7 +120,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
 
   const statusColors = {
     Open: "var(--status-open)",
-    Fullfilled: "var(--status-fulfilled)",
+    Fulfilled: "var(--status-fulfilled)",
     Expired: "var(--status-expired)",
   };
 
@@ -153,9 +153,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
           >
             <option value="all">{t("needRequest.allStatuses")}</option>
             <option value="Open">{t("needRequest.status.open")}</option>
-            <option value="Fullfilled">
-              {t("needRequest.status.fulfilled")}
-            </option>
+            <option value="Fulfilled">{t("needRequest.status.fulfilled")}</option>
             <option value="Expired">{t("needRequest.status.expired")}</option>
           </select>
           <button
@@ -225,7 +223,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleStatusUpdate(request._id, "Fullfilled");
+                        handleStatusUpdate(request._id, "Fulfilled");
                       }}
                       className="fulfill-button"
                     >
