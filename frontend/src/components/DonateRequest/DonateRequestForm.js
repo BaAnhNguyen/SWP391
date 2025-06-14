@@ -16,10 +16,10 @@ const DonateRequestForm = ({ onRequestCreated }) => {
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const components = [
-    { value: "WholeBlood", label: t("donateRequest.component.wholeBlood") },
+    { value: "WholeBlood", label: t("donateRequest.component.wholeblood") },
     { value: "Plasma", label: t("donateRequest.component.plasma") },
     { value: "Platelets", label: t("donateRequest.component.platelets") },
-    { value: "RedCells", label: t("donateRequest.component.redCells") },
+    { value: "RedCells", label: t("donateRequest.component.redcells") },
   ];
   const handleChange = (e) => {
     const { name, value } = e.target;
