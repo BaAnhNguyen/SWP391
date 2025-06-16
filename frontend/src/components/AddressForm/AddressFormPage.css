@@ -1,0 +1,53 @@
+.address-form-page {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.address-form-page h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.submit-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.submit-button:hover {
+    background-color: #c0392b;
+}
+
+.submitted-address {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+}
+
+.submitted-address h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.submitted-address p {
+    margin: 10px 0;
+}
+
+.submitted-address strong {
+    color: #444;
+}

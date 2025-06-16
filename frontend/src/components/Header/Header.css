@@ -241,8 +241,10 @@
 .user-welcome {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Căn giữa theo chiều ngang */
-  text-align: center;   /* Căn giữa chữ */
+  align-items: center;
+  /* Căn giữa theo chiều ngang */
+  text-align: center;
+  /* Căn giữa chữ */
   line-height: 1.2;
 }
 
@@ -309,6 +311,32 @@
 
 .login-btn:hover {
   background-color: #c0392b;
+}
+
+/* Admin and Staff Specific Links */
+.admin-link {
+  background-color: #3498db;
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 4px;
+  margin-right: 10px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.blood-storage-link {
+  background-color: #e74c3c;
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 4px;
+  margin-right: 10px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.admin-link:hover,
+.blood-storage-link:hover {
+  opacity: 0.9;
 }
 
 @media (max-width: 768px) {

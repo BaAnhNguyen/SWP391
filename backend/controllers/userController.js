@@ -21,7 +21,7 @@ exports.getMe = async (req, res) => {
 //update
 exports.updateMe = async (req, res) => {
   try {
-    const { name, bloodGroup, address } = req.body;
+    const { name, bloodGroup, address, identityCard, phoneNumber, dateOfBirth, gender } = req.body;
 
     // Validate required fields
     if (!name) {
@@ -38,9 +38,13 @@ exports.updateMe = async (req, res) => {
         success: false,
         message: "Invalid blood group",
       });
-    }
+    } let updates = { name, bloodGroup };    // Add identity card and phone number if provided
+    if (identityCard) updates.identityCard = identityCard;
+    if (phoneNumber) updates.phoneNumber = phoneNumber;
 
-    let updates = { name, bloodGroup };
+    // Add date of birth and gender if provided
+    if (dateOfBirth) updates.dateOfBirth = new Date(dateOfBirth);
+    if (gender) updates.gender = gender;
 
     // Handle address updates
     if (address) {
@@ -50,7 +54,6 @@ exports.updateMe = async (req, res) => {
         // Construct a detailed address string for geocoding
         const addressParts = [
           address.street,
-          address.ward,
           address.district,
           address.city,
           address.country || "Vietnam",

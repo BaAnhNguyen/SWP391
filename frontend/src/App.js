@@ -21,10 +21,18 @@ import AdminPanel from "./components/AdminPanel/AdminPanel";
 import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
 import DonateRequestPage from "./components/DonateRequest/DonateRequestPage";
 import DonateRequestHistory from "./components/DonateRequest/DonateRequestHistory";
+import BloodStorage from "./components/BloodStorage/BloodStorage";
+import AddressForm from "./components/AddressForm/AddressForm";
+import AddressFormPage from "./components/AddressForm/AddressFormPage";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
   return user.role === "Admin" ? children : <Navigate to="/" replace />;
+}
+
+function StaffOnly({ children }) {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  return (user.role === "Admin" || user.role === "Staff") ? children : <Navigate to="/" replace />;
 }
 
 function App() {
@@ -86,6 +94,23 @@ function App() {
                 <NeedRequestPage
                   user={JSON.parse(localStorage.getItem("user")) || {}}
                 />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/blood-storage"
+            element={
+              <RequireAuth>
+                <StaffOnly>
+                  <BloodStorage />
+                </StaffOnly>
+              </RequireAuth>
+            }
+          />          <Route
+            path="/address"
+            element={
+              <RequireAuth>
+                <AddressFormPage />
               </RequireAuth>
             }
           />

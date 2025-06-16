@@ -8,14 +8,18 @@ const userSchema = new Schema(
       type: String,
       enum: ["Guest", "Member", "Staff", "Admin"],
       default: "Member",
-    },
-    bloodGroup: {
+    }, bloodGroup: {
       type: String,
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+    }, identityCard: { type: String },
+    phoneNumber: { type: String },
+    dateOfBirth: { type: Date },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"]
     },
     address: {
       street: { type: String },
-      ward: { type: String },
       district: { type: String },
       city: { type: String },
       country: { type: String, default: "Vietnam" },

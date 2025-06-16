@@ -93,3 +93,15 @@
     margin: 40px auto;
     max-width: 600px;
 }
+
+.form-section-header {
+    margin: 15px 0 5px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-section-header h3 {
+    color: #444;
+    margin: 0;
+    font-size: 1.2rem;
+}
