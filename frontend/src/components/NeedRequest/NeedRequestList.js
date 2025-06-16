@@ -187,11 +187,10 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     {request.bloodGroup}
                   </div>
                   <div className="request-details">
-                    <span className="component">
-                      {t(
-                        `needRequest.component.${request.component.toLowerCase()}`
-                      )}
+                    <span className="request-by">
+                      {request.createdBy?.name || "Unknown"}
                     </span>
+                    
                     <span className="units">
                       {request.units}{" "}
                       {request.units === 1
@@ -209,11 +208,12 @@ const NeedRequestList = ({ userRole, refresh }) => {
               </div>
 
               <div className="request-content">
-                <div className="request-by">
-                  <strong>{t("needRequest.requestedBy")}:</strong>{" "}
-                  {request.createdBy?.name || "Unknown"}
-                </div>
-
+                <span className="component">
+                  <strong>{t("needRequest.bloodRequestType")}:</strong>{" "}
+                  {t(
+                    `needRequest.component.${request.component.toLowerCase()}`
+                  )}
+                </span>
                 <div className="request-reason">
                   <strong>{t("needRequest.reason")}:</strong> {request.reason}
                 </div>

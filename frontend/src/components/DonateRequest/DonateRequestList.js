@@ -243,13 +243,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     title={t("donateRequest.bloodGroup")}
                   >
                     {request.bloodGroup}
-                  </div>{" "}
+                  </div>
                   <div className="request-details">
-                    <span className="component">
-                      {t(
-                        `donateRequest.component.${request.component.toLowerCase()}`
-                      )}
-                    </span>{" "}
+                    <span className="request-by">
+                      {request.userId?.name || request.createdBy?.name || "Unknown"}
+                    </span>
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
                     </span>
@@ -263,11 +261,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 </div>
               </div>{" "}
               <div className="request-content">
-                {" "}
-                <div className="request-by">
-                  <strong>{t("donateRequest.requestedBy")}:</strong>{" "}
-                  {request.userId?.name || request.createdBy?.name || "Unknown"}
-                </div>
                 {(request.status === "Rejected" ||
                   request.status === "Cancelled") &&
                   request.rejectionReason && (
@@ -276,6 +269,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       {request.rejectionReason}
                     </div>
                   )}
+                <div className="component">
+                  <strong>{t("donateRequest.donationType")}:</strong>{" "}
+                  {t(
+                    `donateRequest.component.${request.component.toLowerCase()}`
+                  )}
+                </div>
                 {isStaff && request.status === "Pending" && (
                   <div className="admin-actions">
                     <button
