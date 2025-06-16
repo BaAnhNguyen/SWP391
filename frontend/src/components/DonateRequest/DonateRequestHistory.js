@@ -209,10 +209,8 @@ const DonateRequestHistory = ({ user }) => {
                     {request.bloodGroup}
                   </div>
                   <div className="request-details">
-                    <span className="component">
-                      {t(
-                        `donateRequest.component.${request.component.toLowerCase()}`
-                      )}
+                    <span className="request-by">
+                      {request.userId?.name || request.createdBy?.name || "Unknown"}
                     </span>
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
@@ -228,11 +226,12 @@ const DonateRequestHistory = ({ user }) => {
               </div>
 
               <div className="request-content">
-                <div className="request-by">
-                  <strong>{t("donateRequest.requestedBy")}:</strong>{" "}
-                  {request.userId?.name || request.createdBy?.name || "Unknown"}
-                </div>
-
+                <span className="component">
+                  <strong>{t("donateRequest.donationType")}:</strong>{" "}
+                  {t(
+                    `donateRequest.component.${request.component.toLowerCase()}`
+                  )}
+                </span>
                 <div className="request-created">
                   <strong>{t("donateRequest.createdAt")}:</strong>{" "}
                   {new Date(request.createdAt).toLocaleDateString()}
