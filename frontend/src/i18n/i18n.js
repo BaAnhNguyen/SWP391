@@ -287,10 +287,13 @@ const resources = {
       "needRequest.nav.viewMyRequests": "View My Requests",
       "needRequest.memberNotice":
         "As a member, you can only see your own blood donation requests.",
+
+      //common stuff
       "common.delete": "Delete",
       "common.submitting": "Submitting...",
       "common.notAuthenticated": "Not authenticated",
       "common.refresh": "Refresh",
+      "common.loading": "Loading...",
 
       // Donate Request
       "donateRequest.title": "Blood Donation Registration",
@@ -340,11 +343,11 @@ const resources = {
       "donateRequest.memberNotice":
         "As a member, you can only see your own donation registrations.",
 
-      "donateRequest.historyTitleAll": "Tất Cả Lịch Sử Hiến Máu",
-      "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
-      "donateRequest.createdAt": "Tạo Lúc",
-      "donateRequest.completedAt": "Hoàn Thành Lúc",
-      "donateRequest.rejectionReason": "Lý Do Từ Chối",
+      "donateRequest.historyTitleAll": "Blood donation history",
+      "donateRequest.historyTitleMy": "My blood donation history",
+      "donateRequest.createdAt": "Created at",
+      "donateRequest.completedAt": "Completed at",
+      "donateRequest.rejectionReason": "Reason for rejection",
     },
   },
   vi: {
@@ -586,7 +589,7 @@ const resources = {
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
       "needRequest.status.expired": "Đã Hết Hạn",
       "needRequest.noRequests": "Không tìm thấy yêu cầu hiến máu nào",
-      "needRequest.requestedBy": "Người yêu cầu",
+      "needRequest.bloodRequestType": "Thành phần",
       "needRequest.unit": "Đơn Vị",
       "needRequest.units": "Đơn Vị",
       "needRequest.markFulfilled": "Đánh Dấu Hoàn Thành",
@@ -607,10 +610,13 @@ const resources = {
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
         "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
+
+      //common stuff
       "common.delete": "Xóa",
       "common.submitting": "Đang gửi...",
       "common.notAuthenticated": "Chưa xác thực",
       "common.refresh": "Làm mới",
+      "common.loading": "Đang tải...",
 
       // Donate Request
       "donateRequest.title": "Đăng Ký Hiến Máu",
@@ -639,7 +645,7 @@ const resources = {
       "donateRequest.status.rejected": "Đã Từ Chối",
       "donateRequest.markRejected": "Đánh Dấu Từ Chối",
       "donateRequest.noRequests": "Không tìm thấy đăng ký hiến máu nào",
-      "donateRequest.requestedBy": "Đăng ký bởi",
+      "donateRequest.donationType": "Thể loại hiến máu",
       "donateRequest.markApproved": "Đánh Dấu Đã Duyệt",
       "donateRequest.markCompleted": "Đánh Dấu Hoàn Thành",
       "donateRequest.markCancelled": "Đánh Dấu Đã Hủy",
@@ -659,6 +665,12 @@ const resources = {
       "donateRequest.nav.viewMyRequests": "Xem Đăng Ký Của Tôi",
       "donateRequest.memberNotice":
         "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
+      
+      "donateRequest.historyTitleAll": "Tất Cả Lịch Sử Hiến Máu",
+      "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
+      "donateRequest.createdAt": "Tạo Lúc",
+      "donateRequest.completedAt": "Hoàn Thành Lúc",
+      "donateRequest.rejectionReason": "Lý Do Từ Chối",
     },
   },
 };
