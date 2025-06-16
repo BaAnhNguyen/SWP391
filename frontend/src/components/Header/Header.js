@@ -131,13 +131,6 @@ function Header() {
                 </Link>
               </li>
             )}
-            {user && user.role !== "Admin" && (
-              <li>
-                <Link to="/donation-history" className="nav-link">
-                  {t("nav.donationHistory")}
-                </Link>
-              </li>
-            )}
             <li>
               <Link to="/contact" className="nav-link">
                 {t("nav.contact")}
