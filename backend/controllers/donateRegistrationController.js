@@ -1,6 +1,7 @@
 const DonationRegistration = require("../models/DonationRegistration");
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
+const { sendMail } = require("../service/emailService");
 
 //member create donation
 exports.create = async (req, res) => {
@@ -128,7 +129,10 @@ exports.complete = async (req, res) => {
   try {
     const { id } = req.params;
     const { quantity } = req.body;
-    const reg = await DonationRegistration.findById(id);
+    const reg = await DonationRegistration.findById(id).populate(
+      "userId",
+      "name email"
+    );
     if (!reg || reg.status !== "Approved")
       return res.status(400).json({ message: "Must be approved first" });
 
@@ -150,7 +154,30 @@ exports.complete = async (req, res) => {
     reg.completedAt = new Date();
     await reg.save();
 
-    res.json({ message: "Completed", nextEligibleDate: nextEligibleDate });
+    let emailSent = false;
+
+    //gui mail
+    try {
+      if (reg.userId && reg.userId.email) {
+        await sendMail(reg.userId.email, reg.userId.name, nextEligibleDate);
+        emailSent = true;
+        console.log(`Email sent successfully to ${reg.userId.email}`);
+      }
+    } catch (emailError) {
+      console.error("Failed to send email", emailError);
+    }
+
+    res.json({
+      message: "Completed",
+      nextEligibleDate: nextEligibleDate,
+      emailSent,
+      // debug: {
+      //   hasUserId: !!reg.userId,
+      //   hasEmail: !!reg.userId?.email,
+      //   email: reg.userId?.email,
+      //   name: reg.userId?.name,
+      // },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
