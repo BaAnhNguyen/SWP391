@@ -388,7 +388,7 @@ const resources = {
       "nav.adminPanel": "Quản Trị",
       "nav.bloodStorage": "Kho Máu",
       "nav.profile": "Hồ Sơ",
-      "nav.bloodRequests": "Yêu Cầu Hiến Máu",
+      "nav.bloodRequests": "Yêu Cầu Máu",
       "nav.donateBlood": "Hiến Máu",
       "nav.donationHistory": "Lịch Sử Hiến Máu",
 
@@ -610,9 +610,9 @@ const resources = {
       "legal.privacy.content": "Nội dung Chính Sách Bảo Mật ở đây...",
 
       // Need Request
-      "needRequest.title": "Yêu Cầu Hiến Máu",
+      "needRequest.title": "Yêu Cầu Máu",
       "needRequest.description":
-        "Yêu cầu hiến máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
+        "Yêu cầu máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
       "needRequest.bloodGroup": "Nhóm Máu",
       "needRequest.selectBloodGroup": "Chọn nhóm máu",
       "needRequest.component": "Thành Phần Máu",
@@ -624,17 +624,17 @@ const resources = {
       "needRequest.submit": "Gửi Yêu Cầu",
       "needRequest.submitting": "Đang gửi...",
       "needRequest.successMessage":
-        "Yêu cầu hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",
+        "Yêu cầu máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",
       "needRequest.submitError": "Lỗi khi gửi yêu cầu. Vui lòng thử lại.",
 
-      "needRequest.listTitleAll": "Tất Cả Yêu Cầu Hiến Máu",
-      "needRequest.listTitleMy": "Yêu Cầu Hiến Máu Của Tôi",
+      "needRequest.listTitleAll": "Tất Cả Yêu Cầu Máu",
+      "needRequest.listTitleMy": "Yêu Cầu Máu Của Tôi",
       "needRequest.filterByStatus": "Lọc theo Trạng Thái",
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
       "needRequest.status.open": "Đang Mở",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
       "needRequest.status.expired": "Đã Hết Hạn",
-      "needRequest.noRequests": "Không tìm thấy yêu cầu hiến máu nào",
+      "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.bloodRequestType": "Thành phần",
       "needRequest.unit": "Đơn Vị",
       "needRequest.units": "Đơn Vị",
@@ -644,7 +644,7 @@ const resources = {
         "Bạn có chắc chắn muốn xóa yêu cầu này không?",
       "needRequest.deleteError": "Lỗi khi xóa yêu cầu",
       "needRequest.updateError": "Lỗi khi cập nhật trạng thái yêu cầu",
-      "needRequest.fetchError": "Lỗi khi lấy danh sách yêu cầu hiến máu",
+      "needRequest.fetchError": "Lỗi khi lấy danh sách yêu cầu máu",
 
       "needRequest.component.wholeblood": "Máu Toàn Phần",
       "needRequest.component.plasma": "Huyết Tương",
@@ -655,7 +655,7 @@ const resources = {
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các yêu cầu hiến máu của riêng mình.",
+        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.",
 
       //common stuff
       "common.delete": "Xóa",
@@ -711,8 +711,8 @@ const resources = {
       "donateRequest.nav.viewMyRequests": "Xem Đăng Ký Của Tôi",
       "donateRequest.memberNotice":
         "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
-
-      "donateRequest.historyTitleAll": "Tất Cả Lịch Sử Hiến Máu",
+      
+      "donateRequest.historyTitleAll": "Lịch Sử Hiến Máu",
       "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
       "donateRequest.createdAt": "Tạo Lúc",
       "donateRequest.completedAt": "Hoàn Thành Lúc",

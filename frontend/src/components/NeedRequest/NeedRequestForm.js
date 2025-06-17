@@ -17,10 +17,10 @@ const NeedRequestForm = ({ onRequestCreated }) => {
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const components = [
-    { value: "WholeBlood", label: t("needRequest.component.wholeBlood") },
+    { value: "WholeBlood", label: t("needRequest.component.wholeblood") },
     { value: "Plasma", label: t("needRequest.component.plasma") },
     { value: "Platelets", label: t("needRequest.component.platelets") },
-    { value: "RedCells", label: t("needRequest.component.redCells") },
+    { value: "RedCells", label: t("needRequest.component.redcells") },
   ];
 
   const handleChange = (e) => {
