@@ -77,8 +77,7 @@ const resources = {
       "profile.district": "District",
       "profile.districtPlaceholder": "Enter your district",
       "profile.city": "City",
-      "profile.cityPlaceholder": "Enter your city",
-      "profile.updateButton": "Update Profile",
+      "profile.cityPlaceholder": "Enter your city", "profile.updateButton": "Update Profile",
       "profile.updating": "Updating...",
       "profile.loading": "Loading profile...",
       "profile.updateSuccess": "Profile updated successfully!",
@@ -86,7 +85,6 @@ const resources = {
         "Choose your blood type. This information is important for matching with donation needs.",
       "profile.city.hint":
         "Enter a city name. The location will be automatically geocoded.",
-      "profile.updating": "Updating...",
       "profile.update": "Update profile",
 
       // Address Form
@@ -319,11 +317,10 @@ const resources = {
       "needRequest.allStatuses": "All Statuses",
       "needRequest.status.open": "Open",
       "needRequest.status.fulfilled": "Fulfilled",
-      "needRequest.status.expired": "Expired",
-      "needRequest.noRequests": "No blood requests found",
+      "needRequest.status.expired": "Expired", "needRequest.noRequests": "No blood requests found",
       "needRequest.bloodRequestType": "Request type",
       "needRequest.unit": "Unit",
-      "needRequest.units": "Units",
+      // Units key was duplicated - removed here
       "needRequest.markFulfilled": "Mark as Fulfilled",
       "needRequest.markExpired": "Mark as Expired",
       "needRequest.confirmDelete":
@@ -342,12 +339,44 @@ const resources = {
       "needRequest.memberNotice":
         "As a member, you can only see your own blood donation requests.",
 
-      //common stuff
-      "common.delete": "Delete",
+      //common stuff      "common.delete": "Delete",
       "common.submitting": "Submitting...",
       "common.notAuthenticated": "Not authenticated",
       "common.refresh": "Refresh",
       "common.loading": "Loading...",
+      "common.actions": "Actions",
+
+      // Blood Storage Management
+      "bloodStorage.title": "Blood Storage Management",
+      "bloodStorage.staffOnly": "This page is restricted to staff and admin users only.",
+      "bloodStorage.summary": "Blood Inventory Summary",
+      "bloodStorage.detailedInventory": "Detailed Inventory",
+      "bloodStorage.addUnit": "Add Blood Unit",
+      "bloodStorage.cancelAdd": "Cancel",
+      "bloodStorage.refresh": "Refresh Data",
+      "bloodStorage.addNewUnit": "Add New Blood Unit",
+      "bloodStorage.bloodType": "Blood Type",
+      "bloodStorage.component": "Component",
+      "bloodStorage.volume": "Volume (mL)",
+      "bloodStorage.dateAdded": "Date Added",
+      "bloodStorage.expirationDate": "Expiration Date",
+      "bloodStorage.daysUntilExpired": "Days Until Expired",
+      "bloodStorage.expired": "Expired",
+      "bloodStorage.units": "Units",
+      "bloodStorage.blood": "Blood",
+      "bloodStorage.status": "Status",
+      "bloodStorage.sufficient": "Sufficient",
+      "bloodStorage.low": "Low",
+      "bloodStorage.critical": "Critical",
+      "bloodStorage.fetchError": "Error fetching blood inventory",
+      "bloodStorage.addError": "Error adding blood unit",
+      "bloodStorage.deleteError": "Error deleting blood unit",
+      "bloodStorage.confirmDelete": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.noUnits": "No blood units available",
+      "bloodStorage.componentType.wholeBlood": "Whole Blood",
+      "bloodStorage.componentType.plasma": "Plasma",
+      "bloodStorage.componentType.platelets": "Platelets",
+      "bloodStorage.componentType.redCells": "Red Cells",
 
       // Donate Request
       "donateRequest.title": "Blood Donation Registration",
@@ -534,15 +563,13 @@ const resources = {
       "profile.districtPlaceholder": "Nhập tên quận của bạn",
       "profile.city": "Thành Phố",
       "profile.cityPlaceholder": "Nhập tên thành phố của bạn",
-      "profile.updateButton": "Cập Nhật Hồ Sơ",
-      "profile.updating": "Đang cập nhật...",
+      "profile.updateButton": "Cập Nhật Hồ Sơ", "profile.updating": "Đang cập nhật...",
       "profile.loading": "Đang tải hồ sơ...",
       "profile.updateSuccess": "Cập nhật hồ sơ thành công!",
       "profile.blood.hint":
         "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
       "profile.city.hint":
         "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
-      "profile.updating": "Đang cập nhật....",
       "profile.update": "Cập nhật thông tin",
 
       // Address Form
@@ -751,11 +778,9 @@ const resources = {
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
       "needRequest.status.open": "Đang Mở",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
-      "needRequest.status.expired": "Đã Hết Hạn",
-      "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
+      "needRequest.status.expired": "Đã Hết Hạn", "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.bloodRequestType": "Thành phần",
       "needRequest.unit": "Đơn Vị",
-      "needRequest.units": "Đơn Vị",
       "needRequest.markFulfilled": "Đánh Dấu Hoàn Thành",
       "needRequest.markExpired": "Đánh Dấu Hết Hạn",
       "needRequest.confirmDelete":
@@ -773,14 +798,45 @@ const resources = {
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.",
-
-      //common stuff
+        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.",      //common stuff
       "common.delete": "Xóa",
       "common.submitting": "Đang gửi...",
       "common.notAuthenticated": "Chưa xác thực",
       "common.refresh": "Làm mới",
       "common.loading": "Đang tải...",
+      "common.actions": "Thao tác",
+
+      // Blood Storage Management
+      "bloodStorage.title": "Quản Lý Kho Máu",
+      "bloodStorage.staffOnly": "Trang này chỉ dành cho nhân viên và quản trị viên.",
+      "bloodStorage.summary": "Tổng Quan Kho Máu",
+      "bloodStorage.detailedInventory": "Kho Máu Chi Tiết",
+      "bloodStorage.addUnit": "Thêm Đơn Vị Máu",
+      "bloodStorage.cancelAdd": "Hủy",
+      "bloodStorage.refresh": "Làm Mới Dữ Liệu",
+      "bloodStorage.addNewUnit": "Thêm Đơn Vị Máu Mới",
+      "bloodStorage.bloodType": "Nhóm Máu",
+      "bloodStorage.component": "Thành Phần",
+      "bloodStorage.volume": "Thể Tích (mL)",
+      "bloodStorage.dateAdded": "Ngày Thêm",
+      "bloodStorage.expirationDate": "Ngày Hết Hạn",
+      "bloodStorage.daysUntilExpired": "Số Ngày Còn Lại",
+      "bloodStorage.expired": "Đã Hết Hạn",
+      "bloodStorage.units": "Đơn Vị",
+      "bloodStorage.blood": "Máu",
+      "bloodStorage.status": "Trạng Thái",
+      "bloodStorage.sufficient": "Đầy Đủ",
+      "bloodStorage.low": "Thấp",
+      "bloodStorage.critical": "Thiếu",
+      "bloodStorage.fetchError": "Lỗi khi lấy dữ liệu kho máu",
+      "bloodStorage.addError": "Lỗi khi thêm đơn vị máu",
+      "bloodStorage.deleteError": "Lỗi khi xóa đơn vị máu",
+      "bloodStorage.confirmDelete": "Bạn có chắc chắn muốn xóa đơn vị máu này?",
+      "bloodStorage.noUnits": "Không có đơn vị máu nào",
+      "bloodStorage.componentType.wholeBlood": "Máu Toàn Phần",
+      "bloodStorage.componentType.plasma": "Huyết Tương",
+      "bloodStorage.componentType.platelets": "Tiểu Cầu",
+      "bloodStorage.componentType.redCells": "Hồng Cầu",
 
       // Donate Request
       "donateRequest.title": "Đăng Ký Hiến Máu",

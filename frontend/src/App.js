@@ -4,7 +4,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import "./App.css";
 import "./i18n/i18n";
 import HomePage from "./components/HomePage/HomePage";
@@ -22,7 +21,7 @@ import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
 import DonateRequestPage from "./components/DonateRequest/DonateRequestPage";
 import DonateRequestHistory from "./components/DonateRequest/DonateRequestHistory";
 import BloodStorage from "./components/BloodStorage/BloodStorage";
-import AddressForm from "./components/AddressForm/AddressForm";
+// import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
 
 function AdminOnly({ children }) {
@@ -36,8 +35,7 @@ function StaffOnly({ children }) {
 }
 
 function App() {
-  const { t } = useTranslation();
-
+  // Removed unused translation variable
   return (
     <Router>
       <div className="App">

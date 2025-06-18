@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
@@ -11,12 +11,13 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
   const [quantities, setQuantities] = useState({});
+
   const [viewingHistoryId, setViewingHistoryId] = useState(null);
   const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -43,16 +44,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
       const data = await response.json();
       setRequests(data);
     } catch (err) {
-      setError(err.message);
-      console.error("Error fetching requests:", err);
+      setError(err.message); console.error("Error fetching requests:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchRequests();
-  }, [refresh]);
+  }, [refresh, fetchRequests]);
   //approve/reject/cancel
   const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
     try {
@@ -257,9 +257,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">

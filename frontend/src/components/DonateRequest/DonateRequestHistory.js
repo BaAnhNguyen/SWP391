@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
@@ -14,7 +14,7 @@ const DonateRequestHistory = ({ user }) => {
 
   const isStaff = user?.role === "Staff" || user?.role === "Admin";
 
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -55,11 +55,11 @@ const DonateRequestHistory = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
   const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
     if (!isStaff) return;
 
@@ -126,6 +126,11 @@ const DonateRequestHistory = ({ user }) => {
       setError(err.message);
       console.error("Error deleting request:", err);
     }
+  };
+
+  const handleViewMedicalQuestions = (e, request) => {
+    e.stopPropagation(); // Prevent the card from expanding/collapsing
+    setShowMedicalQuestions(request);
   };
 
   const toggleExpandRequest = (id) => {
@@ -208,89 +213,32 @@ const DonateRequestHistory = ({ user }) => {
               className={`request-card ${
                 expandedRequestId === request._id ? "expanded" : ""
               }`}
+              onClick={() => toggleExpandRequest(request._id)}
             >
-              {/* Debug info để kiểm tra dữ liệu screening - chỉ hiển thị trong development */}
-              {process.env.NODE_ENV === "development" && (
-                <div
-                  className="debug-info"
-                  style={{
-                    fontSize: "10px",
-                    color: "#888",
-                    padding: "2px 4px",
-                  }}
-                >
-                  <span>ID: {request._id}</span> |
-                  <span>
-                    Has screening:{" "}
-                    {request.screening
-                      ? `Yes (${request.screening.length} items)`
-                      : "No"}
-                  </span>
-                </div>
-              )}
-
-              <div className="request-card-container">
-                <div
-                  className="request-main-content"
-                  onClick={() => toggleExpandRequest(request._id)}
-                >
-                  <div className="request-header">
-                    <div className="request-main-info">
-                      <div
-                        className="blood-group"
-                        title={t("donateRequest.bloodGroup")}
-                      >
-                        {request.bloodGroup}
-                      </div>
-                      <div className="request-details">
-                        <span className="request-by">
-                          {request.userId?.name ||
-                            request.createdBy?.name ||
-                            "Unknown"}
-                        </span>
-                        <span className="donation-date">
-                          {new Date(request.readyDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="status-badge"
-                      style={{ backgroundColor: statusColors[request.status] }}
-                    >
-                      {t(
-                        `donateRequest.status.${request.status.toLowerCase()}`
-                      )}
-                    </div>
+              <div className="request-header">
+                <div className="request-main-info">
+                  <div
+                    className="blood-group"
+                    title={t("donateRequest.bloodGroup")}
+                  >
+                    {request.bloodGroup}
+                  </div>
+                  <div className="request-details">
+                    <span className="request-by">
+                      {request.userId?.name ||
+                        request.createdBy?.name ||
+                        "Unknown"}
+                    </span>
+                    <span className="donation-date">
+                      {new Date(request.readyDate).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-                <div className="card-actions">
-                  <button
-                    className="medical-questions-button-visible"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (request.screening && request.screening.length > 0) {
-                        setShowMedicalQuestions(request);
-                      } else {
-                        alert(t("donateRequest.noMedicalData"));
-                      }
-                    }}
-                    title={t("donateRequest.viewMedicalQuestions")}
-                  >
-                    {t("donateRequest.viewMedicalQuestions")}
-                  </button>
-
-                  {(isStaff || request.status === "Pending") && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(request._id);
-                      }}
-                      className="delete-button-visible"
-                      title={t("common.delete")}
-                    >
-                      {t("common.delete")}
-                    </button>
-                  )}
+                <div
+                  className="status-badge"
+                  style={{ backgroundColor: statusColors[request.status] }}
+                >
+                  {t(`donateRequest.status.${request.status.toLowerCase()}`)}
                 </div>
               </div>
 
@@ -357,8 +305,15 @@ const DonateRequestHistory = ({ user }) => {
                     </button>
                   </div>
                 )}{" "}
-                {/* Removed duplicate buttons - the visible ones outside already handle these actions */}
-                {/* Removed duplicate medical questions button */}
+                {/* Removed duplicate buttons - the visible ones outside already handle these actions */}{" "}
+                {request.screening && request.screening.length > 0 && (
+                  <button
+                    onClick={(e) => handleViewMedicalQuestions(e, request)}
+                    className="view-medical-questions"
+                  >
+                    {t("donateRequest.viewMedicalQuestions")}
+                  </button>
+                )}
               </div>
             </div>
           ))}
