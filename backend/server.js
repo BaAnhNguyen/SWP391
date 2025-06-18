@@ -11,6 +11,7 @@ const userRouter = require("./routes/user");
 const donateRegistrationRoutes = require("./routes/donateRegistration");
 const needRequestRoutes = require("./routes/needRequest");
 const donationHistoryRoutes = require("./routes/donationHistory");
+const questionRoutes = require("./routes/Question");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/user", userRouter);
 
 app.use("/api/donateRegistration", donateRegistrationRoutes);
 app.use("/api/needRequest", needRequestRoutes);
+app.use("/api/question", questionRoutes);
 
 app.use("api.history", donationHistoryRoutes);
 

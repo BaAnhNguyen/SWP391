@@ -27,6 +27,14 @@ const donationHistorySchema = new Schema(
       required: true,
       min: 1,
     },
+    healthCheck: {
+      weight: Number,
+      height: Number,
+      bloodPressure: String, // "120/80"
+      pulse: Number,
+      temperature: Number,
+      hemoglobin: Number,
+    },
     nextEligibleDate: {
       type: Date,
       required: true,

@@ -8,7 +8,8 @@ function Profile() {
   const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); const [form, setForm] = useState({
+  const [error, setError] = useState(null);
+  const [form, setForm] = useState({
     name: "",
     email: "",
     bloodGroup: "",
@@ -64,14 +65,17 @@ function Profile() {
 
       const data = await response.json();
       console.log("Profile data:", data);
-      setProfile(data); setForm({
+      setProfile(data);
+      setForm({
         name: data.name || "",
         email: data.email || "",
         bloodGroup: data.bloodGroup || "",
         city: data.address?.city || "",
         identityCard: data.identityCard || "",
         phoneNumber: data.phoneNumber || "",
-        dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split('T')[0] : "",
+        dateOfBirth: data.dateOfBirth
+          ? new Date(data.dateOfBirth).toISOString().split("T")[0]
+          : "",
         gender: data.gender || "",
         address: {
           street: data.address?.street || "",
@@ -95,7 +99,7 @@ function Profile() {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No auth token found");
-      }      // Prepare data for submission
+      } // Prepare data for submission
       const formData = {
         name: form.name,
         email: form.email,
@@ -108,8 +112,8 @@ function Profile() {
           street: form.address.street,
           district: form.address.district,
           city: form.address.city,
-          country: "Vietnam"
-        }
+          country: "Vietnam",
+        },
       };
 
       const response = await fetch(`${API_BASE_URL}/user/me`, {
@@ -140,14 +144,14 @@ function Profile() {
     const { name, value } = e.target;
 
     // Handle nested address fields
-    if (name.includes('address.')) {
-      const field = name.split('.')[1];
+    if (name.includes("address.")) {
+      const field = name.split(".")[1];
       setForm((prev) => ({
         ...prev,
         address: {
           ...prev.address,
-          [field]: value
-        }
+          [field]: value,
+        },
       }));
     } else {
       setForm((prev) => ({
@@ -173,10 +177,10 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h1>{t('profile.title')}</h1>
+      <h1>{t("profile.title")}</h1>
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-group">
-          <label htmlFor="name">{t('profile.name')}</label>
+          <label htmlFor="name">{t("profile.name")}</label>
           <input
             type="text"
             id="name"
@@ -186,9 +190,8 @@ function Profile() {
             required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="email">{t('profile.email')}</label>
+          <label htmlFor="email">{t("profile.email")}</label>
           <input
             type="email"
             id="email"
@@ -198,16 +201,15 @@ function Profile() {
             required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="bloodGroup">{t('profile.bloodGroup')}</label>{" "}
+          <label htmlFor="bloodGroup">{t("profile.bloodGroup")}</label>{" "}
           <select
             id="bloodGroup"
             name="bloodGroup"
             value={form.bloodGroup}
             onChange={handleChange}
           >
-            <option value="">{t('profile.selectBloodGroup')}</option>
+            <option value="">{t("profile.selectBloodGroup")}</option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
             <option value="B+">B+</option>
@@ -216,14 +218,14 @@ function Profile() {
             <option value="AB-">AB-</option>
             <option value="O+">O+</option>
             <option value="O-">O-</option>
+            <option value="unknown">unknown</option>
           </select>
           <div className="input-hint">
-            <p>{t('profile.blood.hint')}</p>
+            <p>{t("profile.blood.hint")}</p>
           </div>
         </div>
-
         <div className="form-group">
-          <label htmlFor="identityCard">{t('profile.identityCard')}</label>
+          <label htmlFor="identityCard">{t("profile.identityCard")}</label>
           <input
             type="text"
             id="identityCard"
@@ -232,10 +234,11 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t('profile.identityCard.hint')}</p>
+            <p>{t("profile.identityCard.hint")}</p>
           </div>
-        </div>        <div className="form-group">
-          <label htmlFor="phoneNumber">{t('profile.phoneNumber')}</label>
+        </div>{" "}
+        <div className="form-group">
+          <label htmlFor="phoneNumber">{t("profile.phoneNumber")}</label>
           <input
             type="tel"
             id="phoneNumber"
@@ -244,12 +247,11 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t('profile.phoneNumber.hint')}</p>
+            <p>{t("profile.phoneNumber.hint")}</p>
           </div>
         </div>
-
         <div className="form-group">
-          <label htmlFor="dateOfBirth">{t('profile.dateOfBirth')}</label>
+          <label htmlFor="dateOfBirth">{t("profile.dateOfBirth")}</label>
           <input
             type="date"
             id="dateOfBirth"
@@ -258,47 +260,43 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t('profile.dateOfBirth.hint')}</p>
+            <p>{t("profile.dateOfBirth.hint")}</p>
           </div>
         </div>
-
         <div className="form-group">
-          <label htmlFor="gender">{t('profile.gender')}</label>
+          <label htmlFor="gender">{t("profile.gender")}</label>
           <select
             id="gender"
             name="gender"
             value={form.gender}
             onChange={handleChange}
           >
-            <option value="">{t('profile.selectGender')}</option>
-            <option value="Male">{t('profile.gender.male')}</option>
-            <option value="Female">{t('profile.gender.female')}</option>
-            <option value="Other">{t('profile.gender.other')}</option>
+            <option value="">{t("profile.selectGender")}</option>
+            <option value="Male">{t("profile.gender.male")}</option>
+            <option value="Female">{t("profile.gender.female")}</option>
+            <option value="Other">{t("profile.gender.other")}</option>
           </select>
           <div className="input-hint">
-            <p>{t('profile.gender.hint')}</p>
+            <p>{t("profile.gender.hint")}</p>
           </div>
         </div>
-
         <div className="form-section-header">
-          <h3>{t('profile.addressDetails')}</h3>
+          <h3>{t("profile.addressDetails")}</h3>
         </div>
-
         <AddressForm
           initialAddress={form.address}
           onChange={(updatedAddress) => {
-            setForm(prev => ({
+            setForm((prev) => ({
               ...prev,
               address: {
                 ...updatedAddress,
-                country: "Vietnam"
-              }
+                country: "Vietnam",
+              },
             }));
           }}
         />
-
         <button type="submit" className="update-button" disabled={loading}>
-          {loading ? t('profile.updating') : t('profile.update')}
+          {loading ? t("profile.updating") : t("profile.update")}
         </button>
       </form>
     </div>

@@ -6,13 +6,26 @@ const { sendMail } = require("../service/emailService");
 //member create donation
 exports.create = async (req, res) => {
   try {
-    const { bloodGroup, component, readyDate } = req.body;
+    const { bloodGroup, component, readyDate, screening, confirmation } =
+      req.body;
     const userId = req.user._id;
 
     //check bloodGroup in profile
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    //valide update profile
+    if (
+      !user.dateOfBirth ||
+      !user.gender ||
+      !user.phoneNumber ||
+      !user.identityCard
+    ) {
+      return res
+        .status(400)
+        .json({ message: "You need to update your profile" });
     }
     if (!user.bloodGroup) {
       return res.status(400).json({
@@ -35,11 +48,24 @@ exports.create = async (req, res) => {
         .json({ message: "Invalid date: date can not in the pass" });
     }
 
+    //validate screening questions
+    if (!Array.isArray(screening) || screening.length < 1) {
+      return res.status(400).json({ message: "Screening answers required" });
+    }
+
+    if (confirmation !== true) {
+      return res.status(400).json({
+        message: "You must valid your information",
+      });
+    }
+
     const reg = await DonationRegistration.create({
       userId,
       bloodGroup,
       component,
       readyDate,
+      screening,
+      confirmation,
     });
     return res.status(201).json(reg);
   } catch (err) {
@@ -62,7 +88,7 @@ exports.listMine = async (req, res) => {
 exports.listAll = async (req, res) => {
   try {
     const regs = await DonationRegistration.find()
-      .populate("userId", "name email bloodGroup")
+      .populate("userId", "name email dateOfBirth gender phoneNumber")
       .sort("-createdAt");
     return res.json(regs);
   } catch (err) {
@@ -97,7 +123,7 @@ exports.delete = async (req, res) => {
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, rejectionReason } = req.body;
+    const { status, rejectionReason, nextReadyDate } = req.body;
 
     const reg = await DonationRegistration.findById(id);
     if (!reg)
@@ -114,9 +140,15 @@ exports.updateStatus = async (req, res) => {
     reg.status = status;
 
     if (status === "Rejected" || status === "Cancelled") {
+      if (nextReadyDate) {
+        reg.nextReadyDate = new Date(nextReadyDate);
+      } else {
+        reg.nextReadyDate = undefined;
+      }
       reg.rejectionReason = rejectionReason;
     } else {
       reg.rejectionReason = "";
+      reg.nextReadyDate = undefined;
     }
     await reg.save();
     return res.json(reg);
@@ -128,7 +160,7 @@ exports.updateStatus = async (req, res) => {
 exports.complete = async (req, res) => {
   try {
     const { id } = req.params;
-    const { quantity } = req.body;
+    const { quantity, healthCheck } = req.body;
     const reg = await DonationRegistration.findById(id).populate(
       "userId",
       "name email"
@@ -136,6 +168,10 @@ exports.complete = async (req, res) => {
     if (!reg || reg.status !== "Approved")
       return res.status(400).json({ message: "Must be approved first" });
 
+    // Validate healthCheck
+    if (!healthCheck) {
+      return res.status(400).json({ message: "Need health check" });
+    }
     const donationDate = new Date();
     const qty = quantity || 1;
     const nextEligibleDate = calNextEligible(reg.component, donationDate);
@@ -146,6 +182,7 @@ exports.complete = async (req, res) => {
       bloodGroup: reg.bloodGroup,
       component: reg.component,
       quantity: qty,
+      healthCheck,
       nextEligibleDate: nextEligibleDate,
     });
 

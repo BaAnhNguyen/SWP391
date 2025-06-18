@@ -21,7 +21,15 @@ exports.getMe = async (req, res) => {
 //update
 exports.updateMe = async (req, res) => {
   try {
-    const { name, bloodGroup, address, identityCard, phoneNumber, dateOfBirth, gender } = req.body;
+    const {
+      name,
+      bloodGroup,
+      address,
+      identityCard,
+      phoneNumber,
+      dateOfBirth,
+      gender,
+    } = req.body;
 
     // Validate required fields
     if (!name) {
@@ -32,13 +40,24 @@ exports.updateMe = async (req, res) => {
     }
 
     // Validate blood group if provided
-    const validBloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+    const validBloodGroups = [
+      "A+",
+      "A-",
+      "B+",
+      "B-",
+      "O+",
+      "O-",
+      "AB+",
+      "AB-",
+      "unknown",
+    ];
     if (bloodGroup && !validBloodGroups.includes(bloodGroup)) {
       return res.status(400).json({
         success: false,
         message: "Invalid blood group",
       });
-    } let updates = { name, bloodGroup };    // Add identity card and phone number if provided
+    }
+    let updates = { name, bloodGroup }; // Add identity card and phone number if provided
     if (identityCard) updates.identityCard = identityCard;
     if (phoneNumber) updates.phoneNumber = phoneNumber;
 

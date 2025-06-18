@@ -18,7 +18,7 @@ exports.listMine = async (req, res) => {
 exports.listAll = async (req, res) => {
   try {
     const list = await DonationHistory.find()
-      .populate("userId", "name email")
+      .populate("userId", "name email dateOfBirth gender phoneNumber ")
       .sort("-donationDate");
     return res.json(list);
   } catch (err) {
