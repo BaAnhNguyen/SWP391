@@ -46,3 +46,32 @@ exports.getAllBloodUnits = async (req, res) => {
     res.status(500).json({ message: err.message || "Failed to fetch blood units." });
   }
 };
+
+// Update a blood unit by ID
+exports.updateBloodUnit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    const updated = await BloodUnit.findByIdAndUpdate(id, updateData, { new: true });
+    if (!updated) {
+      return res.status(404).json({ message: "Blood unit not found." });
+    }
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to update blood unit." });
+  }
+};
+
+// Delete a blood unit by ID
+exports.deleteBloodUnit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await BloodUnit.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Blood unit not found." });
+    }
+    res.status(200).json({ message: "Blood unit deleted successfully." });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to delete blood unit." });
+  }
+};
