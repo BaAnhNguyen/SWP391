@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
@@ -10,10 +10,9 @@ const DonateRequestHistory = ({ user }) => {
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
-
   const isStaff = user?.role === "Staff" || user?.role === "Admin";
 
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -45,11 +44,11 @@ const DonateRequestHistory = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
   const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
     if (!isStaff) return;
 
@@ -195,9 +194,8 @@ const DonateRequestHistory = ({ user }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">

@@ -6,7 +6,7 @@ import AddressForm from "../AddressForm/AddressForm";
 
 function Profile() {
   const { t } = useTranslation();
-  const [profile, setProfile] = useState(null);
+  const [, setProfile] = useState(null); // Using empty destructuring to indicate we only need setProfile
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [form, setForm] = useState({

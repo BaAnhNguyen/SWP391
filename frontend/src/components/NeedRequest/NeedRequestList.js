@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./NeedRequestList.css";
@@ -10,9 +10,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
-
   const isStaff = userRole === "Staff" || userRole === "Admin";
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -41,15 +40,15 @@ const NeedRequestList = ({ userRole, refresh }) => {
       const data = await response.json();
       setRequests(data);
     } catch (err) {
-      setError(err.message);
-      console.error("Error fetching requests:", err);
+      setError(err.message); console.error("Error fetching requests:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
   useEffect(() => {
     fetchRequests();
-  }, [refresh]);
+  }, [refresh, fetchRequests]);
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
@@ -173,9 +172,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -190,7 +188,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <span className="request-by">
                       {request.createdBy?.name || "Unknown"}
                     </span>
-                    
+
                     <span className="units">
                       {request.units}{" "}
                       {request.units === 1
