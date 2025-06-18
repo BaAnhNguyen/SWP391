@@ -6,6 +6,10 @@ const { sendMail } = require("../service/emailService");
 //member create donation
 exports.create = async (req, res) => {
   try {
+    console.log(
+      "Nhận request tạo đơn hiến máu:",
+      JSON.stringify(req.body, null, 2)
+    );
     const { bloodGroup, component, readyDate, screening, confirmation } =
       req.body;
     const userId = req.user._id;
@@ -37,20 +41,47 @@ exports.create = async (req, res) => {
     }
 
     //validate readydate
-    const currentDay = setToStartOfDay(new Date());
-    const readyDateObj = setToStartOfDay(new Date(req.body.readyDate));
-    if (isNaN(readyDateObj.getTime())) {
-      return res.status(400).json({ message: "Invalid format date" });
-    }
-    if (readyDateObj < currentDay) {
+    try {
+      const currentDay = setToStartOfDay(new Date());
+      const readyDateObj = setToStartOfDay(new Date(readyDate));
+      if (isNaN(readyDateObj.getTime())) {
+        return res.status(400).json({ message: "Invalid format date" });
+      }
+      if (readyDateObj < currentDay) {
+        return res
+          .status(400)
+          .json({ message: "Invalid date: date can not be in the past" });
+      }
+    } catch (dateError) {
+      console.error("Date validation error:", dateError);
       return res
         .status(400)
-        .json({ message: "Invalid date: date can not in the pass" });
+        .json({ message: "Invalid date format", error: dateError.message });
     }
 
     //validate screening questions
-    if (!Array.isArray(screening) || screening.length < 1) {
+    if (!Array.isArray(screening)) {
+      return res
+        .status(400)
+        .json({
+          message: "Screening must be an array",
+          received: typeof screening,
+        });
+    }
+
+    if (screening.length < 1) {
       return res.status(400).json({ message: "Screening answers required" });
+    }
+
+    // Validate the structure of each screening item
+    for (const item of screening) {
+      if (!item.question || typeof item.answer !== "boolean") {
+        return res.status(400).json({
+          message:
+            "Invalid screening format. Each item must have a question (string) and answer (boolean)",
+          item,
+        });
+      }
     }
 
     if (confirmation !== true) {
@@ -69,7 +100,8 @@ exports.create = async (req, res) => {
     });
     return res.status(201).json(reg);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Error creating donation registration:", err);
+    return res.status(500).json({ error: err.message, stack: err.stack });
   }
 };
 
@@ -77,9 +109,25 @@ exports.create = async (req, res) => {
 exports.listMine = async (req, res) => {
   try {
     const userId = req.user._id;
+    // Đảm bảo trả về tất cả trường dữ liệu khi gọi API
     const regs = await DonationRegistration.find({ userId }).sort("-readyDate");
+
+    console.log(`Đã tìm thấy ${regs.length} đơn đăng ký của user ${userId}`);
+
+    // Log dữ liệu screening để kiểm tra
+    regs.forEach((reg, idx) => {
+      console.log(
+        `Registration #${idx + 1} - ID: ${reg._id}, Status: ${
+          reg.status
+        }, Has screening: ${
+          reg.screening ? reg.screening.length + " items" : "No screening"
+        }`
+      );
+    });
+
     return res.json(regs);
   } catch (err) {
+    console.error("Error in listMine:", err);
     return res.status(500).json({ error: err.message });
   }
 };
@@ -87,11 +135,27 @@ exports.listMine = async (req, res) => {
 //view all donation (staff)
 exports.listAll = async (req, res) => {
   try {
+    // Trả về tất cả thông tin và populate user
     const regs = await DonationRegistration.find()
       .populate("userId", "name email dateOfBirth gender phoneNumber")
       .sort("-createdAt");
+
+    console.log(`Đã tìm thấy ${regs.length} đơn đăng ký tổng cộng`);
+
+    // Log dữ liệu screening để kiểm tra
+    regs.forEach((reg, idx) => {
+      console.log(
+        `Registration #${idx + 1} - ID: ${reg._id}, Status: ${
+          reg.status
+        }, User: ${reg.userId?.name || "Unknown"}, Has screening: ${
+          reg.screening ? reg.screening.length + " items" : "No screening"
+        }`
+      );
+    });
+
     return res.json(regs);
   } catch (err) {
+    console.error("Error in listAll:", err);
     return res.status(500).json({ error: err.message });
   }
 };

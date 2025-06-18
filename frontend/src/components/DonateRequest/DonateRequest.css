@@ -32,6 +32,15 @@
     border-bottom-right-radius: 4px;
 }
 
+/* Update for better tab navigation with more tabs */
+.donate-request-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .donate-request-tab.active {
     background-color: #e74c3c;
     color: white;

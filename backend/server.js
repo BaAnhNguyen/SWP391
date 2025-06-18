@@ -38,7 +38,7 @@ app.use("/api/needRequest", needRequestRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/bloodUnit", bloodUnitRoutes);
 
-app.use("api.history", donationHistoryRoutes);
+app.use("/api/donationHistory", donationHistoryRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

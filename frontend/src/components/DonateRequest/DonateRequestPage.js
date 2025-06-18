@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import DonateRequestForm from "./DonateRequestForm";
 import DonateRequestList from "./DonateRequestList";
+import MedicalHealth from "../MedicalHealth/MedicalHealth";
 import "./DonateRequest.css";
 
 const DonateRequestPage = ({ user }) => {
@@ -35,9 +36,7 @@ const DonateRequestPage = ({ user }) => {
         </div>
         <h1>{t("donateRequest.title")}</h1>
         <p>{t("donateRequest.description")}</p>
-      </div>
-
-      <div className="donate-request-tabs">
+      </div>      <div className="donate-request-tabs">
         <button
           className={`donate-request-tab ${
             activeTab === "form" ? "active" : ""
@@ -56,9 +55,17 @@ const DonateRequestPage = ({ user }) => {
             ? t("donateRequest.nav.viewAllRequests")
             : t("donateRequest.nav.viewMyRequests")}
         </button>
-      </div>
-
-      {activeTab === "form" && (
+        {isStaff && (
+          <button
+            className={`donate-request-tab ${
+              activeTab === "medicalHealth" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("medicalHealth")}
+          >
+            {t("donateRequest.nav.medicalHealth", "Medical Health")}
+          </button>
+        )}
+      </div>      {activeTab === "form" && (
         <DonateRequestForm onRequestCreated={handleRequestCreated} />
       )}
 
@@ -67,6 +74,10 @@ const DonateRequestPage = ({ user }) => {
           userRole={user?.role || "Member"}
           refresh={refreshList}
         />
+      )}
+
+      {activeTab === "medicalHealth" && isStaff && (
+        <MedicalHealth />
       )}
     </div>
   );

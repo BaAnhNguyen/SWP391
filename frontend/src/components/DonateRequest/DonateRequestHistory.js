@@ -10,6 +10,7 @@ const DonateRequestHistory = ({ user }) => {
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
+  const [showMedicalQuestions, setShowMedicalQuestions] = useState(null);
 
   const isStaff = user?.role === "Staff" || user?.role === "Admin";
 
@@ -38,6 +39,15 @@ const DonateRequestHistory = ({ user }) => {
       }
 
       const data = await response.json();
+      console.log("Received donation registrations:", data);
+      // Debug log để kiểm tra screening của mỗi đơn đăng ký
+      data.forEach((reg, index) => {
+        console.log(
+          `Registration ${index + 1} - ID: ${reg._id}, Has screening: ${
+            reg.screening ? reg.screening.length : "undefined"
+          }`
+        );
+      });
       setRequests(data);
     } catch (err) {
       setError(err.message);
@@ -187,41 +197,100 @@ const DonateRequestHistory = ({ user }) => {
           </button>
         </div>
       </div>
-
       {filteredRequests.length === 0 ? (
         <p className="no-requests">{t("donateRequest.noRequests")}</p>
       ) : (
         <div className="request-cards">
+          {" "}
           {filteredRequests.map((request) => (
             <div
               key={request._id}
               className={`request-card ${
                 expandedRequestId === request._id ? "expanded" : ""
               }`}
-              onClick={() => toggleExpandRequest(request._id)}
             >
-              <div className="request-header">
-                <div className="request-main-info">
-                  <div
-                    className="blood-group"
-                    title={t("donateRequest.bloodGroup")}
-                  >
-                    {request.bloodGroup}
-                  </div>
-                  <div className="request-details">
-                    <span className="request-by">
-                      {request.userId?.name || request.createdBy?.name || "Unknown"}
-                    </span>
-                    <span className="donation-date">
-                      {new Date(request.readyDate).toLocaleDateString()}
-                    </span>
+              {/* Debug info để kiểm tra dữ liệu screening - chỉ hiển thị trong development */}
+              {process.env.NODE_ENV === "development" && (
+                <div
+                  className="debug-info"
+                  style={{
+                    fontSize: "10px",
+                    color: "#888",
+                    padding: "2px 4px",
+                  }}
+                >
+                  <span>ID: {request._id}</span> |
+                  <span>
+                    Has screening:{" "}
+                    {request.screening
+                      ? `Yes (${request.screening.length} items)`
+                      : "No"}
+                  </span>
+                </div>
+              )}
+
+              <div className="request-card-container">
+                <div
+                  className="request-main-content"
+                  onClick={() => toggleExpandRequest(request._id)}
+                >
+                  <div className="request-header">
+                    <div className="request-main-info">
+                      <div
+                        className="blood-group"
+                        title={t("donateRequest.bloodGroup")}
+                      >
+                        {request.bloodGroup}
+                      </div>
+                      <div className="request-details">
+                        <span className="request-by">
+                          {request.userId?.name ||
+                            request.createdBy?.name ||
+                            "Unknown"}
+                        </span>
+                        <span className="donation-date">
+                          {new Date(request.readyDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className="status-badge"
+                      style={{ backgroundColor: statusColors[request.status] }}
+                    >
+                      {t(
+                        `donateRequest.status.${request.status.toLowerCase()}`
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div
-                  className="status-badge"
-                  style={{ backgroundColor: statusColors[request.status] }}
-                >
-                  {t(`donateRequest.status.${request.status.toLowerCase()}`)}
+                <div className="card-actions">
+                  <button
+                    className="medical-questions-button-visible"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (request.screening && request.screening.length > 0) {
+                        setShowMedicalQuestions(request);
+                      } else {
+                        alert(t("donateRequest.noMedicalData"));
+                      }
+                    }}
+                    title={t("donateRequest.viewMedicalQuestions")}
+                  >
+                    {t("donateRequest.viewMedicalQuestions")}
+                  </button>
+
+                  {(isStaff || request.status === "Pending") && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(request._id);
+                      }}
+                      className="delete-button-visible"
+                      title={t("common.delete")}
+                    >
+                      {t("common.delete")}
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -236,21 +305,18 @@ const DonateRequestHistory = ({ user }) => {
                   <strong>{t("donateRequest.createdAt")}:</strong>{" "}
                   {new Date(request.createdAt).toLocaleDateString()}
                 </div>
-
                 {request.completedAt && (
                   <div className="request-completed">
                     <strong>{t("donateRequest.completedAt")}:</strong>{" "}
                     {new Date(request.completedAt).toLocaleDateString()}
                   </div>
                 )}
-
                 {request.rejectionReason && (
                   <div className="request-rejection">
                     <strong>{t("donateRequest.rejectionReason")}:</strong>{" "}
                     {request.rejectionReason}
                   </div>
                 )}
-
                 {isStaff && request.status === "Pending" && (
                   <div className="admin-actions">
                     <button
@@ -278,7 +344,6 @@ const DonateRequestHistory = ({ user }) => {
                     </button>
                   </div>
                 )}
-
                 {isStaff && request.status === "Approved" && (
                   <div className="admin-actions">
                     <button
@@ -291,22 +356,55 @@ const DonateRequestHistory = ({ user }) => {
                       {t("donateRequest.markCompleted")}
                     </button>
                   </div>
-                )}
-
-                {(isStaff || request.status === "Pending") && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(request._id);
-                    }}
-                    className="delete-button"
-                  >
-                    {t("common.delete")}
-                  </button>
-                )}
+                )}{" "}
+                {/* Removed duplicate buttons - the visible ones outside already handle these actions */}
+                {/* Removed duplicate medical questions button */}
               </div>
             </div>
           ))}
+        </div>
+      )}{" "}
+      {/* Modal hiển thị câu hỏi y tế */}
+      {showMedicalQuestions && (
+        <div className="medical-questions-modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>{t("donateRequest.medicalQuestionsTitle")}</h3>
+              <button
+                className="close-button"
+                onClick={() => setShowMedicalQuestions(null)}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              {showMedicalQuestions.screening &&
+              showMedicalQuestions.screening.length > 0 ? (
+                showMedicalQuestions.screening.map((item, index) => (
+                  <div key={index} className="question-item">
+                    <div className="question-text">
+                      {index + 1}. {item.question}
+                    </div>
+                    <div className={`answer ${item.answer ? "yes" : "no"}`}>
+                      {item.answer ? t("common.yes") : t("common.no")}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-screening-data">
+                  <p>{t("donateRequest.noMedicalData")}</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                className="close-modal-button"
+                onClick={() => setShowMedicalQuestions(null)}
+              >
+                {t("common.close")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

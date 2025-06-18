@@ -11,6 +11,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
   const [quantities, setQuantities] = useState({});
+  const [viewingHistoryId, setViewingHistoryId] = useState(null);
+  const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -147,6 +149,31 @@ const DonateRequestList = ({ userRole, refresh }) => {
       setError(err.message);
       console.error("Error deleting request:", err);
     }
+  }; // Hàm để xem lịch sử bệnh (câu hỏi y tế) của người dùng
+  const handleViewMedicalHistory = (request, e) => {
+    try {
+      e.preventDefault(); // Ngăn chặn sự kiện mặc định
+      e.stopPropagation(); // Ngăn chặn sự kiện lan truyền
+
+      console.log("Viewing medical questions for request:", request._id);
+
+      // Kiểm tra xem request có thông tin screening không
+      if (!request.screening || request.screening.length === 0) {
+        console.log("No screening data available for this request");
+      } else {
+        console.log("Screening data:", request.screening);
+      }
+
+      // Hiển thị modal câu hỏi y tế
+      setShowMedicalQuestions(request);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error viewing medical questions:", err);
+    }
+  }; // Hàm đóng modal câu hỏi y tế
+  const closeMedicalQuestions = () => {
+    console.log("Closing medical questions modal");
+    setShowMedicalQuestions(null);
   };
 
   const toggleExpandRequest = (id) => {
@@ -223,7 +250,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
           </button>
         </div>
       </div>
-
       {filteredRequests.length === 0 ? (
         <p className="no-requests">{t("donateRequest.noRequests")}</p>
       ) : (
@@ -246,7 +272,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   </div>
                   <div className="request-details">
                     <span className="request-by">
-                      {request.userId?.name || request.createdBy?.name || "Unknown"}
+                      {request.userId?.name ||
+                        request.createdBy?.name ||
+                        "Unknown"}
                     </span>
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
@@ -339,10 +367,68 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   >
                     {t("common.delete")}
                   </button>
-                )}
+                )}{" "}
+                <button
+                  onClick={(e) => {
+                    handleViewMedicalHistory(request, e);
+                  }}
+                  className="history-button"
+                >
+                  {t("donateRequest.medicalHistory")}
+                </button>
               </div>
             </div>
           ))}
+        </div>
+      )}{" "}
+      {/* Modal hiển thị câu hỏi y tế */}
+      {showMedicalQuestions && (
+        <div
+          className="medical-questions-modal"
+          onClick={(e) =>
+            e.target.className === "medical-questions-modal" &&
+            closeMedicalQuestions()
+          }
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>{t("donateRequest.medicalQuestionsTitle")}</h3>
+              <button className="close-button" onClick={closeMedicalQuestions}>
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              {loading ? (
+                <p>{t("common.loading")}</p>
+              ) : error ? (
+                <p className="error-message">{error}</p>
+              ) : showMedicalQuestions.screening &&
+                showMedicalQuestions.screening.length > 0 ? (
+                showMedicalQuestions.screening.map((item, index) => (
+                  <div key={index} className="question-item">
+                    <div className="question-text">
+                      {index + 1}. {item.question}
+                    </div>
+                    <div className={`answer ${item.answer ? "yes" : "no"}`}>
+                      {item.answer ? t("common.yes") : t("common.no")}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-screening-data">
+                  <p>{t("donateRequest.noMedicalData")}</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                className="close-modal-button"
+                onClick={closeMedicalQuestions}
+              >
+                {t("common.close")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

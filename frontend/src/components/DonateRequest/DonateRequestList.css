@@ -6,6 +6,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     max-width: 900px;
     margin: 0 auto;
+    position: relative;
+    /* Thêm để modal có thể positioned correctly */
 }
 
 .list-header {
@@ -119,9 +121,39 @@
 .request-details {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
 
-.component {
+.request-details .medical-questions-button {
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.request-details .medical-questions-button:hover {
+    background-color: #c0392b;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Thêm icon cho nút trong request-details */
+.request-details .medical-questions-button::before {
+    content: "📋";
+    /* Clipboard icon */
+    margin-right: 5px;
+    font-size: 1em;
+}
+
+.request-by {
     font-weight: 600;
     font-size: 1rem;
 }
@@ -233,10 +265,28 @@
 .delete-button {
     background-color: #e74c3c;
     color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    /* Thêm margin để có khoảng cách với nút lịch sử bệnh */
 }
 
-.delete-button:hover {
-    background-color: #c0392b;
+.history-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.history-button:hover {
+    background-color: #2980b9;
 }
 
 .loading {
@@ -275,41 +325,419 @@
     font-size: 0.9rem;
 }
 
+/* Styles for the Medical Questions Button */
+.medical-questions-button {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    /* Hiển thị dạng inline-flex để tốt hơn */
+    align-items: center;
+    width: fit-content;
+    /* Độ rộng vừa đủ với nội dung */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.medical-questions-button:hover {
+    background-color: #ff6b81;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.medical-questions-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Thêm icon cho nút */
+.medical-questions-button::before {
+    content: "❤️";
+    /* Heart icon */
+    margin-right: 6px;
+    font-size: 1.1em;
+}
+
+/* Modal for Medical Questions */
+.medical-questions-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #e74c3c;
+    font-size: 1.4rem;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.close-button:hover {
+    color: #343a40;
+}
+
+.modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(80vh - 130px);
+}
+
+.question-item {
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-item:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.answer {
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    min-width: 60px;
+    text-align: center;
+    color: white;
+}
+
+.answer.yes {
+    background-color: #dc3545;
+}
+
+.answer.no {
+    background-color: #28a745;
+}
+
+.modal-footer {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+}
+
+.close-modal-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.close-modal-button:hover {
+    background-color: #5a6268;
+}
+
+/* Thêm CSS cho nút câu hỏi y tế hiển thị inline */
+.action-buttons-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.medical-questions-button-inline {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+}
+
+.medical-questions-button-inline::before {
+    content: "📋";
+    margin-right: 6px;
+    font-size: 1em;
+}
+
+.medical-questions-button-inline:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Thêm CSS cho thông báo không có dữ liệu screening */
+.no-screening-data {
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Cấu trúc card mới với nút luôn hiển thị */
+.request-card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.request-main-content {
+    flex: 1;
+    cursor: pointer;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding-right: 10px;
+    flex-shrink: 0;
+    /* Prevent buttons from shrinking */
+}
+
+.medical-questions-button-visible {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+}
+
+.medical-questions-button-visible::before {
+    content: "📋";
+    margin-right: 4px;
+    font-size: 0.9em;
+}
+
+.medical-questions-button-visible:hover {
+    background-color: #2980b9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.delete-button-visible {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-button-visible:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* CSS cho Modal hiển thị lịch sử bệnh */
+.medical-history-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.medical-history-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    color: #e74c3c;
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    padding: 1rem;
+}
+
+.medical-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.medical-history-table th,
+.medical-history-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.medical-history-table th {
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: 600;
+}
+
+.medical-history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.medical-history-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-weight: 500;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
-    .donate-request-list-container {
-        padding: 1rem;
-        margin: 0 1rem;
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
     }
 
-    .list-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    .modal-body {
+        max-height: calc(90vh - 130px);
     }
 
-    .filter-container {
-        width: 100%;
-    }
-
-    .status-filter {
-        flex-grow: 1;
-    }
-
-    .request-header {
+    .question-item {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .request-main-info {
-        margin-bottom: 0.5rem;
-    }
-
-    .status-badge {
+    .answer {
+        margin-top: 8px;
         align-self: flex-start;
     }
 
-    .admin-actions {
+    .request-card-container {
         flex-direction: column;
+    }
+
+    .card-actions {
         width: 100%;
+        padding: 10px;
+        justify-content: flex-end;
+    }
+
+    .medical-questions-button-visible,
+    .delete-button-visible {
+        padding: 8px 12px;
+        font-size: 0.9rem;
     }
 }
