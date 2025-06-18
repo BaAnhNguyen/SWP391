@@ -26,9 +26,11 @@ const resources = {
       // Medical Health
       "donateRequest.nav.medicalHealth": "Medical Health",
       "medicalHealth.title": "Medical Health Screening Questions",
-      "medicalHealth.description": "Manage medical screening questions for blood donation",
+      "medicalHealth.description":
+        "Manage medical screening questions for blood donation",
       "medicalHealth.currentQuestions": "Current Questions",
-      "medicalHealth.noQuestions": "No questions available. Add your first question below.",
+      "medicalHealth.noQuestions":
+        "No questions available. Add your first question below.",
       "medicalHealth.questionContent": "Question Content",
       "medicalHealth.questionOrder": "Question Order",
       "medicalHealth.questionPlaceholder": "Enter the question",
@@ -48,7 +50,8 @@ const resources = {
       "medicalHealth.createSuccess": "Question created successfully",
       "medicalHealth.updateSuccess": "Question updated successfully",
       "medicalHealth.deleteSuccess": "Question deleted successfully",
-      "medicalHealth.confirmDelete": "Are you sure you want to delete this question?",
+      "medicalHealth.confirmDelete":
+        "Are you sure you want to delete this question?",
       "medicalHealth.contentRequired": "Question content is required",
 
       // Profile Page
@@ -77,7 +80,8 @@ const resources = {
       "profile.district": "District",
       "profile.districtPlaceholder": "Enter your district",
       "profile.city": "City",
-      "profile.cityPlaceholder": "Enter your city", "profile.updateButton": "Update Profile",
+      "profile.cityPlaceholder": "Enter your city",
+      "profile.updateButton": "Update Profile",
       "profile.updating": "Updating...",
       "profile.loading": "Loading profile...",
       "profile.updateSuccess": "Profile updated successfully!",
@@ -317,7 +321,8 @@ const resources = {
       "needRequest.allStatuses": "All Statuses",
       "needRequest.status.open": "Open",
       "needRequest.status.fulfilled": "Fulfilled",
-      "needRequest.status.expired": "Expired", "needRequest.noRequests": "No blood requests found",
+      "needRequest.status.expired": "Expired",
+      "needRequest.noRequests": "No blood requests found",
       "needRequest.bloodRequestType": "Request type",
       "needRequest.unit": "Unit",
       // Units key was duplicated - removed here
@@ -348,7 +353,8 @@ const resources = {
 
       // Blood Storage Management
       "bloodStorage.title": "Blood Storage Management",
-      "bloodStorage.staffOnly": "This page is restricted to staff and admin users only.",
+      "bloodStorage.staffOnly":
+        "This page is restricted to staff and admin users only.",
       "bloodStorage.summary": "Blood Inventory Summary",
       "bloodStorage.detailedInventory": "Detailed Inventory",
       "bloodStorage.addUnit": "Add Blood Unit",
@@ -371,7 +377,8 @@ const resources = {
       "bloodStorage.fetchError": "Error fetching blood inventory",
       "bloodStorage.addError": "Error adding blood unit",
       "bloodStorage.deleteError": "Error deleting blood unit",
-      "bloodStorage.confirmDelete": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.confirmDelete":
+        "Are you sure you want to delete this blood unit?",
       "bloodStorage.noUnits": "No blood units available",
       "bloodStorage.componentType.wholeBlood": "Whole Blood",
       "bloodStorage.componentType.plasma": "Plasma",
@@ -511,9 +518,11 @@ const resources = {
       // Medical Health
       "donateRequest.nav.medicalHealth": "Medical Health",
       "medicalHealth.title": "Medical Health Screening Questions",
-      "medicalHealth.description": "Manage medical screening questions for blood donation",
+      "medicalHealth.description":
+        "Manage medical screening questions for blood donation",
       "medicalHealth.currentQuestions": "Current Questions",
-      "medicalHealth.noQuestions": "No questions available. Add your first question below.",
+      "medicalHealth.noQuestions":
+        "No questions available. Add your first question below.",
       "medicalHealth.questionContent": "Question Content",
       "medicalHealth.questionOrder": "Question Order",
       "medicalHealth.questionPlaceholder": "Enter the question",
@@ -533,7 +542,8 @@ const resources = {
       "medicalHealth.createSuccess": "Question created successfully",
       "medicalHealth.updateSuccess": "Question updated successfully",
       "medicalHealth.deleteSuccess": "Question deleted successfully",
-      "medicalHealth.confirmDelete": "Are you sure you want to delete this question?",
+      "medicalHealth.confirmDelete":
+        "Are you sure you want to delete this question?",
       "medicalHealth.contentRequired": "Question content is required",
 
       // Profile Page
@@ -563,7 +573,8 @@ const resources = {
       "profile.districtPlaceholder": "Nhập tên quận của bạn",
       "profile.city": "Thành Phố",
       "profile.cityPlaceholder": "Nhập tên thành phố của bạn",
-      "profile.updateButton": "Cập Nhật Hồ Sơ", "profile.updating": "Đang cập nhật...",
+      "profile.updateButton": "Cập Nhật Hồ Sơ",
+      "profile.updating": "Đang cập nhật...",
       "profile.loading": "Đang tải hồ sơ...",
       "profile.updateSuccess": "Cập nhật hồ sơ thành công!",
       "profile.blood.hint":
@@ -778,7 +789,8 @@ const resources = {
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
       "needRequest.status.open": "Đang Mở",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
-      "needRequest.status.expired": "Đã Hết Hạn", "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
+      "needRequest.status.expired": "Đã Hết Hạn",
+      "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.bloodRequestType": "Thành phần",
       "needRequest.unit": "Đơn Vị",
       "needRequest.markFulfilled": "Đánh Dấu Hoàn Thành",
@@ -798,7 +810,7 @@ const resources = {
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.",      //common stuff
+        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.", //common stuff
       "common.delete": "Xóa",
       "common.submitting": "Đang gửi...",
       "common.notAuthenticated": "Chưa xác thực",
@@ -808,7 +820,8 @@ const resources = {
 
       // Blood Storage Management
       "bloodStorage.title": "Quản Lý Kho Máu",
-      "bloodStorage.staffOnly": "Trang này chỉ dành cho nhân viên và quản trị viên.",
+      "bloodStorage.staffOnly":
+        "Trang này chỉ dành cho nhân viên và quản trị viên.",
       "bloodStorage.summary": "Tổng Quan Kho Máu",
       "bloodStorage.detailedInventory": "Kho Máu Chi Tiết",
       "bloodStorage.addUnit": "Thêm Đơn Vị Máu",

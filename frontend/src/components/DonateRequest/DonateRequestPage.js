@@ -36,7 +36,8 @@ const DonateRequestPage = ({ user }) => {
         </div>
         <h1>{t("donateRequest.title")}</h1>
         <p>{t("donateRequest.description")}</p>
-      </div>      <div className="donate-request-tabs">
+      </div>{" "}
+      <div className="donate-request-tabs">
         <button
           className={`donate-request-tab ${
             activeTab === "form" ? "active" : ""
@@ -65,20 +66,17 @@ const DonateRequestPage = ({ user }) => {
             {t("donateRequest.nav.medicalHealth", "Medical Health")}
           </button>
         )}
-      </div>      {activeTab === "form" && (
+      </div>{" "}
+      {activeTab === "form" && (
         <DonateRequestForm onRequestCreated={handleRequestCreated} />
       )}
-
       {activeTab === "list" && (
         <DonateRequestList
           userRole={user?.role || "Member"}
           refresh={refreshList}
         />
       )}
-
-      {activeTab === "medicalHealth" && isStaff && (
-        <MedicalHealth />
-      )}
+      {activeTab === "medicalHealth" && isStaff && <MedicalHealth />}
     </div>
   );
 };

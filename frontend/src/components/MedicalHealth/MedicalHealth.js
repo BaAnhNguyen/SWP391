@@ -20,21 +20,21 @@ const MedicalHealth = () => {
       setLoading(true);
       setError(null);
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         throw new Error(t("medicalHealth.authError"));
       }
-        const response = await fetch(`${API_BASE_URL}/question`, {
+      const response = await fetch(`${API_BASE_URL}/question`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.message || t("medicalHealth.fetchError"));
       }
-      
+
       const data = await response.json();
       // Sort questions by order
       setQuestions(data.sort((a, b) => a.order - b.order));
@@ -70,11 +70,11 @@ const MedicalHealth = () => {
     try {
       setError(null);
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         throw new Error(t("medicalHealth.authError"));
       }
-        const response = await fetch(`${API_BASE_URL}/question/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/question/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -82,15 +82,15 @@ const MedicalHealth = () => {
         },
         body: JSON.stringify({
           content: editedContent,
-          order: parseInt(editedOrder, 10)
+          order: parseInt(editedOrder, 10),
         }),
       });
-      
+
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.message || t("medicalHealth.updateError"));
       }
-      
+
       setEditQuestionId(null);
       setSuccess(t("medicalHealth.updateSuccess"));
       setTimeout(() => setSuccess(null), 3000);
@@ -104,26 +104,26 @@ const MedicalHealth = () => {
   // Delete question
   const handleDelete = async (id) => {
     if (!window.confirm(t("medicalHealth.confirmDelete"))) return;
-    
+
     try {
       setError(null);
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         throw new Error(t("medicalHealth.authError"));
       }
-        const response = await fetch(`${API_BASE_URL}/question/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/question/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.message || t("medicalHealth.deleteError"));
       }
-      
+
       setSuccess(t("medicalHealth.deleteSuccess"));
       setTimeout(() => setSuccess(null), 3000);
       await fetchQuestions();
@@ -138,29 +138,30 @@ const MedicalHealth = () => {
     const { name, value } = e.target;
     setNewQuestion({
       ...newQuestion,
-      [name]: value
+      [name]: value,
     });
   };
 
   // Add new question
   const handleAddQuestion = async (e) => {
     e.preventDefault();
-    
+
     try {
       setError(null);
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         throw new Error(t("medicalHealth.authError"));
       }
-      
+
       // Validate inputs
       if (!newQuestion.content.trim()) {
         throw new Error(t("medicalHealth.contentRequired"));
       }
-      
-      const orderValue = parseInt(newQuestion.order, 10) || (questions.length + 1);
-        const response = await fetch(`${API_BASE_URL}/question`, {
+
+      const orderValue =
+        parseInt(newQuestion.order, 10) || questions.length + 1;
+      const response = await fetch(`${API_BASE_URL}/question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -168,15 +169,15 @@ const MedicalHealth = () => {
         },
         body: JSON.stringify({
           content: newQuestion.content,
-          order: orderValue
+          order: orderValue,
         }),
       });
-      
+
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.message || t("medicalHealth.createError"));
       }
-      
+
       setNewQuestion({ content: "", order: "" });
       setSuccess(t("medicalHealth.createSuccess"));
       setTimeout(() => setSuccess(null), 3000);
@@ -201,20 +202,22 @@ const MedicalHealth = () => {
         <h2>{t("medicalHealth.title")}</h2>
         <p>{t("medicalHealth.description")}</p>
       </div>
-      
+
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
-      
+
       <div className="questions-list">
         <h3>{t("medicalHealth.currentQuestions")}</h3>
-        
+
         {questions.length === 0 ? (
           <p>{t("medicalHealth.noQuestions")}</p>
         ) : (
           questions.map((question) => (
-            <div 
-              key={question._id} 
-              className={`question-item ${editQuestionId === question._id ? 'edit-mode' : ''}`}
+            <div
+              key={question._id}
+              className={`question-item ${
+                editQuestionId === question._id ? "edit-mode" : ""
+              }`}
             >
               {editQuestionId === question._id ? (
                 // Edit mode
@@ -244,10 +247,7 @@ const MedicalHealth = () => {
                     >
                       {t("medicalHealth.save")}
                     </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="cancel-btn"
-                    >
+                    <button onClick={handleCancelEdit} className="cancel-btn">
                       {t("medicalHealth.cancel")}
                     </button>
                   </div>
@@ -277,12 +277,14 @@ const MedicalHealth = () => {
           ))
         )}
       </div>
-      
+
       <div className="add-question-form">
         <h3>{t("medicalHealth.addNewQuestion")}</h3>
         <form onSubmit={handleAddQuestion}>
           <div className="form-group">
-            <label htmlFor="content">{t("medicalHealth.questionContent")}</label>
+            <label htmlFor="content">
+              {t("medicalHealth.questionContent")}
+            </label>
             <input
               id="content"
               name="content"
@@ -293,7 +295,7 @@ const MedicalHealth = () => {
               placeholder={t("medicalHealth.questionPlaceholder")}
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="order">{t("medicalHealth.questionOrder")}</label>
             <input
@@ -303,11 +305,13 @@ const MedicalHealth = () => {
               value={newQuestion.order}
               onChange={handleInputChange}
               className="question-input"
-              placeholder={t("medicalHealth.orderPlaceholder", { nextOrder: questions.length + 1 })}
+              placeholder={t("medicalHealth.orderPlaceholder", {
+                nextOrder: questions.length + 1,
+              })}
               min="1"
             />
           </div>
-          
+
           <div className="form-actions">
             <button type="submit" className="add-btn">
               {t("medicalHealth.add")}

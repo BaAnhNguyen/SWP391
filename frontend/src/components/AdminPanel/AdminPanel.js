@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./AdminPanel.css";
 import { API_BASE_URL } from "../../config";
@@ -12,9 +12,10 @@ function AdminPanel() {
   const [roleFilter, setRoleFilter] = useState('all');
   const [sortField, setSortField] = useState('name');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [currentPage, setCurrentPage] = useState(1); const usersPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -43,8 +44,7 @@ function AdminPanel() {
     } finally {
       setLoading(false);
     }
-  }, [t]);
-
+  };
   useEffect(() => {
     const token = localStorage.getItem("token");
     console.log("Current token:", token);
@@ -56,13 +56,13 @@ function AdminPanel() {
         window.location.href = "/login";
       }, 2000);
     }
-  }, [fetchUsers]);
+  }, []);
 
   const changeRole = async (id, role) => {
 
     const confirmChange = window.confirm(t("admin.confirmRoleChange", { role }));
     if (!confirmChange) return;
-
+    
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -129,10 +129,10 @@ function AdminPanel() {
       user.email.toLowerCase().includes(searchText) ||
       user.role.toLowerCase().includes(searchText)
     );
-
+    
     // Apply role filter if not set to 'all'
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-
+    
     return matchesSearch && matchesRole;
   });
 
@@ -198,16 +198,16 @@ function AdminPanel() {
 
       <div className="admin-sections">
         <div className="admin-section">          <div className="admin-section-header">
-          <h2>{t("admin.users.title")}</h2>
-          <button
-            onClick={fetchUsers}
-            className="admin-refresh-btn"
-            title="Refresh User Data"
-          >
-            ↻
-          </button>
-        </div>
-
+            <h2>{t("admin.users.title")}</h2>
+            <button 
+              onClick={fetchUsers} 
+              className="admin-refresh-btn"
+              title="Refresh User Data"
+            >
+              ↻
+            </button>
+          </div>
+          
           <div className="admin-stats">
             <div className="stat-card">
               <div className="stat-value">{userStats.total}</div>
@@ -226,31 +226,31 @@ function AdminPanel() {
               <div className="stat-label">Members</div>
             </div>
           </div>
-
+          
           <div className="admin-card">
             <div className="admin-filter-sort"><div className="admin-search-container">
-              <input
-                type="text"
-                placeholder={t("admin.users.search")}
-                value={filterText}
-                onChange={(e) => setFilterText(e.target.value)}
-                className="admin-search"
-              />
-              {filterText && (
-                <button
-                  onClick={() => setFilterText('')}
-                  className="admin-search-clear"
-                  aria-label="Clear search"
-                >
-                </button>
-              )}
-            </div>
+                <input
+                  type="text"
+                  placeholder={t("admin.users.search")}
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                  className="admin-search"
+                />
+                {filterText && (
+                  <button 
+                    onClick={() => setFilterText('')}
+                    className="admin-search-clear"
+                    aria-label="Clear search"
+                  > 
+                  </button>
+                )}
+              </div>
 
               <div className="admin-filters">
                 <div className="admin-filter">
-                  <span>{t("admin.users.role")}:</span>
-                  <select
-                    value={roleFilter}
+                   <span>{t("admin.users.role")}:</span>
+                  <select 
+                    value={roleFilter} 
                     onChange={(e) => setRoleFilter(e.target.value)}
                     className="admin-filter-select"
                   >
@@ -330,29 +330,29 @@ function AdminPanel() {
             </table>            <div className="admin-pagination">
               {totalPages > 1 && (
                 <>
-                  <button
-                    onClick={() => paginate(1)}
+                  <button 
+                    onClick={() => paginate(1)} 
                     disabled={currentPage === 1}
                     className="admin-page-nav"
                     title="First Page"
                   >
                     «
                   </button>
-                  <button
-                    onClick={() => paginate(currentPage - 1)}
+                  <button 
+                    onClick={() => paginate(currentPage - 1)} 
                     disabled={currentPage === 1}
                     className="admin-page-nav"
                     title="Previous Page"
                   >
                     ‹
                   </button>
-
+                  
                   {Array.from({ length: totalPages }, (_, i) => {
                     // Show limited page buttons with ellipsis for large page counts
                     const pageNum = i + 1;
                     if (
-                      pageNum === 1 ||
-                      pageNum === totalPages ||
+                      pageNum === 1 || 
+                      pageNum === totalPages || 
                       (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
                     ) {
                       return (
@@ -365,24 +365,24 @@ function AdminPanel() {
                         </button>
                       );
                     } else if (
-                      pageNum === currentPage - 2 ||
+                      pageNum === currentPage - 2 || 
                       pageNum === currentPage + 2
                     ) {
                       return <span key={i} className="admin-page-ellipsis">…</span>;
                     }
                     return null;
                   })}
-
-                  <button
-                    onClick={() => paginate(currentPage + 1)}
+                  
+                  <button 
+                    onClick={() => paginate(currentPage + 1)} 
                     disabled={currentPage === totalPages}
                     className="admin-page-nav"
                     title="Next Page"
                   >
                     ›
                   </button>
-                  <button
-                    onClick={() => paginate(totalPages)}
+                  <button 
+                    onClick={() => paginate(totalPages)} 
                     disabled={currentPage === totalPages}
                     className="admin-page-nav"
                     title="Last Page"
@@ -391,7 +391,7 @@ function AdminPanel() {
                   </button>
                 </>
               )}
-
+              
               {totalPages > 0 && (
                 <span className="admin-page-info">
                   {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, sortedUsers.length)} of {sortedUsers.length}
