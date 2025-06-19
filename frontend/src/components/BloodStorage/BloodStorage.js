@@ -8,11 +8,10 @@ function BloodStorage() {
     const [bloodInventory, setBloodInventory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [newBloodUnit, setNewBloodUnit] = useState({
+    const [showAddForm, setShowAddForm] = useState(false); const [newBloodUnit, setNewBloodUnit] = useState({
         BloodType: 'A+',
         ComponentType: 'WholeBlood',
-        Volume: 450, // Default volume in mL
+        Volume: 450, // Default volume in mL (can be 350 or 450)
         DateAdded: new Date().toISOString().split('T')[0]
     });
     const [summaryData, setSummaryData] = useState({});
@@ -207,7 +206,6 @@ function BloodStorage() {
     return (
         <div className="blood-storage-container">
             <h1>{t("bloodStorage.title", "Blood Storage Management")}</h1>
-            <p>{t("bloodStorage.staffOnly", "This page is restricted to staff and admin users only.")}</p>
 
             {/* Error message */}
             {error && <div className="error-message">{error}</div>}
@@ -288,18 +286,17 @@ function BloodStorage() {
                                     <option key={type.value} value={type.value}>{type.label}</option>
                                 ))}
                             </select>
-                        </div>
-
-                        <div className="form-group">
+                        </div>                        <div className="form-group">
                             <label>{t("bloodStorage.volume", "Volume (mL)")}:</label>
-                            <input
-                                type="number"
+                            <select
                                 name="Volume"
                                 value={newBloodUnit.Volume}
                                 onChange={handleInputChange}
-                                min="1"
                                 required
-                            />
+                            >
+                                <option value="350">350 mL</option>
+                                <option value="450">450 mL</option>
+                            </select>
                         </div>
 
                         <div className="form-group">
