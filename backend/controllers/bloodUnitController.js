@@ -75,3 +75,16 @@ exports.deleteBloodUnit = async (req, res) => {
     res.status(500).json({ message: err.message || "Failed to delete blood unit." });
   }
 };
+
+// Get blood units by blood type
+exports.getBloodUnitsByType = async (req, res) => {
+  try {
+    const { bloodType } = req.params;
+    const bloodUnits = await BloodUnit.find({ BloodType: bloodType });
+    res.status(200).json(bloodUnits);
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to fetch blood units by type." });
+  }
+};
+
+

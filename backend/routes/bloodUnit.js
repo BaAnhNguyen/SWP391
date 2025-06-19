@@ -17,6 +17,9 @@ router.patch("/:id", restrictTo("Staff"), bloodUnitController.updateBloodUnit);
 // Delete a blood unit by ID (Staff only)
 router.delete("/:id", restrictTo("Staff"), bloodUnitController.deleteBloodUnit);
 
+// Get blood units by blood type (Staff only)
+router.get("/type/:bloodType", restrictTo("Staff"), bloodUnitController.getBloodUnitsByType);
+
 // You can add more routes here (e.g., get, update, delete blood units)
 
 module.exports = router;

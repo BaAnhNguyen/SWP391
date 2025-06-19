@@ -20,10 +20,10 @@ function BloodStorage() {
     // Blood types and component types for form selection
     const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
     const componentTypes = [
-        { value: "WholeBlood", label: t("bloodStorage.componentType.wholeBlood", "Whole Blood") },
-        { value: "Plasma", label: t("bloodStorage.componentType.plasma", "Plasma") },
-        { value: "Platelets", label: t("bloodStorage.componentType.platelets", "Platelets") },
-        { value: "RedCells", label: t("bloodStorage.componentType.redCells", "Red Cells") }
+        { value: "WholeBlood", label: t("bloodStorage.componentType.wholeBlood") },
+        { value: "Plasma", label: t("bloodStorage.componentType.plasma") },
+        { value: "Platelets", label: t("bloodStorage.componentType.platelets") },
+        { value: "RedCells", label: t("bloodStorage.componentType.redCells") }
     ];
 
     // Fetch blood inventory from the backend
@@ -230,10 +230,10 @@ function BloodStorage() {
                                     : t("bloodStorage.critical", " Critical")}
                         </p>
                         <div className="component-breakdown">
-                            <p>{t("bloodStorage.componentType.wholeBlood", "Whole Blood")}: {summaryData[type]?.WholeBlood || 0}</p>
-                            <p>{t("bloodStorage.componentType.plasma", "Plasma")}: {summaryData[type]?.Plasma || 0}</p>
-                            <p>{t("bloodStorage.componentType.platelets", "Platelets")}: {summaryData[type]?.Platelets || 0}</p>
-                            <p>{t("bloodStorage.componentType.redCells", "Red Cells")}: {summaryData[type]?.RedCells || 0}</p>
+                            <p>{t("bloodStorage.componentType.wholeBlood")}: {summaryData[type]?.WholeBlood || 0}</p>
+                            <p>{t("bloodStorage.componentType.plasma")}: {summaryData[type]?.Plasma || 0}</p>
+                            <p>{t("bloodStorage.componentType.platelets")}: {summaryData[type]?.Platelets || 0}</p>
+                            <p>{t("bloodStorage.componentType.redCells")}: {summaryData[type]?.RedCells || 0}</p>
                         </div>
                     </div>
                 ))}
@@ -343,7 +343,12 @@ function BloodStorage() {
                                 bloodInventory.map(unit => (
                                     <tr key={unit._id} className={getDaysUntilExpiration(unit.DateExpired) <= 0 ? 'expired' : ''}>
                                         <td>{unit.BloodType}</td>
-                                        <td>{unit.ComponentType}</td>
+                                        <td>
+                                            {unit.ComponentType === "WholeBlood" && t("bloodStorage.componentType.wholeBlood")}
+                                            {unit.ComponentType === "Plasma" && t("bloodStorage.componentType.plasma")}
+                                            {unit.ComponentType === "Platelets" && t("bloodStorage.componentType.platelets")}
+                                            {unit.ComponentType === "RedCells" && t("bloodStorage.componentType.redCells")}
+                                        </td>
                                         <td>{unit.Volume}</td>
                                         <td>{formatDate(unit.DateAdded)}</td>
                                         <td>{formatDate(unit.DateExpired)}</td>
