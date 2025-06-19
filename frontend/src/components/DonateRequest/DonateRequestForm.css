@@ -95,11 +95,9 @@
 }
 
 .error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
     font-weight: 500;
 }
 
@@ -206,6 +204,11 @@
 
 .retry-button:hover {
     background-color: #218838;
+}
+
+.form-control.error {
+    border-color: #e74c3c;
+    background-color: #fff5f5;
 }
 
 @media (max-width: 768px) {
