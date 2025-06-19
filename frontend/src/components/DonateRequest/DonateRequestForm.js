@@ -10,14 +10,16 @@ const DonateRequestForm = ({ onRequestCreated }) => {
     bloodGroup: "",
     component: "",
     readyDate: "",
-  });  const [loading, setLoading] = useState(false);
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
   // State cho form 2 bước
   const [step, setStep] = useState(1); // 1: Thông tin cơ bản, 2: Câu hỏi y tế
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState({});  const [questionsLoading, setQuestionsLoading] = useState(false);
+  const [answers, setAnswers] = useState({});
+  const [questionsLoading, setQuestionsLoading] = useState(false);
   const [questionsError, setQuestionsError] = useState(null);
   const [userProfile, setUserProfile] = useState(null); // Thêm state cho thông tin profile
   const [bloodGroupError, setBloodGroupError] = useState(null); // Thêm state cho lỗi nhóm máu
@@ -40,10 +42,11 @@ const DonateRequestForm = ({ onRequestCreated }) => {
     { value: "Platelets", label: t("donateRequest.component.platelets") },
     { value: "RedCells", label: t("donateRequest.component.redcells") },
     { value: "Unknown", label: t("donateRequest.component.unknown") },
-  ];  useEffect(() => {
+  ];
+  useEffect(() => {
     // Component mount effect (empty)
   }, []);
-  
+
   // Fetch user profile when component mounts
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -52,23 +55,23 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         if (!token) {
           return;
         }
-        
+
         const response = await fetch(`${API_BASE_URL}/user/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
         }
-          const userData = await response.json();
+        const userData = await response.json();
         setUserProfile(userData);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
     };
-    
+
     fetchUserProfile();
   }, []);
   const handleChange = (e) => {
@@ -77,35 +80,42 @@ const DonateRequestForm = ({ onRequestCreated }) => {
       ...prev,
       [name]: value,
     }));
-      // Clear blood group error when user changes selection
-    if (name === 'bloodGroup') {
+    // Clear blood group error when user changes selection
+    if (name === "bloodGroup") {
       setBloodGroupError(null);
-    }  };
+    }
+  };
   // Handle next button click
   const handleNext = async (e) => {
     e.preventDefault();
-    
+
     // Validate blood group against user profile
-    if (userProfile && userProfile.bloodGroup && formData.bloodGroup !== userProfile.bloodGroup) {
+    if (
+      userProfile &&
+      userProfile.bloodGroup &&
+      formData.bloodGroup !== userProfile.bloodGroup
+    ) {
       const errorMessage = t("donateRequest.bloodGroupError");
       setBloodGroupError(errorMessage);
       return; // Prevent proceeding to next step
-    }    
+    }
     setQuestionsLoading(true);
     setQuestionsError(null);
 
     try {
-      const token = localStorage.getItem("token");      if (!token) {
+      const token = localStorage.getItem("token");
+      if (!token) {
         throw new Error("Vui lòng đăng nhập để tiếp tục");
       }
 
       // Gọi API để lấy danh sách câu hỏi y tế
-      const apiUrl = `${API_BASE_URL}/question`;      const response = await fetch(apiUrl, {
+      const apiUrl = `${API_BASE_URL}/question`;
+      const response = await fetch(apiUrl, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-        }
+        },
       });
 
       if (!response.ok) {
@@ -113,7 +123,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         console.error("Error response:", errorText);
         throw new Error(`Không thể lấy câu hỏi: ${response.status}`);
       }
-      
+
       const responseText = await response.text();
 
       // Thử parse JSON từ responseText
@@ -122,7 +132,8 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         data = JSON.parse(responseText);
       } catch (err) {
         console.error("JSON parse error:", err);
-        throw new Error("Định dạng dữ liệu không hợp lệ");      }
+        throw new Error("Định dạng dữ liệu không hợp lệ");
+      }
 
       if (!Array.isArray(data)) {
         console.error("Dữ liệu không phải mảng:", data);
@@ -170,75 +181,75 @@ const DonateRequestForm = ({ onRequestCreated }) => {
 
   // Hàm xử lý khi submit form cuối cùng
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
-  setSuccess(false);
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
 
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("Vui lòng đăng nhập để tiếp tục");
-    }
-
-    // Tạo dữ liệu screening từ danh sách câu hỏi và câu trả lời
-    const screening = questions.map((q) => {
-      return {
-        question: q.content || `Câu hỏi #${q._id}`, // Đảm bảo luôn có giá trị
-        answer: answers[q._id] === "yes", // true if yes, false if no
-      };
-    });
-
-    // Tạo request body với thông tin cơ bản và câu trả lời y tế
-    const requestBody = {
-      ...formData,
-      screening,
-      confirmation: true, // Member đã xác nhận thông tin
-    };
-
-    const response = await fetch(`${API_BASE_URL}/donateregistration`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      // Lấy nội dung lỗi từ response
-      let errorData;
-      try {
-        errorData = await response.json();
-      } catch (e) {
-        const errorText = await response.text();
-        throw new Error(`Lỗi HTTP ${response.status}: ${response.statusText}`);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Vui lòng đăng nhập để tiếp tục");
       }
-      throw new Error(
-        errorData.message || errorData.error || "Lỗi khi đăng ký hiến máu"
-      );
+
+      // Tạo dữ liệu screening từ danh sách câu hỏi và câu trả lời
+      const screening = questions.map((q) => {
+        return {
+          question: q.content || `Câu hỏi #${q._id}`, // Đảm bảo luôn có giá trị
+          answer: answers[q._id] === "yes", // true if yes, false if no
+        };
+      });
+
+      // Tạo request body với thông tin cơ bản và câu trả lời y tế
+      const requestBody = {
+        ...formData,
+        screening,
+        confirmation: true, // Member đã xác nhận thông tin
+      };
+
+      const response = await fetch(`${API_BASE_URL}/donateregistration`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        // Lấy nội dung lỗi từ response
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          const errorText = await response.text();
+          throw new Error(
+            `Lỗi HTTP ${response.status}: ${response.statusText}`
+          );
+        }
+        throw new Error(
+          errorData.message || errorData.error || "Lỗi khi đăng ký hiến máu"
+        );
+      }
+
+      setSuccess(true);
+      setFormData({
+        bloodGroup: "",
+        component: "",
+        readyDate: "",
+      });
+      setAnswers({});
+      setStep(1); // Quay lại bước 1
+
+      if (onRequestCreated) {
+        onRequestCreated();
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    setFormData({
-      bloodGroup: "",
-      component: "",
-      readyDate: "",
-    });
-    setAnswers({});
-    setStep(1); // Quay lại bước 1
-
-    if (onRequestCreated) {
-      onRequestCreated();
-    }
-
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="donate-request-form-container">
@@ -264,25 +275,34 @@ const DonateRequestForm = ({ onRequestCreated }) => {
       {/* Step 1: Thông tin cơ bản */}
       {step === 1 && (
         <form onSubmit={handleNext} className="donate-request-form">
-          <div className="form-group">            <label htmlFor="bloodGroup">
-              {i18n.language === 'vi' ? 'Nhóm máu' : 'Blood Group'}
+          <div className="form-group">
+            {" "}
+            <label htmlFor="bloodGroup">
+              {i18n.language === "vi" ? "Nhóm máu" : "Blood Group"}
               <span className="required">*</span>
-            </label>            <select
+            </label>{" "}
+            <select
               id="bloodGroup"
               name="bloodGroup"
               value={formData.bloodGroup}
               onChange={handleChange}
               required
-              className={`form-control ${bloodGroupError ? 'error' : ''}`}
+              className={`form-control ${bloodGroupError ? "error" : ""}`}
             >
-              <option value="">{i18n.language === 'vi' ? 'Chọn nhóm máu' : 'Select blood group'}</option>
+              <option value="">
+                {i18n.language === "vi"
+                  ? "Chọn nhóm máu"
+                  : "Select blood group"}
+              </option>
               {bloodGroups.map((group) => (
                 <option key={group} value={group}>
                   {group}
                 </option>
               ))}
             </select>
-            {bloodGroupError && <div className="error-message">{bloodGroupError}</div>}
+            {bloodGroupError && (
+              <div className="error-message">{bloodGroupError}</div>
+            )}
           </div>
 
           <div className="form-group">
@@ -352,7 +372,6 @@ const DonateRequestForm = ({ onRequestCreated }) => {
           )}
 
           {/* Hiển thị debug info khi có lỗi */}
-    
 
           {questions.length > 0 ? (
             <div className="medical-questions">

@@ -3,12 +3,14 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 // Translation resources
-const resources = {  en: {
+const resources = {
+  en: {
     translation: {
       // Blood Group Validation
       "donateRequest.bloodGroupError": "Wrong blood group",
-      "donateRequest.bloodGroupMismatch": "The selected blood group does not match your profile",
-      
+      "donateRequest.bloodGroupMismatch":
+        "The selected blood group does not match your profile",
+
       // Header Navigation
       "nav.home": "Home",
       "nav.about": "About Us",
@@ -364,9 +366,8 @@ const resources = {  en: {
       "bloodStorage.cancelAdd": "Cancel",
       "bloodStorage.refresh": "Refresh Data",
       "bloodStorage.addNewUnit": "Add New Blood Unit",
-      "bloodStorage.bloodType": "Blood Type",
-      "bloodStorage.component": "Component",
-      "bloodStorage.volume": "Volume (mL)",
+      "bloodStorage.bloodType": "Blood Type", "bloodStorage.component": "Component",
+      "bloodStorage.volume": "Volume",
       "bloodStorage.dateAdded": "Date Added",
       "bloodStorage.expirationDate": "Expiration Date",
       "bloodStorage.daysUntilExpired": "Days Until Expired",
@@ -498,12 +499,14 @@ const resources = {  en: {
       "donateRequest.quantity": "Số lượng",
       "donateRequest.fetchHistoryError": "Không thể tải lịch sử bệnh",
     },
-  },  vi: {
+  },
+  vi: {
     translation: {
       // Blood Group Validation
       "donateRequest.bloodGroupError": "Sai nhóm máu",
-      "donateRequest.bloodGroupMismatch": "Nhóm máu đã chọn không khớp với hồ sơ của bạn",
-      
+      "donateRequest.bloodGroupMismatch":
+        "Nhóm máu đã chọn không khớp với hồ sơ của bạn",
+
       // Header Navigation
       "nav.home": "Trang Chủ",
       "nav.about": "Về Chúng Tôi",
@@ -834,9 +837,8 @@ const resources = {  en: {
       "bloodStorage.cancelAdd": "Hủy",
       "bloodStorage.refresh": "Làm Mới Dữ Liệu",
       "bloodStorage.addNewUnit": "Thêm Đơn Vị Máu Mới",
-      "bloodStorage.bloodType": "Nhóm Máu",
-      "bloodStorage.component": "Thành Phần",
-      "bloodStorage.volume": "Thể Tích (mL)",
+      "bloodStorage.bloodType": "Nhóm Máu", "bloodStorage.component": "Thành Phần",
+      "bloodStorage.volume": "Thể Tích",
       "bloodStorage.dateAdded": "Ngày Thêm",
       "bloodStorage.expirationDate": "Ngày Hết Hạn",
       "bloodStorage.daysUntilExpired": "Số Ngày Còn Lại",

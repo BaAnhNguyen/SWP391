@@ -130,7 +130,7 @@ function Header() {
                 </Link>
               </li>
             )}
-            {user && (user.role === "Staff" || user.role === "Admin") && (
+            {user && (user.role === "Staff") && (
               <li>
                 <Link to="/blood-storage" className="nav-link">
                   {t("nav.bloodStorage")}
