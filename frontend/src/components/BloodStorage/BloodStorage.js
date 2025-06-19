@@ -207,7 +207,6 @@ function BloodStorage() {
     return (
         <div className="blood-storage-container">
             <h1>{t("bloodStorage.title", "Blood Storage Management")}</h1>
-            <p>{t("bloodStorage.staffOnly", "This page is restricted to staff and admin users only.")}</p>
 
             {/* Error message */}
             {error && <div className="error-message">{error}</div>}
