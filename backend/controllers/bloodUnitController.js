@@ -8,17 +8,17 @@ exports.addBloodUnit = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields." });
     }
     const dateAdded = DateAdded ? new Date(DateAdded) : new Date();
-    let dateExpired;
+    const dateExpired = new Date(dateAdded);
     switch (ComponentType) {
       case "WholeBlood":
       case "RedCells":
-        dateExpired = new Date(dateAdded.getDate() + 35);
+        dateExpired.setDate(dateExpired.getDate() + 35);
         break;
       case "Plasma":
-        dateExpired = new Date(dateAdded.getDate() + 365);
+        dateExpired.setDate(dateExpired.getDate() + 365);
         break;
       case "Platelets":
-        dateExpired = new Date(dateAdded.getDate() + 5);
+        dateExpired.setDate(dateExpired.getDate() + 5);
         break;
       default:
         return res.status(400).json({ message: "Invalid ComponentType." });
