@@ -25,15 +25,16 @@ exports.create = async (req, res) => {
       !user.dateOfBirth ||
       !user.gender ||
       !user.phoneNumber ||
-      !user.identityCard
+      !user.identityCard ||
+      !user.bloodGroup
     ) {
       return res
         .status(400)
         .json({ message: "You need to update your profile" });
     }
-    if (!user.bloodGroup) {
+    if (!isEligibleToDonateBlood(user.dateOfBirth)) {
       return res.status(400).json({
-        message: "You must set your bloodGroup in profile before registration",
+        message: "Your age must be between 18 and 60",
       });
     }
     if (user.bloodGroup !== bloodGroup) {
@@ -61,12 +62,10 @@ exports.create = async (req, res) => {
 
     //validate screening questions
     if (!Array.isArray(screening)) {
-      return res
-        .status(400)
-        .json({
-          message: "Screening must be an array",
-          received: typeof screening,
-        });
+      return res.status(400).json({
+        message: "Screening must be an array",
+        received: typeof screening,
+      });
     }
 
     if (screening.length < 1) {
@@ -269,9 +268,10 @@ exports.complete = async (req, res) => {
     }
 
     res.json({
-      message: "Completed",
+      message: emailSent
+        ? "Donation completed. A email has been sent to member"
+        : "Donation completed. However, the email could not be sent",
       nextEligibleDate: nextEligibleDate,
-      emailSent,
       // debug: {
       //   hasUserId: !!reg.userId,
       //   hasEmail: !!reg.userId?.email,
@@ -314,7 +314,7 @@ exports.update = async (req, res) => {
 function calNextEligible(component, fromDate) {
   let day = 84;
   if (component === "Plasma") day = 14;
-  else if (component === "{Platelets") day = 14;
+  else if (component === "Platelets") day = 14;
   const d = new Date(fromDate);
   d.setDate(d.getDate() + day);
   return d;
@@ -324,4 +324,16 @@ function setToStartOfDay(date) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+function isEligibleToDonateBlood(dob, minAge = 18, maxAge = 60) {
+  // dob: string, dạng 'YYYY-MM-DD'
+  const today = new Date();
+  const birthDate = new Date(dob);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age >= minAge && age <= maxAge;
 }

@@ -33,7 +33,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
     "O-",
     "AB+",
     "AB-",
-    "Unknown",
+    "unknown",
   ];
 
   const components = [
@@ -41,7 +41,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
     { value: "Plasma", label: t("donateRequest.component.plasma") },
     { value: "Platelets", label: t("donateRequest.component.platelets") },
     { value: "RedCells", label: t("donateRequest.component.redcells") },
-    { value: "Unknown", label: t("donateRequest.component.unknown") },
+    { value: "unknown", label: t("donateRequest.component.unknown") },
   ];
   useEffect(() => {
     // Component mount effect (empty)
