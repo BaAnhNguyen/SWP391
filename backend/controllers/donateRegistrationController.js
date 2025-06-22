@@ -223,64 +223,239 @@ exports.updateStatus = async (req, res) => {
 exports.complete = async (req, res) => {
   try {
     const { id } = req.params;
-    const { quantity, healthCheck } = req.body;
-    const reg = await DonationRegistration.findById(id).populate(
-      "userId",
-      "name email"
-    );
-    if (!reg || reg.status !== "Approved")
-      return res.status(400).json({ message: "Must be approved first" });
+    const {
+      healthCheckStatus,
+      quantity,
+      healthCheck,
+      cancellationReason,
+      followUpDate,
+    } = req.body;
 
-    // Validate healthCheck
-    if (!healthCheck) {
-      return res.status(400).json({ message: "Need health check" });
+    console.log("======== DONATION COMPLETION ========");
+    console.log("Received complete request for ID:", id);
+    console.log("Health check status:", healthCheckStatus);
+    console.log(
+      "Request user ID:",
+      req.user ? req.user._id : "No user in request"
+    );
+    console.log("User role:", req.user ? req.user.role : "Unknown");
+
+    const reg = await DonationRegistration.findById(id);
+    if (!reg) {
+      console.log("Registration not found with ID:", id);
+      return res.status(404).json({ message: "Registration not found" });
     }
+
+    if (reg.status !== "Approved") {
+      console.log("Registration status is not Approved:", reg.status);
+      return res.status(400).json({ message: "Must be approved first" });
+    }
+
+    if (!healthCheckStatus) {
+      console.log("No health check status provided");
+      return res
+        .status(400)
+        .json({ message: "Health check status is required" });
+    }
+
+    // Add the user ID information from request or from registration
+    const userId = reg.userId;
+
+    try {
+      await reg.populate("userId", "name email");
+    } catch (populateError) {
+      console.error("Error populating user data:", populateError);
+      // Continue without populated data if it fails
+    }
+
     const donationDate = new Date();
-    const qty = quantity || 1;
     const nextEligibleDate = calNextEligible(reg.component, donationDate);
 
-    await DonationHistory.create({
-      userId: reg.userId,
-      donationDate,
-      bloodGroup: reg.bloodGroup,
-      component: reg.component,
-      quantity: qty,
-      healthCheck,
-      nextEligibleDate: nextEligibleDate,
-    });
+    if (healthCheckStatus === "completed") {
+      // Trường hợp hoàn thành hiến máu
+      try {
+        // Validate quantity
+        const qty = parseInt(quantity);
+        if (isNaN(qty) || qty < 1) {
+          return res
+            .status(400)
+            .json({ message: "Valid quantity is required" });
+        }
 
-    reg.status = "Completed";
-    reg.completedBy = req.user._id;
-    reg.completedAt = new Date();
-    await reg.save();
+        console.log("Creating donation history with userId:", userId);
 
-    let emailSent = false;
+        // Create donation history - với xử lý an toàn
+        const donationHistoryData = {
+          userId,
+          donationDate,
+          bloodGroup: reg.bloodGroup || "unknown",
+          component: reg.component || "unknown",
+          status: "Completed",
+          quantity: qty,
+          healthCheck: healthCheck || {},
+          nextEligibleDate,
+        };
 
-    //gui mail
-    try {
-      if (reg.userId && reg.userId.email) {
-        await sendMail(reg.userId.email, reg.userId.name, nextEligibleDate);
-        emailSent = true;
-        console.log(`Email sent successfully to ${reg.userId.email}`);
+        console.log(
+          "Donation history data:",
+          JSON.stringify(donationHistoryData)
+        );
+
+        try {
+          const donationHistory = await DonationHistory.create(
+            donationHistoryData
+          );
+          console.log("DonationHistory created with ID:", donationHistory._id);
+        } catch (historyError) {
+          console.error("Error creating donation history:", historyError);
+          return res.status(500).json({
+            message: "Error creating donation history",
+            error: historyError.message,
+          });
+        }
+
+        // Update registration status
+        try {
+          reg.status = "Completed";
+          // Check if req.user exists before assigning completedBy
+          if (req.user && req.user._id) {
+            reg.completedBy = req.user._id;
+            console.log("Setting completedBy to:", req.user._id);
+          } else {
+            console.log("No user in request, not setting completedBy");
+          }
+          reg.completedAt = donationDate;
+          await reg.save();
+          console.log("Registration updated to Completed:", reg._id);
+        } catch (regUpdateError) {
+          console.error("Error updating registration status:", regUpdateError);
+          return res.status(500).json({
+            message: "Error updating registration status",
+            error: regUpdateError.message,
+          });
+        }
+
+        // Send email notification
+        let emailSent = false;
+        try {
+          if (reg.userId && reg.userId.email) {
+            await sendMail(reg.userId.email, reg.userId.name, nextEligibleDate);
+            emailSent = true;
+            console.log(`Email sent successfully to ${reg.userId.email}`);
+          }
+        } catch (emailError) {
+          console.error("Failed to send email:", emailError);
+        }
+
+        return res.json({
+          message: emailSent
+            ? "Donation completed. An email has been sent to member"
+            : "Donation completed. However, the email could not be sent",
+          nextEligibleDate,
+        });
+      } catch (error) {
+        console.error("Error in complete donation:", error);
+        return res.status(500).json({ error: error.message });
       }
-    } catch (emailError) {
-      console.error("Failed to send email", emailError);
-    }
+    } else if (healthCheckStatus === "canceled") {
+      // Trường hợp hủy hiến máu
+      try {
+        // Validate required fields
+        if (!cancellationReason || !cancellationReason.trim()) {
+          return res
+            .status(400)
+            .json({ message: "Cancellation reason is required" });
+        }
 
-    res.json({
-      message: emailSent
-        ? "Donation completed. A email has been sent to member"
-        : "Donation completed. However, the email could not be sent",
-      nextEligibleDate: nextEligibleDate,
-      // debug: {
-      //   hasUserId: !!reg.userId,
-      //   hasEmail: !!reg.userId?.email,
-      //   email: reg.userId?.email,
-      //   name: reg.userId?.name,
-      // },
-    });
+        if (!followUpDate) {
+          return res
+            .status(400)
+            .json({ message: "Follow-up date is required" });
+        }
+
+        const followUpDateObj = new Date(followUpDate);
+        if (isNaN(followUpDateObj.getTime())) {
+          return res
+            .status(400)
+            .json({ message: "Invalid follow-up date format" });
+        }
+
+        console.log("Creating cancelled donation history with userId:", userId);
+
+        // Create donation history for canceled donation - với xử lý an toàn
+        const donationHistoryData = {
+          userId,
+          donationDate,
+          bloodGroup: reg.bloodGroup || "unknown",
+          component: reg.component || "unknown",
+          status: "Canceled",
+          cancellation: {
+            reason: cancellationReason,
+            followUpDate: followUpDateObj,
+          },
+          nextEligibleDate: followUpDateObj,
+        };
+
+        console.log(
+          "Cancelled donation history data:",
+          JSON.stringify(donationHistoryData)
+        );
+
+        try {
+          const donationHistory = await DonationHistory.create(
+            donationHistoryData
+          );
+          console.log(
+            "Cancelled DonationHistory created with ID:",
+            donationHistory._id
+          );
+        } catch (historyError) {
+          console.error(
+            "Error creating cancelled donation history:",
+            historyError
+          );
+          return res.status(500).json({
+            message: "Error creating cancelled donation history",
+            error: historyError.message,
+          });
+        }
+
+        // Update registration
+        try {
+          reg.status = "Cancelled";
+          reg.rejectionReason = cancellationReason;
+          reg.nextReadyDate = followUpDateObj;
+          await reg.save();
+          console.log("Registration updated to Cancelled:", reg._id);
+        } catch (regUpdateError) {
+          console.error(
+            "Error updating registration status to Cancelled:",
+            regUpdateError
+          );
+          return res.status(500).json({
+            message: "Error updating registration status",
+            error: regUpdateError.message,
+          });
+        }
+
+        return res.json({
+          message: "Donation canceled and follow-up appointment scheduled",
+          followUpDate: followUpDateObj,
+        });
+      } catch (error) {
+        console.error("Error in cancel donation:", error);
+        return res.status(500).json({ error: error.message });
+      }
+    } else {
+      console.log("Invalid health check status:", healthCheckStatus);
+      return res.status(400).json({
+        message:
+          "Invalid health check status. Must be 'completed' or 'canceled'.",
+      });
+    }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Top-level error in complete endpoint:", err);
+    return res.status(500).json({ error: err.message });
   }
 };
 

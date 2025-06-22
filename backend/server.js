@@ -33,7 +33,9 @@ app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRouter);
 
+// Ensure consistency by registering both uppercase and lowercase versions
 app.use("/api/donateRegistration", donateRegistrationRoutes);
+app.use("/api/donateregistration", donateRegistrationRoutes); // Added lowercase version
 app.use("/api/needRequest", needRequestRoutes);
 app.use("/api/question", questionRoutes);
 app.use("/api/bloodUnit", bloodUnitRoutes);

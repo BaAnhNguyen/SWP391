@@ -1,5 +1,4 @@
 const { Schema, model, Types } = require("mongoose");
-const { Component } = require("react");
 
 const donationHistorySchema = new Schema(
   {
@@ -14,26 +13,38 @@ const donationHistorySchema = new Schema(
     },
     bloodGroup: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+      enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-", "unknown"],
       required: true,
+      default: "unknown",
     },
     component: {
       type: String,
-      enum: ["WholeBlood", "Plasma", "Platelets", "RedCells"],
+      enum: ["WholeBlood", "Plasma", "Platelets", "RedCells", "unknown"],
       required: true,
+      default: "unknown",
+    },
+    status: {
+      type: String,
+      enum: ["Completed", "Canceled"],
+      required: true,
+      default: "Completed",
     },
     quantity: {
       type: Number,
-      required: true,
-      min: 1,
+      min: 0, // Thay đổi giá trị tối thiểu thành 0 để cho phép bỏ trống trong trường hợp hủy
     },
     healthCheck: {
       weight: Number,
       height: Number,
       bloodPressure: String, // "120/80"
-      pulse: Number,
+      heartRate: Number,
+      alcoholLevel: Number,
       temperature: Number,
       hemoglobin: Number,
+    },
+    cancellation: {
+      reason: String,
+      followUpDate: Date,
     },
     nextEligibleDate: {
       type: Date,

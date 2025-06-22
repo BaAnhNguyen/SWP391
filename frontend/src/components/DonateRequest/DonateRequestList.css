@@ -704,6 +704,218 @@
     padding: 1rem;
 }
 
+/* Health Check Modal */
+.health-check-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.health-check-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.health-check-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.health-check-header h3 {
+    color: #e74c3c;
+    margin: 0;
+}
+
+.health-check-tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.health-check-tab {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    color: #666;
+}
+
+.health-check-tab.active {
+    color: #e74c3c;
+}
+
+.health-check-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #e74c3c;
+}
+
+.health-check-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.health-check-form .form-field {
+    margin-bottom: 1rem;
+}
+
+.health-check-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.health-check-form input,
+.health-check-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.cancel-form {
+    margin-top: 1rem;
+}
+
+.cancel-form textarea {
+    width: 100%;
+    height: 100px;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.submit-button,
+.cancel-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button {
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 10px 20px;
+}
+
+.submit-button:hover {
+    background-color: #c0392b;
+}
+
+.cancel-button {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.form-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.quantity-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-field input {
+    width: 100px;
+}
+
+.large-quantity {
+    margin: 1.5rem 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.large-quantity label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+    margin-right: 1rem;
+    min-width: 100px;
+}
+
+.large-quantity input {
+    width: 150px;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
+.large-textarea {
+    width: 100%;
+    height: 120px !important;
+    padding: 12px;
+    font-size: 1.1rem;
+    resize: vertical;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
+.large-date-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .modal-content {

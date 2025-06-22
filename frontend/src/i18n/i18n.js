@@ -349,12 +349,17 @@ const resources = {
       "needRequest.memberNotice":
         "As a member, you can only see your own blood donation requests.",
 
-      //common stuff      "common.delete": "Delete",
+      //common stuff
+      "common.delete": "Delete",
       "common.submitting": "Submitting...",
       "common.notAuthenticated": "Not authenticated",
       "common.refresh": "Refresh",
       "common.loading": "Loading...",
       "common.actions": "Actions",
+      "common.yes": "Yes",
+      "common.no": "No",
+      "common.close": "Close",
+      "common.cancel": "Cancel",
 
       // Blood Storage Management
       "bloodStorage.title": "Blood Storage Management",
@@ -366,7 +371,8 @@ const resources = {
       "bloodStorage.cancelAdd": "Cancel",
       "bloodStorage.refresh": "Refresh Data",
       "bloodStorage.addNewUnit": "Add New Blood Unit",
-      "bloodStorage.bloodType": "Blood Type", "bloodStorage.component": "Component",
+      "bloodStorage.bloodType": "Blood Type",
+      "bloodStorage.component": "Component",
       "bloodStorage.volume": "Volume",
       "bloodStorage.dateAdded": "Date Added",
       "bloodStorage.expirationDate": "Expiration Date",
@@ -498,6 +504,30 @@ const resources = {
       "donateRequest.donationDate": "Ngày hiến máu",
       "donateRequest.quantity": "Số lượng",
       "donateRequest.fetchHistoryError": "Không thể tải lịch sử bệnh",
+
+      // Health check translations
+      "donateRequest.healthCheck": "Kiểm Tra Sức Khỏe",
+      "donateRequest.healthCheckTitle": "Biểu Mẫu Kiểm Tra Sức Khỏe",
+      "donateRequest.completeTab": "Hoàn Thành Hiến Máu",
+      "donateRequest.cancelTab": "Hủy Hiến Máu",
+      "donateRequest.weight": "Cân Nặng",
+      "donateRequest.height": "Chiều Cao",
+      "donateRequest.bloodPressure": "Huyết Áp",
+      "donateRequest.heartRate": "Nhịp Tim",
+      "donateRequest.alcoholLevel": "Nồng Độ Cồn",
+      "donateRequest.temperature": "Nhiệt Độ",
+      "donateRequest.hemoglobin": "Hemoglobin",
+      "donateRequest.quantity": "Số Lượng",
+      "donateRequest.invalidQuantity":
+        "Vui lòng nhập số lượng hợp lệ (tối thiểu 1)",
+      "donateRequest.cancellationReason": "Lý Do Hủy",
+      "donateRequest.cancellationReasonPlaceholder":
+        "Vui lòng giải thích lý do hủy hiến máu này",
+      "donateRequest.followUpDate": "Ngày Hẹn Tái Khám",
+      "donateRequest.confirmComplete": "Hoàn Thành Hiến Máu",
+      "donateRequest.confirmCancel": "Hủy Hiến Máu",
+      "donateRequest.reasonRequired": "Vui lòng cung cấp lý do hủy",
+      "donateRequest.followUpDateRequired": "Vui lòng chọn ngày hẹn tái khám",
     },
   },
   vi: {
@@ -826,6 +856,10 @@ const resources = {
       "common.refresh": "Làm mới",
       "common.loading": "Đang tải...",
       "common.actions": "Thao tác",
+      "common.yes": "Có",
+      "common.no": "Không",
+      "common.close": "Đóng",
+      "common.cancel": "Hủy",
 
       // Blood Storage Management
       "bloodStorage.title": "Quản Lý Kho Máu",
@@ -837,7 +871,8 @@ const resources = {
       "bloodStorage.cancelAdd": "Hủy",
       "bloodStorage.refresh": "Làm Mới Dữ Liệu",
       "bloodStorage.addNewUnit": "Thêm Đơn Vị Máu Mới",
-      "bloodStorage.bloodType": "Nhóm Máu", "bloodStorage.component": "Thành Phần",
+      "bloodStorage.bloodType": "Nhóm Máu",
+      "bloodStorage.component": "Thành Phần",
       "bloodStorage.volume": "Thể Tích",
       "bloodStorage.dateAdded": "Ngày Thêm",
       "bloodStorage.expirationDate": "Ngày Hết Hạn",
@@ -972,6 +1007,30 @@ const resources = {
       "donateRequest.donationDate": "Ngày hiến máu",
       "donateRequest.quantity": "Số lượng",
       "donateRequest.fetchHistoryError": "Không thể tải lịch sử bệnh",
+
+      // Health check translations
+      "donateRequest.healthCheck": "Kiểm Tra Sức Khỏe",
+      "donateRequest.healthCheckTitle": "Biểu Mẫu Kiểm Tra Sức Khỏe",
+      "donateRequest.completeTab": "Hoàn Thành Hiến Máu",
+      "donateRequest.cancelTab": "Hủy Hiến Máu",
+      "donateRequest.weight": "Cân Nặng",
+      "donateRequest.height": "Chiều Cao",
+      "donateRequest.bloodPressure": "Huyết Áp",
+      "donateRequest.heartRate": "Nhịp Tim",
+      "donateRequest.alcoholLevel": "Nồng Độ Cồn",
+      "donateRequest.temperature": "Nhiệt Độ",
+      "donateRequest.hemoglobin": "Hemoglobin",
+      "donateRequest.quantity": "Số Lượng",
+      "donateRequest.invalidQuantity":
+        "Vui lòng nhập số lượng hợp lệ (tối thiểu 1)",
+      "donateRequest.cancellationReason": "Lý Do Hủy",
+      "donateRequest.cancellationReasonPlaceholder":
+        "Vui lòng giải thích lý do hủy hiến máu này",
+      "donateRequest.followUpDate": "Ngày Hẹn Tái Khám",
+      "donateRequest.confirmComplete": "Hoàn Thành Hiến Máu",
+      "donateRequest.confirmCancel": "Hủy Hiến Máu",
+      "donateRequest.reasonRequired": "Vui lòng cung cấp lý do hủy",
+      "donateRequest.followUpDateRequired": "Vui lòng chọn ngày hẹn tái khám",
     },
   },
 };
@@ -991,5 +1050,16 @@ i18n
       escapeValue: false, // React already escapes values
     },
   });
+
+// Add new translation keys (don't worry about duplicates, i18next will handle them)
+i18n.addResources("en", "translation", {
+  "donateRequest.completedSuccessfully": "Donation completed successfully!",
+  "donateRequest.canceledSuccessfully": "Donation canceled successfully!",
+});
+
+i18n.addResources("vi", "translation", {
+  "donateRequest.completedSuccessfully": "Đã hoàn thành hiến máu thành công!",
+  "donateRequest.canceledSuccessfully": "Đã hủy hiến máu thành công!",
+});
 
 export default i18n;

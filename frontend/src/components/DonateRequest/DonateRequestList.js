@@ -15,6 +15,25 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [viewingHistoryId, setViewingHistoryId] = useState(null);
   const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
 
+  // Health check state
+  const [showHealthCheck, setShowHealthCheck] = useState(false);
+  const [healthCheckRequest, setHealthCheckRequest] = useState(null);
+  const [activeTab, setActiveTab] = useState("complete");
+  const [healthCheckData, setHealthCheckData] = useState({
+    weight: "",
+    height: "",
+    bloodPressure: "",
+    heartRate: "",
+    alcoholLevel: "",
+    temperature: "",
+    hemoglobin: "",
+    quantity: 1,
+  });
+  const [cancellationData, setCancellationData] = useState({
+    reason: "",
+    followUpDate: "",
+  });
+
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
   const fetchRequests = useCallback(async () => {
@@ -44,7 +63,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
       const data = await response.json();
       setRequests(data);
     } catch (err) {
-      setError(err.message); console.error("Error fetching requests:", err);
+      setError(err.message);
+      console.error("Error fetching requests:", err);
     } finally {
       setLoading(false);
     }
@@ -90,36 +110,173 @@ const DonateRequestList = ({ userRole, refresh }) => {
       console.error("Error updating request status:", err);
     }
   };
+  const handleOpenHealthCheck = (request) => {
+    setHealthCheckRequest(request);
+    setHealthCheckData({
+      weight: "",
+      height: "",
+      bloodPressure: "",
+      heartRate: "",
+      alcoholLevel: "",
+      temperature: "",
+      hemoglobin: "",
+      quantity: 1,
+    });
+    setCancellationData({
+      reason: "",
+      followUpDate: "",
+    });
+    setActiveTab("complete");
+    setShowHealthCheck(true);
+  };
 
-  const handleComplete = async (id) => {
+  const handleCloseHealthCheck = () => {
+    setShowHealthCheck(false);
+    setHealthCheckRequest(null);
+  };
+  const handleHealthCheckSubmit = async (e) => {
+    e.preventDefault();
+    if (!healthCheckRequest) return;
+
     try {
+      // Get a fresh token from storage
       const token = localStorage.getItem("token");
       if (!token) throw new Error(t("common.notAuthenticated"));
 
-      //change quantity if needed ,default 1
-      const qty = quantities[id] ?? 1;
-      if (!qty || qty < 1) {
-        return alert(t("donateRequest.invalidQuantity"));
-      }
-      const res = await fetch(
-        `${API_BASE_URL}/donateRegistration/${id}/complete`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ quantity: qty }),
-        }
+      console.log(
+        "Health check submission for request:",
+        healthCheckRequest._id
       );
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || t("donateRequest.updateError"));
+
+      // Create closure for the API call to support retry
+      const makeApiCall = async (requestData) => {
+        const apiUrl = `${API_BASE_URL}/donateRegistration/${healthCheckRequest._id}/complete`;
+        console.log("API URL:", apiUrl);
+        console.log("Request data:", JSON.stringify(requestData));
+
+        try {
+          const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            console.error(
+              `Server responded with status ${res.status}:`,
+              errorText
+            );
+
+            let errorMessage;
+            try {
+              const errorData = JSON.parse(errorText);
+              errorMessage =
+                errorData.message ||
+                errorData.error ||
+                t("donateRequest.updateError");
+            } catch (e) {
+              errorMessage = errorText || t("donateRequest.updateError");
+            }
+            throw new Error(errorMessage);
+          }
+
+          return await res.json();
+        } catch (error) {
+          console.error("API call error:", error);
+          throw error;
+        }
+      };
+
+      if (activeTab === "complete") {
+        // Validate quantity
+        if (!healthCheckData.quantity || healthCheckData.quantity < 1) {
+          return alert(t("donateRequest.invalidQuantity"));
+        }
+
+        // Đảm bảo số lượng là số hợp lệ
+        const qty = Number(healthCheckData.quantity);
+        if (isNaN(qty) || qty < 1) {
+          return alert(t("donateRequest.invalidQuantity"));
+        }
+
+        const requestData = {
+          healthCheckStatus: "completed",
+          quantity: qty,
+          healthCheck: {
+            weight: healthCheckData.weight
+              ? parseFloat(healthCheckData.weight)
+              : null,
+            height: healthCheckData.height
+              ? parseFloat(healthCheckData.height)
+              : null,
+            bloodPressure: healthCheckData.bloodPressure || "",
+            heartRate: healthCheckData.heartRate
+              ? parseFloat(healthCheckData.heartRate)
+              : null,
+            alcoholLevel: healthCheckData.alcoholLevel
+              ? parseFloat(healthCheckData.alcoholLevel)
+              : null,
+            temperature: healthCheckData.temperature
+              ? parseFloat(healthCheckData.temperature)
+              : null,
+            hemoglobin: healthCheckData.hemoglobin
+              ? parseFloat(healthCheckData.hemoglobin)
+              : null,
+          },
+        };
+
+        const data = await makeApiCall(requestData);
+        console.log("Complete response data:", data);
+        alert(t("donateRequest.completedSuccessfully"));
+      } else if (activeTab === "cancel") {
+        // Validate reason and follow-up date
+        if (!cancellationData.reason.trim()) {
+          return alert(t("donateRequest.reasonRequired"));
+        }
+
+        if (!cancellationData.followUpDate) {
+          return alert(t("donateRequest.followUpDateRequired"));
+        }
+
+        const requestData = {
+          healthCheckStatus: "canceled",
+          cancellationReason: cancellationData.reason,
+          followUpDate: cancellationData.followUpDate,
+        };
+
+        const data = await makeApiCall(requestData);
+        console.log("Cancel response data:", data);
+        alert(t("donateRequest.canceledSuccessfully"));
       }
+
+      // Close modal and refresh data
+      handleCloseHealthCheck();
       fetchRequests();
     } catch (err) {
       setError(err.message);
+      alert(t("donateRequest.updateError") + ": " + err.message);
+      console.error("Error processing health check:", err);
     }
+  };
+
+  const handleHealthCheckChange = (e) => {
+    const { name, value } = e.target;
+    setHealthCheckData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCancellationChange = (e) => {
+    const { name, value } = e.target;
+    setCancellationData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleDelete = async (id) => {
@@ -257,8 +414,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
-                }`}
+              className={`request-card ${
+                expandedRequestId === request._id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -332,27 +490,17 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       {t("donateRequest.markRejected")}
                     </button>
                   </div>
-                )}
+                )}{" "}
                 {isStaff && request.status === "Approved" && (
                   <div className="admin-actions">
-                    <input
-                      type="number"
-                      min="1"
-                      value={quantities[request._id] ?? 1}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        handleQuantityChange(request._id, e.target.value);
-                      }}
-                      className="quantity-input"
-                    />
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleComplete(request._id, "Completed");
+                        handleOpenHealthCheck(request);
                       }}
                       className="complete-button"
                     >
-                      {t("donateRequest.markCompleted")}
+                      {t("donateRequest.healthCheck")}
                     </button>
                   </div>
                 )}{" "}
@@ -427,6 +575,175 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 {t("common.close")}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Health Check Modal */}
+      {showHealthCheck && healthCheckRequest && (
+        <div
+          className="health-check-modal"
+          onClick={(e) =>
+            e.target.className === "health-check-modal" &&
+            handleCloseHealthCheck()
+          }
+        >
+          <div className="health-check-content">
+            <div className="health-check-header">
+              <h3>{t("donateRequest.healthCheckTitle")}</h3>
+              <button className="close-button" onClick={handleCloseHealthCheck}>
+                &times;
+              </button>
+            </div>
+
+            <div className="health-check-tabs">
+              <button
+                className={`health-check-tab ${
+                  activeTab === "complete" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("complete")}
+              >
+                {t("donateRequest.completeTab")}
+              </button>
+              <button
+                className={`health-check-tab ${
+                  activeTab === "cancel" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("cancel")}
+              >
+                {t("donateRequest.cancelTab")}
+              </button>
+            </div>
+            <form onSubmit={handleHealthCheckSubmit}>
+              {/* Basic Health Metrics - only show in complete tab */}
+              {activeTab === "complete" && (
+                <div className="health-check-form">
+                  <div className="form-field">
+                    <label>{t("donateRequest.weight")} (kg)</label>
+                    <input
+                      type="number"
+                      name="weight"
+                      value={healthCheckData.weight}
+                      onChange={handleHealthCheckChange}
+                      step="0.1"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.height")} (cm)</label>
+                    <input
+                      type="number"
+                      name="height"
+                      value={healthCheckData.height}
+                      onChange={handleHealthCheckChange}
+                      step="0.1"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.bloodPressure")}</label>
+                    <input
+                      type="text"
+                      name="bloodPressure"
+                      value={healthCheckData.bloodPressure}
+                      onChange={handleHealthCheckChange}
+                      placeholder="120/80"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.heartRate")} (bpm)</label>
+                    <input
+                      type="number"
+                      name="heartRate"
+                      value={healthCheckData.heartRate}
+                      onChange={handleHealthCheckChange}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.alcoholLevel")}</label>
+                    <input
+                      type="number"
+                      name="alcoholLevel"
+                      value={healthCheckData.alcoholLevel}
+                      onChange={handleHealthCheckChange}
+                      step="0.01"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.temperature")} (°C)</label>
+                    <input
+                      type="number"
+                      name="temperature"
+                      value={healthCheckData.temperature}
+                      onChange={handleHealthCheckChange}
+                      step="0.1"
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("donateRequest.hemoglobin")} (g/dL)</label>
+                    <input
+                      type="number"
+                      name="hemoglobin"
+                      value={healthCheckData.hemoglobin}
+                      onChange={handleHealthCheckChange}
+                      step="0.1"
+                    />
+                  </div>
+                </div>
+              )}
+              {/* Conditional form fields */}
+              {activeTab === "complete" ? (
+                <div className="form-field quantity-field large-quantity">
+                  <label>{t("donateRequest.quantity")}</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={healthCheckData.quantity}
+                    onChange={handleHealthCheckChange}
+                  />
+                </div>
+              ) : (
+                <div className="cancel-form">
+                  <div className="form-field full-width">
+                    <label>{t("donateRequest.cancellationReason")}</label>
+                    <textarea
+                      name="reason"
+                      value={cancellationData.reason}
+                      onChange={handleCancellationChange}
+                      placeholder={t(
+                        "donateRequest.cancellationReasonPlaceholder"
+                      )}
+                      required
+                      className="large-textarea"
+                    ></textarea>
+                  </div>
+                  <div className="form-field full-width">
+                    <label>{t("donateRequest.followUpDate")}</label>
+                    <input
+                      type="date"
+                      name="followUpDate"
+                      value={cancellationData.followUpDate}
+                      onChange={handleCancellationChange}
+                      min={new Date().toISOString().split("T")[0]}
+                      required
+                      className="large-date-input"
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="form-actions">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={handleCloseHealthCheck}
+                >
+                  {t("common.cancel")}
+                </button>
+                <button type="submit" className="submit-button">
+                  {activeTab === "complete"
+                    ? t("donateRequest.confirmComplete")
+                    : t("donateRequest.confirmCancel")}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
