@@ -79,7 +79,7 @@ function AddressForm({ initialAddress, onChange, standalone = false }) {
                         placeholder={t('profile.cityPlaceholder')}
                     />
                     <div className="input-hint">
-                        <p>{t('profile.city.hint')}</p>
+                        <p>{t('profile.cityHint')}</p>
                     </div>
                 </div>
             </div>

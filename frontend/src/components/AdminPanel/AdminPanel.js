@@ -211,19 +211,19 @@ function AdminPanel() {
           <div className="admin-stats">
             <div className="stat-card">
               <div className="stat-value">{userStats.total}</div>
-              <div className="stat-label">Total Users</div>
+              <div className="stat-label">{t("admin.users.totalUsers")}</div>
             </div>
             <div className="stat-card admin">
               <div className="stat-value">{userStats.admin}</div>
-              <div className="stat-label">Admins</div>
+              <div className="stat-label">{t("admin.users.roleAdmin")}</div>
             </div>
             <div className="stat-card staff">
               <div className="stat-value">{userStats.staff}</div>
-              <div className="stat-label">Staff</div>
+              <div className="stat-label">{t("admin.users.roleStaff")}</div>
             </div>
             <div className="stat-card member">
               <div className="stat-value">{userStats.member}</div>
-              <div className="stat-label">Members</div>
+              <div className="stat-label">{t("admin.users.roleMember")}</div>
             </div>
           </div>
           
@@ -254,10 +254,10 @@ function AdminPanel() {
                     onChange={(e) => setRoleFilter(e.target.value)}
                     className="admin-filter-select"
                   >
-                    <option value="all">All Roles</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Member">Member</option>
+                    <option value="all">{t("admin.users.allRoles")}</option>
+                    <option value="Admin">{t("admin.users.roleAdmin")}</option>
+                    <option value="Staff">{t("admin.users.roleStaff")}</option>
+                    <option value="Member">{t("admin.users.roleMember")}</option>
                   </select>
                 </div>
               </div>
@@ -310,7 +310,7 @@ function AdminPanel() {
                         >
                           {["Member", "Staff", "Admin"].map((r) => (
                             <option key={r} value={r}>
-                              {r}
+                              {t(`admin.users.role${r}`)}
                             </option>
                           ))}
                         </select>

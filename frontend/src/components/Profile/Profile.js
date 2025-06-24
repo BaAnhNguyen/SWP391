@@ -221,7 +221,7 @@ function Profile() {
             <option value="unknown">unknown</option>
           </select>
           <div className="input-hint">
-            <p>{t("profile.blood.hint")}</p>
+            <p>{t("profile.bloodHint")}</p>
           </div>
         </div>
         <div className="form-group">
@@ -234,7 +234,7 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t("profile.identityCard.hint")}</p>
+            <p>{t("profile.identityCardHint")}</p>
           </div>
         </div>{" "}
         <div className="form-group">
@@ -247,7 +247,7 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t("profile.phoneNumber.hint")}</p>
+            <p>{t("profile.phoneNumberHint")}</p>
           </div>
         </div>
         <div className="form-group">
@@ -260,7 +260,7 @@ function Profile() {
             onChange={handleChange}
           />
           <div className="input-hint">
-            <p>{t("profile.dateOfBirth.hint")}</p>
+            <p>{t("profile.dateOfBirthHint")}</p>
           </div>
         </div>
         <div className="form-group">
@@ -277,7 +277,7 @@ function Profile() {
             <option value="Other">{t("profile.gender.other")}</option>
           </select>
           <div className="input-hint">
-            <p>{t("profile.gender.hint")}</p>
+            <p>{t("profile.genderHint")}</p>
           </div>
         </div>
         <div className="form-section-header">
