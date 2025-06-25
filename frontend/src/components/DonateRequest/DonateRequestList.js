@@ -381,8 +381,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
               : t("donateRequest.listTitleMy")}
             <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
               {isStaff
-                ? t("admin.users.role.staff")
-                : t("admin.users.role.member")}
+                ? t("common.role.staff")
+                : t("common.role.member")}
             </span>
           </h2>
           {!isStaff && (
@@ -471,7 +471,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 <div className="component">
                   <strong>{t("donateRequest.donationType")}:</strong>{" "}
                   {t(
-                    `donateRequest.component.${request.component.toLowerCase()}`
+                    `donateRequest.componentType.${request.componentType.toLowerCase()}`
                   )}
                 </div>
                 {isStaff && request.status === "Pending" && (

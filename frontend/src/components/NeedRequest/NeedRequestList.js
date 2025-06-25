@@ -135,8 +135,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
               : t("needRequest.listTitleMy")}
             <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
               {isStaff
-                ? t("admin.users.role.staff")
-                : t("admin.users.role.member")}
+                ? t("common.role.staff")
+                : t("common.role.member")}
             </span>
           </h2>
           {!isStaff && (
@@ -209,7 +209,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                 <span className="component">
                   <strong>{t("needRequest.bloodRequestType")}:</strong>{" "}
                   {t(
-                    `needRequest.component.${request.component.toLowerCase()}`
+                    `common.component.${request.component.toLowerCase()}`
                   )}
                 </span>
                 <div className="request-reason">

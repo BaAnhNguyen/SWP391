@@ -163,8 +163,8 @@ const DonateRequestHistory = ({ user }) => {
               : t("donateRequest.historyTitleMy")}
             <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
               {isStaff
-                ? t("admin.users.role.staff")
-                : t("admin.users.role.member")}
+                ? t("common.role.staff")
+                : t("common.role.member")}
             </span>
           </h2>
           {!isStaff && (
@@ -246,7 +246,7 @@ const DonateRequestHistory = ({ user }) => {
                 <span className="component">
                   <strong>{t("donateRequest.donationType")}:</strong>{" "}
                   {t(
-                    `donateRequest.component.${request.component.toLowerCase()}`
+                    `common.component.${request.component.toLowerCase()}`
                   )}
                 </span>
                 <div className="request-created">
