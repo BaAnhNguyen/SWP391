@@ -2,6 +2,7 @@ const DonationRegistration = require("../models/DonationRegistration");
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
 const { sendMail } = require("../service/emailService");
+const BloodUnit = require("../models/BloodUnit");
 
 //member create donation
 exports.create = async (req, res) => {
@@ -229,6 +230,8 @@ exports.complete = async (req, res) => {
       healthCheck,
       cancellationReason,
       followUpDate,
+      confirmedBloodGroup,
+      confirmedComponent,
     } = req.body;
 
     console.log("======== DONATION COMPLETION ========");
@@ -245,6 +248,7 @@ exports.complete = async (req, res) => {
       console.log("Registration not found with ID:", id);
       return res.status(404).json({ message: "Registration not found" });
     }
+    const user = await User.findById(reg.userId);
 
     if (reg.status !== "Approved") {
       console.log("Registration status is not Approved:", reg.status);
@@ -281,6 +285,20 @@ exports.complete = async (req, res) => {
             .status(400)
             .json({ message: "Valid quantity is required" });
         }
+        // --- Xử lý cập nhật nhóm máu ---
+        if (confirmedBloodGroup && confirmedBloodGroup !== reg.bloodGroup) {
+          reg.bloodGroup = confirmedBloodGroup;
+          await reg.save();
+          if (user && user.bloodGroup !== confirmedBloodGroup) {
+            user.bloodGroup = confirmedBloodGroup;
+            await user.save();
+          }
+        }
+        // --- Xử lý cập nhật thành phần máu ---
+        if (confirmedComponent && confirmedComponent !== reg.component) {
+          reg.component = confirmedComponent;
+          await reg.save();
+        }
 
         console.log("Creating donation history with userId:", userId);
 
@@ -288,8 +306,8 @@ exports.complete = async (req, res) => {
         const donationHistoryData = {
           userId,
           donationDate,
-          bloodGroup: reg.bloodGroup || "unknown",
-          component: reg.component || "unknown",
+          bloodGroup: confirmedBloodGroup || reg.bloodGroup || "unknown",
+          component: confirmedComponent || reg.component || "unknown",
           status: "Completed",
           quantity: qty,
           healthCheck: healthCheck || {},

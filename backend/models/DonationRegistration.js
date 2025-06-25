@@ -49,7 +49,7 @@ const donationSchema = new Schema(
       type: [screeningQuestionSchema],
       default: [],
     },
-    confirmation: { type: Boolean, default: false },
+    confirmation: { type: Boolean, default: false, required: true },
   },
   { timestamps: true }
 );

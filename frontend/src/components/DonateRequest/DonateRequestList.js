@@ -28,6 +28,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
     temperature: "",
     hemoglobin: "",
     quantity: 1,
+    confirmedBloodGroup: "",
+    confirmedComponent: "",
   });
   const [cancellationData, setCancellationData] = useState({
     reason: "",
@@ -121,6 +123,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
       temperature: "",
       hemoglobin: "",
       quantity: 1,
+      confirmedBloodGroup: request.bloodGroup || "",
+      confirmedComponent: request.component || "",
     });
     setCancellationData({
       reason: "",
@@ -203,6 +207,14 @@ const DonateRequestList = ({ userRole, refresh }) => {
           return alert(t("donateRequest.invalidQuantity"));
         }
 
+        // Validate nhóm máu/thành phần
+        if (!healthCheckData.confirmedBloodGroup) {
+          return alert("Vui lòng chọn nhóm máu xác nhận");
+        }
+        if (!healthCheckData.confirmedComponent) {
+          return alert("Vui lòng chọn thành phần máu xác nhận");
+        }
+
         const requestData = {
           healthCheckStatus: "completed",
           quantity: qty,
@@ -227,6 +239,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
               ? parseFloat(healthCheckData.hemoglobin)
               : null,
           },
+          confirmedBloodGroup: healthCheckData.confirmedBloodGroup,
+          confirmedComponent: healthCheckData.confirmedComponent,
         };
 
         const data = await makeApiCall(requestData);
@@ -685,6 +699,43 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       onChange={handleHealthCheckChange}
                       step="0.1"
                     />
+                  </div>
+                  <div className="form-field">
+                    <label>Nhóm máu xác nhận</label>
+                    <select
+                      name="confirmedBloodGroup"
+                      value={healthCheckData.confirmedBloodGroup}
+                      onChange={handleHealthCheckChange}
+                      required
+                    >
+                      <option value="">Chọn nhóm máu</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="unknown">Không xác định</option>
+                    </select>
+                  </div>
+                  {/* Thành phần máu xác nhận */}
+                  <div className="form-field">
+                    <label>Thành phần máu xác nhận</label>
+                    <select
+                      name="confirmedComponent"
+                      value={healthCheckData.confirmedComponent}
+                      onChange={handleHealthCheckChange}
+                      required
+                    >
+                      <option value="">Chọn thành phần</option>
+                      <option value="WholeBlood">Toàn phần</option>
+                      <option value="Plasma">Huyết tương</option>
+                      <option value="Platelets">Tiểu cầu</option>
+                      <option value="RedCells">Hồng cầu</option>
+                      <option value="unknown">Không xác định</option>
+                    </select>
                   </div>
                 </div>
               )}

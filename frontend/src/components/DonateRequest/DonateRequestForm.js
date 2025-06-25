@@ -14,6 +14,8 @@ const DonateRequestForm = ({ onRequestCreated }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [confirmationError, setConfirmationError] = useState(null);
 
   // State cho form 2 bước
   const [step, setStep] = useState(1); // 1: Thông tin cơ bản, 2: Câu hỏi y tế
@@ -200,11 +202,17 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         };
       });
 
+      if (!confirmation) {
+        setConfirmationError("Bạn phải xác nhận thông tin trước khi đăng ký.");
+        setLoading(false);
+        return;
+      }
+
       // Tạo request body với thông tin cơ bản và câu trả lời y tế
       const requestBody = {
         ...formData,
         screening,
-        confirmation: true, // Member đã xác nhận thông tin
+        confirmation,
       };
 
       const response = await fetch(`${API_BASE_URL}/donateregistration`, {
@@ -415,6 +423,25 @@ const DonateRequestForm = ({ onRequestCreated }) => {
               Không có câu hỏi nào. Vui lòng kiểm tra lại kết nối hoặc thử lại.
             </div>
           )}
+          <div className="form-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={confirmation}
+                onChange={() => {
+                  setConfirmation(!confirmation);
+                  setConfirmationError(null);
+                }}
+                required
+              />
+              &nbsp;Tôi xác nhận các thông tin trên là đúng và đồng ý tham gia
+              hiến máu.
+              <span className="required">*</span>
+            </label>
+            {confirmationError && (
+              <div className="error-message">{confirmationError}</div>
+            )}
+          </div>
 
           <div className="form-actions">
             <button
