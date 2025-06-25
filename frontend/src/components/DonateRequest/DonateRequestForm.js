@@ -37,11 +37,11 @@ const DonateRequestForm = ({ onRequestCreated }) => {
   ];
 
   const components = [
-    { value: "WholeBlood", label: t("donateRequest.component.wholeblood") },
-    { value: "Plasma", label: t("donateRequest.component.plasma") },
-    { value: "Platelets", label: t("donateRequest.component.platelets") },
-    { value: "RedCells", label: t("donateRequest.component.redcells") },
-    { value: "unknown", label: t("donateRequest.component.unknown") },
+    { value: "WholeBlood", label: t("common.component.wholeblood") },
+    { value: "Plasma", label: t("common.component.plasma") },
+    { value: "Platelets", label: t("common.component.platelets") },
+    { value: "RedCells", label: t("common.component.redcells") },
+    { value: "unknown", label: t("common.component.unknown") },
   ];
   useEffect(() => {
     // Component mount effect (empty)
@@ -307,7 +307,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
 
           <div className="form-group">
             <label htmlFor="component">
-              Thành phần máu
+              {t("needRequest.component")}
               <span className="required">*</span>
             </label>
             <select
@@ -318,7 +318,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
               required
               className="form-control"
             >
-              <option value="">Chọn thành phần máu</option>
+              <option value="">{t("needRequest.selectComponent")}</option>
               {components.map((comp) => (
                 <option key={comp.value} value={comp.value}>
                   {comp.label}

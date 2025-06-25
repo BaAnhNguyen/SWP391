@@ -37,10 +37,10 @@ const DonateRequestForm = ({ onRequestCreated }) => {
   ];
 
   const components = [
-    { value: "WholeBlood", label: t("donateRequest.component.wholeblood") },
-    { value: "Plasma", label: t("donateRequest.component.plasma") },
-    { value: "Platelets", label: t("donateRequest.component.platelets") },
-    { value: "RedCells", label: t("donateRequest.component.redcells") },
+    { value: "WholeBlood", label: t("common.component.wholeblood") },
+    { value: "Plasma", label: t("common.component.plasma") },
+    { value: "Platelets", label: t("common.component.platelets") },
+    { value: "RedCells", label: t("common.component.redcells") },
     { value: "Unknown", label: "Unknown" },
   ];
   // Debug info khi component load
