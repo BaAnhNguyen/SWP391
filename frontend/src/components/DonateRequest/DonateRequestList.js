@@ -380,9 +380,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
               ? t("donateRequest.listTitleAll")
               : t("donateRequest.listTitleMy")}
             <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
-              {isStaff
-                ? t("common.role.staff")
-                : t("common.role.member")}
+              {isStaff ? t("common.role.staff") : t("common.role.member")}
             </span>
           </h2>
           {!isStaff && (
@@ -456,7 +454,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   className="status-badge"
                   style={{ backgroundColor: statusColors[request.status] }}
                 >
-                  {t(`donateRequest.status.${request.status.toLowerCase()}`)}
+                  {t(
+                    `donateRequest.status.${(
+                      request.status || ""
+                    ).toLowerCase()}`
+                  )}
                 </div>
               </div>{" "}
               <div className="request-content">
@@ -471,7 +473,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 <div className="component">
                   <strong>{t("donateRequest.donationType")}:</strong>{" "}
                   {t(
-                    `donateRequest.componentType.${request.componentType.toLowerCase()}`
+                    `donateRequest.componentType.${(
+                      request.componentType || ""
+                    ).toLowerCase()}`
                   )}
                 </div>
                 {isStaff && request.status === "Pending" && (
