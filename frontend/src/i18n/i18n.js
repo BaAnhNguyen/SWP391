@@ -57,7 +57,7 @@ const resources = {
         updateSuccess: "Question updated successfully",
         deleteSuccess: "Question deleted successfully",
         confirmDelete: "Are you sure you want to delete this question?",
-        contentRequired: "Question content is required"
+        contentRequired: "Question content is required",
       },
 
       // Profile Page
@@ -131,29 +131,11 @@ const resources = {
           roleStaff: "Staff",
           roleMember: "Member",
           allRoles: "All roles",
-          totalUsers: "Total Users"
+          totalUsers: "Total Users",
         },
         confirmRoleChange:
           "Are you sure you want to change this user's role to {{role}}?",
       },
-
-      //Cần thiết thì thêm vào adminpanel để dùng
-      // "admin.users.changeRole": "Change Role",
-      // "admin.users.updateSuccess": "User role updated successfully!",
-      // "admin.error": "Error loading admin data. Please try again later.",
-      // "admin.deleteSuccess": "User deleted successfully!",
-      // "admin.deleteError": "Error deleting user. Please try again.",
-      // "admin.deleteButton": "Delete User",
-      // "admin.deleteConfirm": "Are you sure you want to delete this user?",
-      // "admin.deleteConfirmYes": "Yes, delete",
-      // "admin.deleteConfirmNo": "No, cancel",
-      // "admin.deleteUser": "Delete User",
-      // "admin.users.update": "Update Role",
-      // "admin.users.updateButton": "Update Role",
-      // "admin.users.updateError": "Error updating user role. Please try again.",
-      // "admin.users.updateSuccess": "User role updated successfully!",
-      // "admin.users.changeRoleError":
-      //   "Error changing user role. Please try again.",
 
       // Home Page
       "home.hero.title": "Give the Gift of Life",
@@ -161,91 +143,100 @@ const resources = {
       "home.hero.subtitle":
         "Every day, thousands of people need blood transfusions to survive. Your donation can make a significant difference in someone's life.",
       "home.hero.donateButton": "Donate Now",
-      "home.hero.learnMore": "Learn More", 
-      
+      "home.hero.learnMore": "Learn More",
+
       // Benefits Section
       benefits: {
         title: "Benefits of Donating Blood",
         subtitle: "Discover how your donation can make a difference",
         health: {
           title: "Save Up to 3 Lives",
-          description: "A single blood donation can help save up to three lives. Your donation is separated into red blood cells, plasma, and platelets, each helping different patients."
+          description:
+            "A single blood donation can help save up to three lives. Your donation is separated into red blood cells, plasma, and platelets, each helping different patients.",
         },
         screening: {
           title: "Free Health Screening",
-          description: "Every donation includes a mini-physical with blood pressure, temperature, pulse, and hemoglobin level checks - completely free of charge."
+          description:
+            "Every donation includes a mini-physical with blood pressure, temperature, pulse, and hemoglobin level checks - completely free of charge.",
         },
         community: {
           title: "Reduce Health Risks",
-          description: "Regular blood donation may help maintain healthy iron levels and reduce oxidative stress in your body, promoting better overall health."
+          description:
+            "Regular blood donation may help maintain healthy iron levels and reduce oxidative stress in your body, promoting better overall health.",
         },
         emergency: {
           title: "Boost Cardiovascular Health",
-          description: "Donating blood can help improve blood flow and reduce the risk of heart disease by maintaining healthy iron levels."
+          description:
+            "Donating blood can help improve blood flow and reduce the risk of heart disease by maintaining healthy iron levels.",
         },
         renewal: {
           title: "Regular Blood Renewal",
-          description: "Donating blood promotes the production of new blood cells, helping your body maintain healthy blood cell levels."
+          description:
+            "Donating blood promotes the production of new blood cells, helping your body maintain healthy blood cell levels.",
         },
         hemochromatosis: {
           title: "Reduces Risk of Hemochromatosis",
-          description: "Regular blood donation can help reduce iron overload and decrease the risk of hemochromatosis, especially in men."
-        }
+          description:
+            "Regular blood donation can help reduce iron overload and decrease the risk of hemochromatosis, especially in men.",
+        },
       },
 
-        // Blood Types Section
+      // Blood Types Section
       bloodTypes: {
         title: "Blood Types & Compatibility",
-        description: "Understanding blood types is crucial for successful transfusions. Here's a quick guide to blood type compatibility.",
+        description:
+          "Understanding blood types is crucial for successful transfusions. Here's a quick guide to blood type compatibility.",
         canDonateTo: "Can donate to:",
         canReceiveFrom: "Can receive from:",
         universalDonor: "Universal Donor",
         allTypes: "All Blood Types",
         aPlus: {
           donateTo: "A+, AB+",
-          receiveFrom: "A+, A-, O+, O-"
+          receiveFrom: "A+, A-, O+, O-",
         },
         aMinus: {
           donateTo: "A+, A-, AB+, AB-",
-          receiveFrom: "A-, O-"
+          receiveFrom: "A-, O-",
         },
         bPlus: {
           donateTo: "B+, AB+",
-          receiveFrom: "B+, B-, O+, O-"
+          receiveFrom: "B+, B-, O+, O-",
         },
         bMinus: {
           donateTo: "B+, B-, AB+, AB-",
-          receiveFrom: "B-, O-"
+          receiveFrom: "B-, O-",
         },
         abPlus: {
           donateTo: "AB+ only",
-          receiveFrom: "All Blood Types"
+          receiveFrom: "All Blood Types",
         },
         abMinus: {
           donateTo: "AB+, AB-",
-          receiveFrom: "A-, B-, AB-, O-"
+          receiveFrom: "A-, B-, AB-, O-",
         },
         oPlus: {
           donateTo: "A+, B+, AB+, O+",
-          receiveFrom: "O+, O-"
+          receiveFrom: "O+, O-",
         },
         oMinus: {
           donateTo: "All Blood Types",
-          receiveFrom: "O- only"
-        }
+          receiveFrom: "O- only",
+        },
       },
 
       // Donation Process Section
       donationProcess: {
         title: "The Donation Process",
-        description: "Donating blood is a simple and straightforward process that takes about an hour from start to finish.",
+        description:
+          "Donating blood is a simple and straightforward process that takes about an hour from start to finish.",
         step1: {
           title: "Registration",
           description: "Present ID and answer basic health questions",
         },
         step2: {
           title: "Health Screening",
-          description: "Quick physical (temperature, blood pressure, pulse, hemoglobin)",
+          description:
+            "Quick physical (temperature, blood pressure, pulse, hemoglobin)",
         },
         step3: {
           title: "Blood Donation",
@@ -260,11 +251,14 @@ const resources = {
       // Testimonials Section
       testimonials: {
         title: "Donor Testimonials",
-        quote1: "I've been donating blood for over 10 years now. It's just an hour of my time, but it means the world to someone in need.",
+        quote1:
+          "I've been donating blood for over 10 years now. It's just an hour of my time, but it means the world to someone in need.",
         author1: "- Sarah Johnson",
-        quote2: "After my son's accident, he needed multiple transfusions. Now I donate regularly to give back and help others like him.",
+        quote2:
+          "After my son's accident, he needed multiple transfusions. Now I donate regularly to give back and help others like him.",
         author2: "- Michael Rodriguez",
-        quote3: "It's such a simple way to make a big difference. I feel great knowing my donation directly helps save lives!",
+        quote3:
+          "It's such a simple way to make a big difference. I feel great knowing my donation directly helps save lives!",
         author3: "- Priya Patel",
       },
 
@@ -284,6 +278,7 @@ const resources = {
       "footer.phone": "Phone: (555) 123-4567",
       "footer.email": "Email: info@lifesource.com",
       "footer.rights": "© 2024 LifeSource. All rights reserved.",
+
       // Login Page
       "login.title": "Welcome to LifeSource",
       "login.subtitle":
@@ -339,7 +334,9 @@ const resources = {
       // Language Switcher
       "language.switch": "Language",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt", // Legal Pages
+      "language.vietnamese": "Tiếng Việt",
+
+      // Legal Pages
       "legal.terms.title": "Terms of Service",
       "legal.terms.content": "Terms of Service content goes here...",
       "legal.privacy.title": "Privacy Policy",
@@ -363,7 +360,6 @@ const resources = {
         "Your blood request has been submitted successfully. Our team will process it as soon as possible.",
       "needRequest.submitError":
         "Error submitting your request. Please try again.",
-
       "needRequest.listTitleAll": "All Blood Need Requests",
       "needRequest.listTitleMy": "My Blood Need Requests",
       "needRequest.filterByStatus": "Filter by Status",
@@ -374,8 +370,6 @@ const resources = {
       "needRequest.noRequests": "No blood requests found",
       "needRequest.bloodRequestType": "Request type",
       "needRequest.unit": "Unit",
-      
-      // Units key was duplicated - removed here
       "needRequest.markFulfilled": "Mark as Fulfilled",
       "needRequest.markExpired": "Mark as Expired",
       "needRequest.confirmDelete":
@@ -390,7 +384,7 @@ const resources = {
       "needRequest.memberNotice":
         "As a member, you can only see your own blood donation requests.",
 
-      //common stuff
+      // Common
       common: {
         delete: "Delete",
         submitting: "Submitting...",
@@ -417,7 +411,7 @@ const resources = {
         },
       },
 
-      // Blood Storage Management
+      // Blood Storage
       "bloodStorage.title": "Blood Storage Management",
       "bloodStorage.staffOnly":
         "This page is restricted to staff and admin users only.",
@@ -450,7 +444,8 @@ const resources = {
       // Donate Request
       donateRequest: {
         title: "Blood Donation Registration",
-        description: "Register to donate blood and help save lives. Your donation can make a difference.",
+        description:
+          "Register to donate blood and help save lives. Your donation can make a difference.",
         bloodGroup: "Blood Group",
         selectBloodGroup: "Select blood group",
         component: "Blood Component",
@@ -458,7 +453,8 @@ const resources = {
         donationDate: "Preferred Donation Date",
         submit: "Submit Registration",
         submitting: "Submitting...",
-        successMessage: "Your donation registration has been submitted successfully. Our team will contact you soon.",
+        successMessage:
+          "Your donation registration has been submitted successfully. Our team will contact you soon.",
         submitError: "Error submitting your registration. Please try again.",
         listTitleAll: "All Donation Registrations",
         listTitleMy: "My Donation Registrations",
@@ -470,7 +466,7 @@ const resources = {
           completed: "Completed",
           cancelled: "Cancelled",
           pending: "Pending",
-          rejected: "Rejected"
+          rejected: "Rejected",
         },
         viewMedicalQuestions: "Medical Questions",
         medicalQuestionsTitle: "Medical Screening Questions",
@@ -490,9 +486,10 @@ const resources = {
           viewRequests: "View Registrations",
           viewAllRequests: "View All Registrations",
           viewMyRequests: "View My Registrations",
-          medicalHealth: "Medical Health"
+          medicalHealth: "Medical Health",
         },
-        memberNotice: "As a member, you can only see your own donation registrations.",
+        memberNotice:
+          "As a member, you can only see your own donation registrations.",
         historyTitleAll: "Blood donation history",
         historyTitleMy: "My blood donation history",
         createdAt: "Created at",
@@ -516,7 +513,8 @@ const resources = {
         hemoglobin: "Hemoglobin",
         invalidQuantity: "Please enter a valid quantity (minimum 1)",
         cancellationReason: "Cancellation Reason",
-        cancellationReasonPlaceholder: "Please explain the reason for cancelling this donation",
+        cancellationReasonPlaceholder:
+          "Please explain the reason for cancelling this donation",
         followUpDate: "Follow-up Date",
         confirmComplete: "Complete Donation",
         confirmCancel: "Cancel Donation",
@@ -525,32 +523,10 @@ const resources = {
         completedSuccessfully: "Donation completed successfully!",
         canceledSuccessfully: "Donation canceled successfully!",
         bloodGroupError: "Wrong blood group",
-        bloodGroupMismatch: "The selected blood group does not match your profile"
+        bloodGroupMismatch:
+          "The selected blood group does not match your profile",
+        detailInfo: "Detail Information",
       },
-
-      // Health check translations
-      "donateRequest.healthCheck": "Kiểm Tra Sức Khỏe",
-      "donateRequest.healthCheckTitle": "Biểu Mẫu Kiểm Tra Sức Khỏe",
-      "donateRequest.completeTab": "Hoàn Thành Hiến Máu",
-      "donateRequest.cancelTab": "Hủy Hiến Máu",
-      "donateRequest.weight": "Cân Nặng",
-      "donateRequest.height": "Chiều Cao",
-      "donateRequest.bloodPressure": "Huyết Áp",
-      "donateRequest.heartRate": "Nhịp Tim",
-      "donateRequest.alcoholLevel": "Nồng Độ Cồn",
-      "donateRequest.temperature": "Nhiệt Độ",
-      "donateRequest.hemoglobin": "Hemoglobin",
-      "donateRequest.quantity": "Số Lượng",
-      "donateRequest.invalidQuantity":
-        "Vui lòng nhập số lượng hợp lệ (tối thiểu 1)",
-      "donateRequest.cancellationReason": "Lý Do Hủy",
-      "donateRequest.cancellationReasonPlaceholder":
-        "Vui lòng giải thích lý do hủy hiến máu này",
-      "donateRequest.followUpDate": "Ngày Hẹn Tái Khám",
-      "donateRequest.confirmComplete": "Hoàn Thành Hiến Máu",
-      "donateRequest.confirmCancel": "Hủy Hiến Máu",
-      "donateRequest.reasonRequired": "Vui lòng cung cấp lý do hủy",
-      "donateRequest.followUpDateRequired": "Vui lòng chọn ngày hẹn tái khám",
     },
   },
   vi: {
@@ -580,7 +556,7 @@ const resources = {
       },
 
       // Medical Health
-      "donateRequest.nav.medicalHealth": "Medical Health",
+      "donateRequest.nav.medicalHealth": "Sức Khỏe Y Tế",
       medicalHealth: {
         title: "Câu hỏi sàng lọc sức khỏe",
         description: "Quản lý câu hỏi sàng lọc sức khỏe cho hiến máu",
@@ -606,7 +582,7 @@ const resources = {
         updateSuccess: "Cập nhật câu hỏi thành công",
         deleteSuccess: "Xóa câu hỏi thành công",
         confirmDelete: "Bạn có chắc muốn xóa câu hỏi này?",
-        contentRequired: "Nội dung câu hỏi là bắt buộc"
+        contentRequired: "Nội dung câu hỏi là bắt buộc",
       },
 
       // Profile Page
@@ -643,8 +619,7 @@ const resources = {
         updateSuccess: "Cập nhật hồ sơ thành công!",
         bloodHint:
           "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
-        cityHint:
-          "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
+        cityHint: "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
         update: "Cập nhật thông tin",
       },
 
@@ -680,7 +655,7 @@ const resources = {
           roleStaff: "Nhân viên",
           roleMember: "Thành viên",
           allRoles: "Tất cả",
-          totalUsers: "Tổng số người dùng"
+          totalUsers: "Tổng số người dùng",
         },
         confirmRoleChange:
           "Bạn có chắc muốn thay đổi vai trò của người dùng này thành {{role}} không?",
@@ -693,83 +668,91 @@ const resources = {
         "Mỗi ngày, hàng ngàn người cần truyền máu để sống sót. Việc hiến máu của bạn có thể tạo ra sự khác biệt đáng kể trong cuộc sống của ai đó.",
       "home.hero.donateButton": "Hiến Máu Ngay",
       "home.hero.learnMore": "Tìm Hiểu Thêm",
-      
+
       // Benefits Section
       benefits: {
         title: "Lợi Ích Của Việc Hiến Máu",
         subtitle: "Khám phá cách hiến máu của bạn có thể tạo ra sự khác biệt",
         health: {
           title: "Cứu Tới 3 Mạng Sống",
-          description: "Một lần hiến máu có thể giúp cứu tới ba mạng sống. Máu hiến của bạn được tách thành hồng cầu, huyết tương và tiểu cầu, mỗi thành phần giúp đỡ các bệnh nhân khác nhau."
+          description:
+            "Một lần hiến máu có thể giúp cứu tới ba mạng sống. Máu hiến của bạn được tách thành hồng cầu, huyết tương và tiểu cầu, mỗi thành phần giúp đỡ các bệnh nhân khác nhau.",
         },
         screening: {
           title: "Khám Sức Khỏe Miễn Phí",
-          description: "Mỗi lần hiến máu bao gồm kiểm tra sức khỏe cơ bản với huyết áp, nhiệt độ, mạch và mức hemoglobin - hoàn toàn miễn phí."
+          description:
+            "Mỗi lần hiến máu bao gồm kiểm tra sức khỏe cơ bản với huyết áp, nhiệt độ, mạch và mức hemoglobin - hoàn toàn miễn phí.",
         },
         community: {
           title: "Giảm Rủi Ro Sức Khỏe",
-          description: "Hiến máu thường xuyên có thể giúp duy trì mức sắt khỏe mạnh và giảm stress oxy hóa trong cơ thể, thúc đẩy sức khỏe tổng thể tốt hơn."
+          description:
+            "Hiến máu thường xuyên có thể giúp duy trì mức sắt khỏe mạnh và giảm stress oxy hóa trong cơ thể, thúc đẩy sức khỏe tổng thể tốt hơn.",
         },
         emergency: {
           title: "Tăng Cường Sức Khỏe Tim Mạch",
-          description: "Hiến máu có thể giúp cải thiện lưu lượng máu và giảm nguy cơ bệnh tim bằng cách duy trì mức sắt khỏe mạnh."
+          description:
+            "Hiến máu có thể giúp cải thiện lưu lượng máu và giảm nguy cơ bệnh tim bằng cách duy trì mức sắt khỏe mạnh.",
         },
         renewal: {
           title: "Tái Tạo Máu Đều Đặn",
-          description: "Hiến máu thúc đẩy sản xuất các tế bào máu mới, giúp cơ thể bạn duy trì mức tế bào máu khỏe mạnh."
+          description:
+            "Hiến máu thúc đẩy sản xuất các tế bào máu mới, giúp cơ thể bạn duy trì mức tế bào máu khỏe mạnh.",
         },
         hemochromatosis: {
           title: "Giảm Nguy Cơ Thừa Sắt",
-          description: "Hiến máu thường xuyên có thể giúp giảm tình trạng thừa sắt và nguy cơ mắc bệnh hemochromatosis, đặc biệt ở nam giới."
-        }
+          description:
+            "Hiến máu thường xuyên có thể giúp giảm tình trạng thừa sắt và nguy cơ mắc bệnh hemochromatosis, đặc biệt ở nam giới.",
+        },
       },
 
-        // Blood Types Section
+      // Blood Types Section
       bloodTypes: {
         title: "Nhóm Máu & Tương Thích",
-        description: "Hiểu về nhóm máu là rất quan trọng cho việc truyền máu thành công. Đây là hướng dẫn nhanh về tính tương thích của nhóm máu.",
+        description:
+          "Hiểu về nhóm máu là rất quan trọng cho việc truyền máu thành công. Đây là hướng dẫn nhanh về tính tương thích của nhóm máu.",
         canDonateTo: "Có thể hiến cho:",
         canReceiveFrom: "Có thể nhận từ:",
         universalDonor: "Người Cho Máu Toàn Cầu",
         allTypes: "Tất Cả Nhóm Máu",
         aPlus: {
           donateTo: "A+, AB+",
-          receiveFrom: "A+, A-, O+, O-"
+          receiveFrom: "A+, A-, O+, O-",
         },
         aMinus: {
           donateTo: "A+, A-, AB+, AB-",
-          receiveFrom: "A-, O-"
+          receiveFrom: "A-, O-",
         },
         bPlus: {
           donateTo: "B+, AB+",
-          receiveFrom: "B+, B-, O+, O-"
+          receiveFrom: "B+, B-, O+, O-",
         },
         bMinus: {
           donateTo: "B+, B-, AB+, AB-",
-          receiveFrom: "B-, O-"
+          receiveFrom: "B-, O-",
         },
         abPlus: {
           donateTo: "Chỉ AB+",
-          receiveFrom: "Tất Cả Nhóm Máu"
+          receiveFrom: "Tất Cả Nhóm Máu",
         },
         abMinus: {
           donateTo: "AB+, AB-",
-          receiveFrom: "A-, B-, AB-, O-"
+          receiveFrom: "A-, B-, AB-, O-",
         },
         oPlus: {
           donateTo: "A+, B+, AB+, O+",
-          receiveFrom: "O+, O-"
+          receiveFrom: "O+, O-",
         },
         oMinus: {
           donateTo: "Tất Cả Nhóm Máu",
-          receiveFrom: "Chỉ O-"
-        }
+          receiveFrom: "Chỉ O-",
+        },
       },
 
       // Donation Process Section
       donationProcess: {
         title: "Quy Trình Hiến Máu",
-        description: "Hiến máu là một quy trình đơn giản và dễ hiểu, mất khoảng một giờ từ đầu đến cuối.",
+        description:
+          "Hiến máu là một quy trình đơn giản và dễ hiểu, mất khoảng một giờ từ đầu đến cuối.",
         step1: {
           title: "Đăng Ký",
           description: "Xuất trình CMND và trả lời các câu hỏi sức khỏe cơ bản",
@@ -784,18 +767,22 @@ const resources = {
         },
         step4: {
           title: "Nghỉ Ngơi",
-          description: "Nghỉ ngơi và thưởng thức đồ ăn nhẹ để bổ sung chất lỏng và năng lượng",
+          description:
+            "Nghỉ ngơi và thưởng thức đồ ăn nhẹ để bổ sung chất lỏng và năng lượng",
         },
       },
 
       // Testimonials Section
       testimonials: {
         title: "Lời Chứng Thực Từ Người Hiến Máu",
-        quote1: "Tôi đã hiến máu hơn 10 năm nay. Chỉ mất một giờ của tôi, nhưng có ý nghĩa rất lớn đối với ai đó đang cần.",
+        quote1:
+          "Tôi đã hiến máu hơn 10 năm nay. Chỉ mất một giờ của tôi, nhưng có ý nghĩa rất lớn đối với ai đó đang cần.",
         author1: "- Sarah Johnson",
-        quote2: "Sau tai nạn của con trai tôi, cậu ấy cần nhiều lần truyền máu. Giờ tôi hiến máu thường xuyên để đền đáp và giúp đỡ những người khác như cậu ấy.",
+        quote2:
+          "Sau tai nạn của con trai tôi, cậu ấy cần nhiều lần truyền máu. Giờ tôi hiến máu thường xuyên để đền đáp và giúp đỡ những người khác như cậu ấy.",
         author2: "- Michael Rodriguez",
-        quote3: "Đây là cách đơn giản để tạo ra sự khác biệt lớn. Tôi cảm thấy tuyệt vời khi biết việc hiến máu của mình trực tiếp giúp cứu sống!",
+        quote3:
+          "Đây là cách đơn giản để tạo ra sự khác biệt lớn. Tôi cảm thấy tuyệt vời khi biết việc hiến máu của mình trực tiếp giúp cứu sống!",
         author3: "- Priya Patel",
       },
 
@@ -815,6 +802,7 @@ const resources = {
       "footer.phone": "Điện thoại: (555) 123-4567",
       "footer.email": "Email: info@lifesource.com",
       "footer.rights": "© 2024 LifeSource. Tất cả quyền được bảo lưu.",
+
       // Login Page
       "login.title": "Chào Mừng Đến Với LifeSource",
       "login.subtitle":
@@ -829,6 +817,7 @@ const resources = {
       "login.loginButton": "Đăng Nhập",
       "login.noAccount": "Chưa có tài khoản?",
       "login.signUp": "Đăng ký tại đây",
+
       // Contact Page
       "contact.title": "Liên Hệ",
       "contact.subtitle": "Có câu hỏi về hiến máu? Chúng tôi sẵn sàng giúp đỡ.",
@@ -868,7 +857,9 @@ const resources = {
       // Language Switcher
       "language.switch": "Ngôn Ngữ",
       "language.english": "English",
-      "language.vietnamese": "Tiếng Việt", // Legal Pages
+      "language.vietnamese": "Tiếng Việt",
+
+      // Legal Pages
       "legal.terms.title": "Điều Khoản Dịch Vụ",
       "legal.terms.content": "Nội dung Điều Khoản Dịch Vụ ở đây...",
       "legal.privacy.title": "Chính Sách Bảo Mật",
@@ -891,12 +882,11 @@ const resources = {
       "needRequest.successMessage":
         "Yêu cầu máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xử lý nhanh nhất có thể.",
       "needRequest.submitError": "Lỗi khi gửi yêu cầu. Vui lòng thử lại.",
-
       "needRequest.listTitleAll": "Tất Cả Yêu Cầu Máu",
       "needRequest.listTitleMy": "Yêu Cầu Máu Của Tôi",
       "needRequest.filterByStatus": "Lọc theo Trạng Thái",
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
-      "needRequest.status.open": "Chưa giải quyết",
+      "needRequest.status.open": "Chưa giải quyết",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
       "needRequest.status.expired": "Đã Hết Hạn",
       "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
@@ -914,9 +904,9 @@ const resources = {
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
       "needRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.", 
-        
-      //common stuff
+        "Là thành viên, bạn chỉ có thể xem các yêu cầu máu của riêng mình.",
+
+      // Common
       common: {
         delete: "Xóa",
         submitting: "Đang gửi...",
@@ -929,6 +919,7 @@ const resources = {
         close: "Đóng",
         cancel: "Hủy",
         role: {
+          guest: "Khách",
           member: "Thành viên",
           staff: "Nhân viên",
           admin: "Quản trị viên",
@@ -942,7 +933,7 @@ const resources = {
         },
       },
 
-      // Blood Storage Management
+      // Blood Storage
       "bloodStorage.title": "Quản Lý Kho Máu",
       "bloodStorage.staffOnly":
         "Trang này chỉ dành cho nhân viên và quản trị viên.",
@@ -972,127 +963,89 @@ const resources = {
       "bloodStorage.noUnits": "Không có đơn vị máu nào",
 
       // Donate Request
-      "donateRequest.title": "Đăng Ký Hiến Máu",
-      "donateRequest.description":
-        "Đăng ký hiến máu và giúp cứu sống những người cần máu. Sự hiến tặng của bạn có thể tạo ra sự khác biệt.",
-      "donateRequest.bloodGroup": "Nhóm Máu",
-      "donateRequest.selectBloodGroup": "Chọn nhóm máu",
-      "donateRequest.component": "Thành Phần Máu",
-      "donateRequest.selectComponent": "Chọn thành phần",
-      "donateRequest.donationDate": "Ngày Hiến Máu Mong Muốn",
-      "donateRequest.submit": "Gửi Đăng Ký",
-      "donateRequest.submitting": "Đang gửi...",
-      "donateRequest.successMessage":
-        "Đăng ký hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ liên hệ với bạn sớm.",
-      "donateRequest.submitError": "Lỗi khi gửi đăng ký. Vui lòng thử lại.",
-
-      "donateRequest.listTitleAll": "Tất Cả Đăng Ký Hiến Máu",
-      "donateRequest.listTitleMy": "Đăng Ký Hiến Máu Của Tôi",
-      "donateRequest.filterByStatus": "Lọc theo Trạng Thái",
-      "donateRequest.allStatuses": "Tất Cả Trạng Thái",
-      "donateRequest.status.open": "Đang Mở",
-      "donateRequest.status.approved": "Đã Duyệt",
-      "donateRequest.status.completed": "Đã Hoàn Thành",
-      "donateRequest.status.cancelled": "Đã Hủy",
-      "donateRequest.status.pending": "Đang Chờ",
-      "donateRequest.status.rejected": "Đã Từ Chối",
-      "donateRequest.markRejected": "Đánh Dấu Từ Chối",
-      "donateRequest.viewMedicalQuestions": "Câu Hỏi Y Tế",
-      "donateRequest.medicalQuestionsTitle": "Câu Hỏi Sàng Lọc Y Tế",
-      "donateRequest.noMedicalData":
-        "Đơn đăng ký này không có dữ liệu câu hỏi y tế. Có thể đơn đăng ký được tạo trước khi tính năng sàng lọc y tế được triển khai.",
-      "donateRequest.medicalStep": "Sàng Lọc Y Tế",
-      "donateRequest.basicInfoStep": "Thông Tin Cơ Bản",
-      "donateRequest.nextStep": "Tiếp Theo",
-      "donateRequest.prevStep": "Quay Lại",
-
-      "donateRequest.noRequests": "No donation registrations found",
-      "donateRequest.donationType": "Donation type",
-      "donateRequest.markApproved": "Mark as Approved",
-      "donateRequest.markCompleted": "Mark as Completed",
-      "donateRequest.markCancelled": "Mark as Cancelled",
-      "donateRequest.confirmDelete":
-        "Are you sure you want to delete this registration?",
-      "donateRequest.deleteError": "Error deleting registration",
-      "donateRequest.updateError": "Error updating registration status",
-      "donateRequest.fetchError": "Error fetching donation registrations",
-      "donateRequest.nav.createRequest": "Đăng Ký Hiến Máu",
-      "donateRequest.nav.viewRequests": "Xem Đăng Ký",
-      "donateRequest.nav.viewAllRequests": "Xem Tất Cả Đăng Ký",
-      "donateRequest.nav.viewMyRequests": "Xem Đăng Ký Của Tôi",
-      "donateRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
-
-      "donateRequest.historyTitleAll": "Lịch Sử Hiến Máu",
-      "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
-      "donateRequest.createdAt": "Tạo Lúc",
-      "donateRequest.completedAt": "Hoàn Thành Lúc",
-      "donateRequest.rejectionReason": "Lý Do Từ Chối",
-      "donateRequest.medicalHistory": "Lịch sử bệnh",
-      "donateRequest.medicalQuestionsTitle": "Câu hỏi sàng lọc y tế",
-      "donateRequest.noMedicalData": "Không có dữ liệu sàng lọc y tế",
-
-      "donateRequest.markRejected": "Đánh Dấu Từ Chối",
-      "donateRequest.noRequests": "No donation registrations found",
-      "donateRequest.donationType": "Thể loại hiến máu",
-      "donateRequest.markApproved": "Đánh dấu đã duyệt",
-      "donateRequest.markCompleted": "Đánh dấu hoàn thành",
-      "donateRequest.markCancelled": "Đánh dấu đã hủy",
-      "donateRequest.confirmDelete":
-        "Are you sure you want to delete this registration?",
-      "donateRequest.deleteError": "Error deleting registration",
-      "donateRequest.updateError": "Error updating registration status",
-      "donateRequest.fetchError": "Error fetching donation registrations",
-      "donateRequest.nav.createRequest": "Đăng Ký Hiến Máu",
-      "donateRequest.nav.viewRequests": "Xem Đăng Ký",
-      "donateRequest.nav.viewAllRequests": "Xem Tất Cả Đăng Ký",
-      "donateRequest.nav.viewMyRequests": "Xem Đăng Ký Của Tôi",
-      "donateRequest.memberNotice":
-        "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
-
-      "donateRequest.historyTitleAll": "Lịch Sử Hiến Máu",
-      "donateRequest.historyTitleMy": "Lịch Sử Hiến Máu Của Tôi",
-      "donateRequest.createdAt": "Tạo Lúc",
-      "donateRequest.completedAt": "Hoàn Thành Lúc",
-      "donateRequest.rejectionReason": "Lý Do Từ Chối",
-      "donateRequest.medicalHistory": "Lịch sử bệnh",
-      "donateRequest.medicalHistoryTitle": "Lịch sử hiến máu",
-      "donateRequest.noMedicalHistory": "Không có lịch sử bệnh nào",
-      "donateRequest.donationDate": "Ngày hiến máu",
-      "donateRequest.quantity": "Số lượng",
-      "donateRequest.fetchHistoryError": "Không thể tải dữ liệu đăng ký hiến máu",
-      "donateRequest.updateError": "Không thể cập nhật trạng thái yêu cầu",
-      "donateRequest.deleteError": "Không thể xóa yêu cầu",
-      "donateRequest.medicalHistory": "Lịch sử bệnh",
-      "donateRequest.medicalHistoryTitle": "Lịch sử hiến máu",
-      "donateRequest.noMedicalHistory": "Không có lịch sử hiến máu",
-      "donateRequest.donationDate": "Ngày hiến máu",
-      "donateRequest.quantity": "Số lượng",
-      "donateRequest.fetchHistoryError": "Không thể tải lịch sử bệnh",
-
-      // Health check translations
-      "donateRequest.healthCheck": "Kiểm Tra Sức Khỏe",
-      "donateRequest.healthCheckTitle": "Biểu Mẫu Kiểm Tra Sức Khỏe",
-      "donateRequest.completeTab": "Hoàn Thành Hiến Máu",
-      "donateRequest.cancelTab": "Hủy Hiến Máu",
-      "donateRequest.weight": "Cân Nặng",
-      "donateRequest.height": "Chiều Cao",
-      "donateRequest.bloodPressure": "Huyết Áp",
-      "donateRequest.heartRate": "Nhịp Tim",
-      "donateRequest.alcoholLevel": "Nồng Độ Cồn",
-      "donateRequest.temperature": "Nhiệt Độ",
-      "donateRequest.hemoglobin": "Hemoglobin",
-      "donateRequest.quantity": "Số Lượng",
-      "donateRequest.invalidQuantity":
-        "Vui lòng nhập số lượng hợp lệ (tối thiểu 1)",
-      "donateRequest.cancellationReason": "Lý Do Hủy",
-      "donateRequest.cancellationReasonPlaceholder":
-        "Vui lòng giải thích lý do hủy hiến máu này",
-      "donateRequest.followUpDate": "Ngày Hẹn Tái Khám",
-      "donateRequest.confirmComplete": "Hoàn Thành Hiến Máu",
-      "donateRequest.confirmCancel": "Hủy Hiến Máu",
-      "donateRequest.reasonRequired": "Vui lòng cung cấp lý do hủy",
-      "donateRequest.followUpDateRequired": "Vui lòng chọn ngày hẹn tái khám",
+      donateRequest: {
+        title: "Đăng Ký Hiến Máu",
+        description:
+          "Đăng ký hiến máu và giúp cứu sống những người cần máu. Sự hiến tặng của bạn có thể tạo ra sự khác biệt.",
+        bloodGroup: "Nhóm Máu",
+        selectBloodGroup: "Chọn nhóm máu",
+        component: "Thành Phần Máu",
+        selectComponent: "Chọn thành phần",
+        donationDate: "Ngày Hiến Máu Mong Muốn",
+        submit: "Gửi Đăng Ký",
+        submitting: "Đang gửi...",
+        successMessage:
+          "Đăng ký hiến máu của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ liên hệ với bạn sớm.",
+        submitError: "Lỗi khi gửi đăng ký. Vui lòng thử lại.",
+        listTitleAll: "Tất Cả Đăng Ký Hiến Máu",
+        listTitleMy: "Đăng Ký Hiến Máu Của Tôi",
+        filterByStatus: "Lọc theo Trạng Thái",
+        allStatuses: "Tất Cả Trạng Thái",
+        status: {
+          open: "Đang Mở",
+          approved: "Đã Duyệt",
+          completed: "Đã Hoàn Thành",
+          cancelled: "Đã Hủy",
+          pending: "Đang Chờ",
+          rejected: "Đã Từ Chối",
+        },
+        viewMedicalQuestions: "Câu Hỏi Y Tế",
+        medicalQuestionsTitle: "Câu hỏi sàng lọc y tế",
+        noMedicalData: "Không có dữ liệu sàng lọc y tế",
+        medicalHistory: "Lịch sử bệnh",
+        noMedicalHistory: "Không có lịch sử hiến máu",
+        medicalHistoryTitle: "Lịch sử hiến máu",
+        historyTitleAll: "Lịch Sử Hiến Máu",
+        historyTitleMy: "Lịch Sử Hiến Máu Của Tôi",
+        createdAt: "Tạo Lúc",
+        completedAt: "Hoàn Thành Lúc",
+        rejectionReason: "Lý Do Từ Chối",
+        donationType: "Thể loại hiến máu",
+        quantity: "Số lượng",
+        markApproved: "Đánh dấu đã duyệt",
+        markCompleted: "Đánh dấu hoàn thành",
+        markCancelled: "Đánh dấu đã hủy",
+        markRejected: "Đánh Dấu Từ Chối",
+        confirmDelete: "Bạn có chắc chắn muốn xóa đăng ký này?",
+        deleteError: "Không thể xóa yêu cầu",
+        updateError: "Không thể cập nhật trạng thái yêu cầu",
+        fetchError: "Không thể tải dữ liệu đăng ký hiến máu",
+        fetchHistoryError: "Không thể tải lịch sử bệnh",
+        nav: {
+          createRequest: "Đăng Ký Hiến Máu",
+          viewRequests: "Xem Đăng Ký",
+          viewAllRequests: "Xem Tất Cả Đăng Ký",
+          viewMyRequests: "Xem Đăng Ký Của Tôi",
+          medicalHealth: "Sức khỏe y tế",
+        },
+        memberNotice:
+          "Là thành viên, bạn chỉ có thể xem các đăng ký hiến máu của riêng mình.",
+        healthCheck: "Kiểm Tra Sức Khỏe",
+        healthCheckTitle: "Biểu Mẫu Kiểm Tra Sức Khỏe",
+        completeTab: "Hoàn Thành Hiến Máu",
+        cancelTab: "Hủy Hiến Máu",
+        weight: "Cân Nặng",
+        height: "Chiều Cao",
+        bloodPressure: "Huyết Áp",
+        heartRate: "Nhịp Tim",
+        alcoholLevel: "Nồng Độ Cồn",
+        temperature: "Nhiệt Độ",
+        hemoglobin: "Hemoglobin",
+        invalidQuantity: "Vui lòng nhập số lượng hợp lệ (tối thiểu 1)",
+        cancellationReason: "Lý Do Hủy",
+        cancellationReasonPlaceholder:
+          "Vui lòng giải thích lý do hủy hiến máu này",
+        followUpDate: "Ngày Hẹn Tái Khám",
+        confirmComplete: "Hoàn Thành Hiến Máu",
+        confirmCancel: "Hủy Hiến Máu",
+        reasonRequired: "Vui lòng cung cấp lý do hủy",
+        followUpDateRequired: "Vui lòng chọn ngày hẹn tái khám",
+        completedSuccessfully: "Hiến máu đã được hoàn tất thành công!",
+        canceledSuccessfully: "Hiến máu đã bị hủy thành công!",
+        bloodGroupError: "Nhóm máu không đúng",
+        bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
+        detailInfo: "Thông tin chi tiết",
+      },
     },
   },
 };
@@ -1112,16 +1065,5 @@ i18n
       escapeValue: false, // React already escapes values
     },
   });
-
-// Add new translation keys (don't worry about duplicates, i18next will handle them)
-i18n.addResources("en", "translation", {
-  "donateRequest.completedSuccessfully": "Donation completed successfully!",
-  "donateRequest.canceledSuccessfully": "Donation canceled successfully!",
-});
-
-i18n.addResources("vi", "translation", {
-  "donateRequest.completedSuccessfully": "Đã hoàn thành hiến máu thành công!",
-  "donateRequest.canceledSuccessfully": "Đã hủy hiến máu thành công!",
-});
 
 export default i18n;

@@ -558,7 +558,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       setSelectedId(request.historyId);
                     }}
                   >
-                    Chi tiết
+                    {t("donateRequest.detailInfo")}
                   </button>
                 )}
               </div>

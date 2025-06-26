@@ -289,6 +289,33 @@
     background-color: #2980b9;
 }
 
+.detail-button {
+    background-color: #9b59b6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    box-shadow: 0 2px 4px rgba(155, 89, 182, 0.2);
+}
+
+.detail-button:hover {
+    background-color: #8e44ad;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+}
+
+.detail-button .detail-icon {
+    font-size: 1rem;
+}
+
 .loading {
     text-align: center;
     padding: 2rem 0;
