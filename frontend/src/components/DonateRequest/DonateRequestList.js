@@ -482,8 +482,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 <div className="component">
                   <strong>{t("donateRequest.donationType")}:</strong>{" "}
                   {t(
-                    `donateRequest.componentType.${(
-                      request.componentType || ""
+                    `common.component.${(
+                      request.component || ""
                     ).toLowerCase()}`
                   )}
                 </div>
