@@ -882,7 +882,7 @@ const resources = {
       "needRequest.selectBloodGroup": "Chọn nhóm máu",
       "needRequest.component": "Thành Phần Máu",
       "needRequest.selectComponent": "Chọn thành phần máu",
-      "needRequest.units": "Số Lượng Đơn Vị",
+      "needRequest.units": "Đơn Vị",
       "needRequest.reason": "Lý Do Yêu Cầu",
       "needRequest.reasonPlaceholder":
         "Vui lòng giải thích lý do cần máu (ví dụ: phẫu thuật, tai nạn, điều trị liên tục)",
@@ -1034,10 +1034,10 @@ const resources = {
 
       "donateRequest.markRejected": "Đánh Dấu Từ Chối",
       "donateRequest.noRequests": "No donation registrations found",
-      "donateRequest.donationType": "Donation type",
-      "donateRequest.markApproved": "Mark as Approved",
-      "donateRequest.markCompleted": "Mark as Completed",
-      "donateRequest.markCancelled": "Mark as Cancelled",
+      "donateRequest.donationType": "Thể loại hiến máu",
+      "donateRequest.markApproved": "Đánh dấu đã duyệt",
+      "donateRequest.markCompleted": "Đánh dấu hoàn thành",
+      "donateRequest.markCancelled": "Đánh dấu đã hủy",
       "donateRequest.confirmDelete":
         "Are you sure you want to delete this registration?",
       "donateRequest.deleteError": "Error deleting registration",
