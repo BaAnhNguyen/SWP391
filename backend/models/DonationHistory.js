@@ -13,15 +13,13 @@ const donationHistorySchema = new Schema(
     },
     bloodGroup: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-", "unknown"],
+      enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
       required: true,
-      default: "unknown",
     },
     component: {
       type: String,
-      enum: ["WholeBlood", "Plasma", "Platelets", "RedCells", "unknown"],
+      enum: ["WholeBlood", "Plasma", "Platelets", "RedCells"],
       required: true,
-      default: "unknown",
     },
     status: {
       type: String,

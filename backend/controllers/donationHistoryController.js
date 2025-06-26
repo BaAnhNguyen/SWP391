@@ -1,28 +1,18 @@
 const DonationHistory = require("../models/DonationHistory");
 
-// member view
-exports.listMine = async (req, res) => {
+// Lấy chi tiết 1 lần hiến máu theo id (dành cho cả member và staff)
+exports.getOne = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const history = await DonationHistory.find({ userId }).sort(
-      "-donationDate"
+    const { id } = req.params;
+    const history = await DonationHistory.findById(id).populate(
+      "userId",
+      "name email dateOfBirth gender phoneNumber"
     );
+    if (!history)
+      return res.status(404).json({ error: "Không tìm thấy lịch sử này" });
     return res.json(history);
   } catch (err) {
-    console.error("Error fetching data", err);
-    return res.status(500).json({ error: err.message });
-  }
-};
-
-// staff view all
-exports.listAll = async (req, res) => {
-  try {
-    const list = await DonationHistory.find()
-      .populate("userId", "name email dateOfBirth gender phoneNumber ")
-      .sort("-donationDate");
-    return res.json(list);
-  } catch (err) {
-    console.error(err);
+    console.error("Error fetching detail", err);
     return res.status(500).json({ error: err.message });
   }
 };

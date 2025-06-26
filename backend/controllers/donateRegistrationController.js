@@ -234,14 +234,14 @@ exports.complete = async (req, res) => {
       confirmedComponent,
     } = req.body;
 
-    console.log("======== DONATION COMPLETION ========");
-    console.log("Received complete request for ID:", id);
-    console.log("Health check status:", healthCheckStatus);
-    console.log(
-      "Request user ID:",
-      req.user ? req.user._id : "No user in request"
-    );
-    console.log("User role:", req.user ? req.user.role : "Unknown");
+    // console.log("======== DONATION COMPLETION ========");
+    // console.log("Received complete request for ID:", id);
+    // console.log("Health check status:", healthCheckStatus);
+    // console.log(
+    //   "Request user ID:",
+    //   req.user ? req.user._id : "No user in request"
+    // );
+    // console.log("User role:", req.user ? req.user.role : "Unknown");
 
     const reg = await DonationRegistration.findById(id);
     if (!reg) {
@@ -285,6 +285,20 @@ exports.complete = async (req, res) => {
             .status(400)
             .json({ message: "Valid quantity is required" });
         }
+
+        //valid blood group component
+        if (
+          !confirmedBloodGroup ||
+          confirmedBloodGroup === "unknown" ||
+          !confirmedComponent ||
+          confirmedComponent === "unknown"
+        ) {
+          return res
+            .status(400)
+            .json({
+              message: "Must enter blood group and compont in case unknown",
+            });
+        }
         // --- Xử lý cập nhật nhóm máu ---
         if (confirmedBloodGroup && confirmedBloodGroup !== reg.bloodGroup) {
           reg.bloodGroup = confirmedBloodGroup;
@@ -306,8 +320,8 @@ exports.complete = async (req, res) => {
         const donationHistoryData = {
           userId,
           donationDate,
-          bloodGroup: confirmedBloodGroup || reg.bloodGroup || "unknown",
-          component: confirmedComponent || reg.component || "unknown",
+          bloodGroup: confirmedBloodGroup || reg.bloodGroup,
+          component: confirmedComponent || reg.component,
           status: "Completed",
           quantity: qty,
           healthCheck: healthCheck || {},
@@ -319,10 +333,9 @@ exports.complete = async (req, res) => {
           JSON.stringify(donationHistoryData)
         );
 
+        let donationHistory;
         try {
-          const donationHistory = await DonationHistory.create(
-            donationHistoryData
-          );
+          donationHistory = await DonationHistory.create(donationHistoryData);
           console.log("DonationHistory created with ID:", donationHistory._id);
         } catch (historyError) {
           console.error("Error creating donation history:", historyError);
@@ -335,6 +348,7 @@ exports.complete = async (req, res) => {
         // Update registration status
         try {
           reg.status = "Completed";
+          reg.historyId = donationHistory._id;
           // Check if req.user exists before assigning completedBy
           if (req.user && req.user._id) {
             reg.completedBy = req.user._id;
@@ -370,6 +384,7 @@ exports.complete = async (req, res) => {
             ? "Donation completed. An email has been sent to member"
             : "Donation completed. However, the email could not be sent",
           nextEligibleDate,
+          donationHistoryId: donationHistory._id,
         });
       } catch (error) {
         console.error("Error in complete donation:", error);

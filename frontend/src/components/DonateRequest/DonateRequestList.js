@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
+import DonateHistoryDetail from "./DonateRequestHistory";
 
 const DonateRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
     reason: "",
     followUpDate: "",
   });
+  const [selectedId, setSelectedId] = useState(null);
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -246,6 +248,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
         const data = await makeApiCall(requestData);
         console.log("Complete response data:", data);
         alert(t("donateRequest.completedSuccessfully"));
+        if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
       } else if (activeTab === "cancel") {
         // Validate reason and follow-up date
         if (!cancellationData.reason.trim()) {
@@ -470,6 +473,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       {request.rejectionReason}
                     </div>
                   )}
+                {request.status === "Cancelled" && request.nextReadyDate && (
+                  <div className="next-eligible">
+                    <strong>Ngày hẹn lại:</strong>{" "}
+                    {new Date(request.nextReadyDate).toLocaleDateString()}
+                  </div>
+                )}
                 <div className="component">
                   <strong>{t("donateRequest.donationType")}:</strong>{" "}
                   {t(
@@ -541,11 +550,29 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 >
                   {t("donateRequest.medicalHistory")}
                 </button>
+                {request.status === "Completed" && (
+                  <button
+                    className="detail-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedId(request.historyId);
+                    }}
+                  >
+                    Chi tiết
+                  </button>
+                )}
               </div>
             </div>
           ))}
         </div>
       )}{" "}
+      {/* Model history detail*/}
+      {selectedId && (
+        <DonateHistoryDetail
+          id={selectedId}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
       {/* Modal hiển thị câu hỏi y tế */}
       {showMedicalQuestions && (
         <div
@@ -721,7 +748,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       <option value="O-">O-</option>
                       <option value="AB+">AB+</option>
                       <option value="AB-">AB-</option>
-                      <option value="unknown">Không xác định</option>
                     </select>
                   </div>
                   {/* Thành phần máu xác nhận */}
@@ -738,7 +764,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       <option value="Plasma">Huyết tương</option>
                       <option value="Platelets">Tiểu cầu</option>
                       <option value="RedCells">Hồng cầu</option>
-                      <option value="unknown">Không xác định</option>
                     </select>
                   </div>
                 </div>

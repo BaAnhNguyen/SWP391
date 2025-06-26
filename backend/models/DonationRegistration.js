@@ -45,6 +45,10 @@ const donationSchema = new Schema(
     completedBy: { type: Types.ObjectId, ref: "User" },
     completedAt: { type: Date },
 
+    historyId: {
+      type: Types.ObjectId,
+      ref: "DonationHistory",
+    },
     screening: {
       type: [screeningQuestionSchema],
       default: [],

@@ -4,10 +4,6 @@ const ctrl = require("../controllers/donationHistoryController");
 
 router.use(protect);
 
-//Member view
-router.get("/me", restrictTo("Member"), ctrl.listMine);
-
-//Staff view
-router.get("/", restrictTo("Staff"), ctrl.listAll);
+router.get("/:id", restrictTo("Member", "Staff"), ctrl.getOne);
 
 module.exports = router;

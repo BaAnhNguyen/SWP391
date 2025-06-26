@@ -1,369 +1,200 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
-import "./DonateRequestList.css";
 
-const DonateRequestHistory = ({ user }) => {
-  const { t } = useTranslation();
-  const [requests, setRequests] = useState([]);
+const bloodComponentVN = {
+  WholeBlood: "Toàn phần",
+  Plasma: "Huyết tương",
+  Platelets: "Tiểu cầu",
+  RedCells: "Hồng cầu",
+  unknown: "Không xác định",
+};
+
+const DonateHistoryDetail = ({ id, onClose }) => {
+  const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [expandedRequestId, setExpandedRequestId] = useState(null);
-  const [showMedicalQuestions, setShowMedicalQuestions] = useState(null);
-
-  const isStaff = user?.role === "Staff" || user?.role === "Admin";
-
-  const fetchRequests = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      } // Use different endpoints based on user role
-      const endpoint = isStaff
-        ? `${API_BASE_URL}/donateregistration`
-        : `${API_BASE_URL}/donateregistration/me`;
-
-      const response = await fetch(endpoint, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || t("donateRequest.fetchError"));
-      }
-
-      const data = await response.json();
-      console.log("Received donation registrations:", data);
-      // Debug log để kiểm tra screening của mỗi đơn đăng ký
-      data.forEach((reg, index) => {
-        console.log(
-          `Registration ${index + 1} - ID: ${reg._id}, Has screening: ${
-            reg.screening ? reg.screening.length : "undefined"
-          }`
-        );
-      });
-      setRequests(data);
-    } catch (err) {
-      setError(err.message);
-      console.error("Error fetching requests:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [t]);
 
   useEffect(() => {
-    fetchRequests();
-  }, [fetchRequests]);
-  const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
-    if (!isStaff) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
+    if (!id) return;
+    const fetchDetail = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/donationHistory/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Không thể lấy chi tiết lần hiến máu!");
+        const data = await res.json();
+        setDetail(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
+    };
+    fetchDetail();
+  }, [id]);
 
-      const body = { status: newStatus };
-      if (rejectionReason) {
-        body.rejectionReason = rejectionReason;
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/donateregistration/${id}/status`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(body),
-        }
-      );
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || t("donateRequest.updateError"));
-      }
-
-      // Refresh the requests list
-      fetchRequests();
-    } catch (err) {
-      setError(err.message);
-      console.error("Error updating request status:", err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm(t("donateRequest.confirmDelete"))) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
-      const response = await fetch(`${API_BASE_URL}/donateregistration/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || t("donateRequest.deleteError"));
-      }
-
-      // Refresh the requests list
-      fetchRequests();
-    } catch (err) {
-      setError(err.message);
-      console.error("Error deleting request:", err);
-    }
-  };
-
-  const handleViewMedicalQuestions = (e, request) => {
-    e.stopPropagation(); // Prevent the card from expanding/collapsing
-    setShowMedicalQuestions(request);
-  };
-
-  const toggleExpandRequest = (id) => {
-    setExpandedRequestId(expandedRequestId === id ? null : id);
-  };
-
-  const filteredRequests =
-    filterStatus === "all"
-      ? requests
-      : requests.filter((request) => request.status === filterStatus);
-
-  const statusColors = {
-    Pending: "var(--status-open)",
-    Approved: "var(--status-approved)",
-    Completed: "var(--status-completed)",
-    Rejected: "var(--status-rejected)",
-    Cancelled: "var(--status-cancelled)",
-  };
-
-  if (loading) return <div className="loading">{t("common.loading")}</div>;
-  if (error) return <div className="error">{error}</div>;
+  if (!id) return null;
 
   return (
-    <div className="donate-request-list-container">
-      <div className="list-header">
-        <div>
-          <h2>
-            {isStaff
-              ? t("donateRequest.historyTitleAll")
-              : t("donateRequest.historyTitleMy")}
-            <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
-              {isStaff
-                ? t("common.role.staff")
-                : t("common.role.member")}
-            </span>
-          </h2>
-          {!isStaff && (
-            <p className="member-notice">{t("donateRequest.memberNotice")}</p>
-          )}
-        </div>
-        <div className="filter-container">
-          <label>{t("donateRequest.filterByStatus")}:</label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="status-filter"
-          >
-            <option value="all">{t("donateRequest.allStatuses")}</option>
-            <option value="Pending">{t("donateRequest.status.pending")}</option>
-            <option value="Approved">
-              {t("donateRequest.status.approved")}
-            </option>
-            <option value="Completed">
-              {t("donateRequest.status.completed")}
-            </option>
-            <option value="Rejected">
-              {t("donateRequest.status.rejected")}
-            </option>
-            <option value="Cancelled">
-              {t("donateRequest.status.cancelled")}
-            </option>
-          </select>
-          <button
-            onClick={fetchRequests}
-            className="refresh-button"
-            title={t("common.refresh")}
-          >
-            ↻
-          </button>
-        </div>
-      </div>
-      {filteredRequests.length === 0 ? (
-        <p className="no-requests">{t("donateRequest.noRequests")}</p>
-      ) : (
-        <div className="request-cards">
-          {" "}
-          {filteredRequests.map((request) => (
-            <div
-              key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
-              onClick={() => toggleExpandRequest(request._id)}
-            >
-              <div className="request-header">
-                <div className="request-main-info">
-                  <div
-                    className="blood-group"
-                    title={t("donateRequest.bloodGroup")}
-                  >
-                    {request.bloodGroup}
-                  </div>
-                  <div className="request-details">
-                    <span className="request-by">
-                      {request.userId?.name ||
-                        request.createdBy?.name ||
-                        "Unknown"}
-                    </span>
-                    <span className="donation-date">
-                      {new Date(request.readyDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  className="status-badge"
-                  style={{ backgroundColor: statusColors[request.status] }}
-                >
-                  {t(`donateRequest.status.${request.status.toLowerCase()}`)}
-                </div>
-              </div>
-
-              <div className="request-content">
-                <span className="component">
-                  <strong>{t("donateRequest.donationType")}:</strong>{" "}
-                  {t(
-                    `common.component.${request.component.toLowerCase()}`
-                  )}
-                </span>
-                <div className="request-created">
-                  <strong>{t("donateRequest.createdAt")}:</strong>{" "}
-                  {new Date(request.createdAt).toLocaleDateString()}
-                </div>
-                {request.completedAt && (
-                  <div className="request-completed">
-                    <strong>{t("donateRequest.completedAt")}:</strong>{" "}
-                    {new Date(request.completedAt).toLocaleDateString()}
-                  </div>
-                )}
-                {request.rejectionReason && (
-                  <div className="request-rejection">
-                    <strong>{t("donateRequest.rejectionReason")}:</strong>{" "}
-                    {request.rejectionReason}
-                  </div>
-                )}
-                {isStaff && request.status === "Pending" && (
-                  <div className="admin-actions">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(request._id, "Approved");
-                      }}
-                      className="approve-button"
-                    >
-                      {t("donateRequest.markApproved")}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const reason = prompt(
-                          t("donateRequest.rejectionReason") + ":"
-                        );
-                        if (reason) {
-                          handleStatusUpdate(request._id, "Rejected", reason);
-                        }
-                      }}
-                      className="reject-button"
-                    >
-                      {t("donateRequest.markRejected")}
-                    </button>
-                  </div>
-                )}
-                {isStaff && request.status === "Approved" && (
-                  <div className="admin-actions">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(request._id, "Completed");
-                      }}
-                      className="complete-button"
-                    >
-                      {t("donateRequest.markCompleted")}
-                    </button>
-                  </div>
-                )}{" "}
-                {/* Removed duplicate buttons - the visible ones outside already handle these actions */}{" "}
-                {request.screening && request.screening.length > 0 && (
-                  <button
-                    onClick={(e) => handleViewMedicalQuestions(e, request)}
-                    className="view-medical-questions"
-                  >
-                    {t("donateRequest.viewMedicalQuestions")}
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}{" "}
-      {/* Modal hiển thị câu hỏi y tế */}
-      {showMedicalQuestions && (
-        <div className="medical-questions-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>{t("donateRequest.medicalQuestionsTitle")}</h3>
-              <button
-                className="close-button"
-                onClick={() => setShowMedicalQuestions(null)}
-              >
-                &times;
-              </button>
-            </div>
-            <div className="modal-body">
-              {showMedicalQuestions.screening &&
-              showMedicalQuestions.screening.length > 0 ? (
-                showMedicalQuestions.screening.map((item, index) => (
-                  <div key={index} className="question-item">
-                    <div className="question-text">
-                      {index + 1}. {item.question}
-                    </div>
-                    <div className={`answer ${item.answer ? "yes" : "no"}`}>
-                      {item.answer ? t("common.yes") : t("common.no")}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="no-screening-data">
-                  <p>{t("donateRequest.noMedicalData")}</p>
-                </div>
+    <div className="donation-detail-modal">
+      <div className="modal-content">
+        <button style={{ float: "right" }} onClick={onClose}>
+          ✕
+        </button>
+        <h3>Chi tiết lần hiến máu</h3>
+        {loading && <p>Đang tải...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {detail && (
+          <table>
+            <tbody>
+              {/* Người hiến máu */}
+              {detail.userId && (
+                <tr>
+                  <td>
+                    <b>Người hiến máu:</b>
+                  </td>
+                  <td>
+                    {detail.userId.name || ""}
+                    <br />
+                    {detail.userId.email || ""}
+                    {detail.userId.phoneNumber && (
+                      <>
+                        <br />
+                        SĐT: {detail.userId.phoneNumber}
+                      </>
+                    )}
+                    {detail.userId.dateOfBirth && (
+                      <>
+                        <br />
+                        Ngày sinh:{" "}
+                        {new Date(
+                          detail.userId.dateOfBirth
+                        ).toLocaleDateString()}
+                      </>
+                    )}
+                    {detail.userId.gender && (
+                      <>
+                        <br />
+                        Giới tính:{" "}
+                        {detail.userId.gender === "male"
+                          ? "Nam"
+                          : detail.userId.gender === "female"
+                          ? "Nữ"
+                          : detail.userId.gender}
+                      </>
+                    )}
+                  </td>
+                </tr>
               )}
-            </div>
-            <div className="modal-footer">
-              <button
-                className="close-modal-button"
-                onClick={() => setShowMedicalQuestions(null)}
-              >
-                {t("common.close")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              {/* Các thông tin còn lại */}
+              <tr>
+                <td>
+                  <b>Ngày hiến:</b>
+                </td>
+                <td>{new Date(detail.donationDate).toLocaleDateString()}</td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Nhóm máu:</b>
+                </td>
+                <td>{detail.bloodGroup}</td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Thành phần:</b>
+                </td>
+                <td>
+                  {bloodComponentVN[detail.component] || detail.component}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Số lượng:</b>
+                </td>
+                <td>{detail.quantity ?? "?"}</td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Trạng thái:</b>
+                </td>
+                <td>{detail.status}</td>
+              </tr>
+              {detail.healthCheck && (
+                <>
+                  <tr>
+                    <td colSpan={2}>
+                      <b>Thông tin sức khỏe:</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Cân nặng:</td>
+                    <td>{detail.healthCheck.weight ?? "?"} kg</td>
+                  </tr>
+                  <tr>
+                    <td>Chiều cao:</td>
+                    <td>{detail.healthCheck.height ?? "?"} cm</td>
+                  </tr>
+                  <tr>
+                    <td>Huyết áp:</td>
+                    <td>{detail.healthCheck.bloodPressure ?? "?"}</td>
+                  </tr>
+                  <tr>
+                    <td>Mạch:</td>
+                    <td>{detail.healthCheck.heartRate ?? "?"} bpm</td>
+                  </tr>
+                  <tr>
+                    <td>Nhiệt độ:</td>
+                    <td>{detail.healthCheck.temperature ?? "?"} °C</td>
+                  </tr>
+                </>
+              )}
+              {detail.cancellation && (
+                <>
+                  <tr>
+                    <td>
+                      <b>Lý do hủy:</b>
+                    </td>
+                    <td>{detail.cancellation.reason}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Ngày hẹn lại:</b>
+                    </td>
+                    <td>
+                      {detail.cancellation.followUpDate
+                        ? new Date(
+                            detail.cancellation.followUpDate
+                          ).toLocaleDateString()
+                        : ""}
+                    </td>
+                  </tr>
+                </>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
+      <style>
+        {`
+        .donation-detail-modal {
+          position: fixed; top: 0; left: 0; right:0; bottom: 0;
+          background: rgba(0,0,0,0.3); z-index: 9999;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+          background: #fff; padding: 32px 24px; border-radius: 8px; min-width: 400px; max-width: 90vw;
+          max-height: 90vh; overflow-y: auto;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px;}
+        td { padding: 8px;}
+        tr:not(:last-child) { border-bottom: 1px solid #eee;}
+        `}
+      </style>
     </div>
   );
 };
 
-export default DonateRequestHistory;
+export default DonateHistoryDetail;
