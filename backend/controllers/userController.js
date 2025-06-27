@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
 //get current user profile
 exports.getMe = async (req, res) => {
   try {
@@ -29,6 +30,7 @@ exports.updateMe = async (req, res) => {
       phoneNumber,
       dateOfBirth,
       gender,
+      location, // <-- thêm dòng này!
     } = req.body;
 
     // Validate required fields
@@ -57,76 +59,29 @@ exports.updateMe = async (req, res) => {
         message: "Invalid blood group",
       });
     }
-    let updates = { name, bloodGroup }; // Add identity card and phone number if provided
+
+    let updates = { name, bloodGroup };
     if (identityCard) updates.identityCard = identityCard;
     if (phoneNumber) updates.phoneNumber = phoneNumber;
-
-    // Add date of birth and gender if provided
     if (dateOfBirth) updates.dateOfBirth = new Date(dateOfBirth);
     if (gender) updates.gender = gender;
+    if (address) updates.address = address;
 
-    // Handle address updates
-    if (address) {
-      updates.address = address;
-
-      try {
-        // Construct a detailed address string for geocoding
-        const addressParts = [
-          address.street,
-          address.district,
-          address.city,
-          address.country || "Vietnam",
-        ].filter(Boolean); // Remove empty/undefined values
-
-        const formattedAddress = addressParts
-          .join(", ")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-          .replace(/[đĐ]/g, "d") // Replace đ/Đ with d
-          .replace(/\s+/g, "+"); // Replace spaces with +
-
-        const url = `https://nominatim.openstreetmap.org/search?q=${formattedAddress}&format=json&limit=1`;
-
-        console.log("Fetching location for URL:", url); // Debug log
-
-        const response = await fetch(url, {
-          headers: {
-            "User-Agent": "Blood Donation app",
-            "Accept-Language": "en-US,en;q=0.9",
-          },
-        });
-
-        const data = await response.json();
-        console.log("Location API response:", data); // Debug log
-
-        if (data && data.length > 0) {
-          const lng = parseFloat(data[0].lon);
-          const lat = parseFloat(data[0].lat);
-
-          if (!isNaN(lng) && !isNaN(lat)) {
-            updates.location = {
-              type: "Point",
-              coordinates: [lng, lat],
-            };
-            console.log("Location updated:", updates.location); // Debug log
-          } else {
-            console.error("Invalid coordinates received:", data[0]);
-            updates.location = undefined;
-          }
-        } else {
-          console.log("No location data found for address:", formattedAddress);
-          updates.location = undefined;
-        }
-      } catch (error) {
-        console.error("Error fetching location:", error);
-        updates.location = undefined;
-      }
+    if (
+      location &&
+      typeof location.lat === "number" &&
+      typeof location.lng === "number"
+    ) {
+      updates.location = {
+        type: "Point",
+        coordinates: [location.lng, location.lat], // Lưu ý: GeoJSON = [lng, lat]
+      };
     }
 
     const user = await User.findByIdAndUpdate(req.user._id, updates, {
       new: true,
       runValidators: true,
-      select: "-__v", // Exclude version key
+      select: "-__v",
     });
 
     if (!user) {
@@ -172,3 +127,23 @@ exports.delete = async (req, res) => {
   const { id } = req.params;
   if (await User.findByIdAndDelete(id)) res.json({ message: "User deleted" });
 };
+
+async function getLatLngFromAddress(addressString) {
+  const apiKey = process.env.GOOGLE_API_KEY; // <--- NHỚ thay bằng API key của bạn!
+  const encodedAddress = encodeURIComponent(addressString);
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status === "OK" && data.results.length > 0) {
+      const location = data.results[0].geometry.location;
+      return { lng: location.lng, lat: location.lat, raw: data.results[0] };
+    }
+    // Có thể log lỗi hoặc trả về null
+    return null;
+  } catch (error) {
+    console.error("Google Geocode API error:", error);
+    return null;
+  }
+}

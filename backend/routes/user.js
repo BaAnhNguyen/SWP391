@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const ctrl = require("../controllers/userController");
+const search = require("../controllers/searchByDistance");
 const { protect, restrictTo } = require("../middlewares/auth");
 
 router.use(protect);
@@ -7,6 +8,9 @@ router.use(protect);
 //profile
 router.get("/me", ctrl.getMe);
 router.patch("/me", ctrl.updateMe);
+
+//search
+router.get("/nearby", restrictTo("Staff"), search.searchByDistance);
 
 //admin
 router.use(restrictTo("Admin"));

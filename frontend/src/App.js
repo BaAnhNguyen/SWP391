@@ -21,6 +21,7 @@ import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
 import DonateRequestPage from "./components/DonateRequest/DonateRequestPage";
 import DonateRequestHistory from "./components/DonateRequest/DonateRequestHistory";
 import BloodStorage from "./components/BloodStorage/BloodStorage";
+import FindNear from "./components/Search/FindNear";
 // import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
 
@@ -31,7 +32,11 @@ function AdminOnly({ children }) {
 
 function StaffOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  return (user.role === "Admin" || user.role === "Staff") ? children : <Navigate to="/" replace />;
+  return user.role === "Admin" || user.role === "Staff" ? (
+    children
+  ) : (
+    <Navigate to="/" replace />
+  );
 }
 
 function App() {
@@ -104,7 +109,8 @@ function App() {
                 </StaffOnly>
               </RequireAuth>
             }
-          />          <Route
+          />{" "}
+          <Route
             path="/address"
             element={
               <RequireAuth>
@@ -114,6 +120,10 @@ function App() {
           />
         </Routes>
         <Footer />
+      </div>
+      <div>
+        <h2>Test Tìm quanh tôi (1000km)</h2>
+        <FindNear />
       </div>
     </Router>
   );

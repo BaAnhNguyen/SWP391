@@ -21,16 +21,12 @@ const userSchema = new Schema(
       type: String,
       enum: ["Male", "Female", "Other"],
     },
-    address: {
-      street: { type: String },
-      district: { type: String },
-      city: { type: String },
-      country: { type: String, default: "Vietnam" },
-    },
+    address: { type: String }, // <-- string địa chỉ đầy đủ (dễ dùng với Mapbox/Google)
     location: {
       type: {
         type: String,
         enum: ["Point"],
+        default: "Point",
       },
       coordinates: {
         type: [Number], // [lng, lat]
