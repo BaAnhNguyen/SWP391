@@ -227,6 +227,7 @@ exports.complete = async (req, res) => {
     const {
       healthCheckStatus,
       quantity,
+      volume,
       healthCheck,
       cancellationReason,
       followUpDate,
@@ -243,6 +244,7 @@ exports.complete = async (req, res) => {
     // );
     // console.log("User role:", req.user ? req.user.role : "Unknown");
 
+    //lay don dk hien mau
     const reg = await DonationRegistration.findById(id);
     if (!reg) {
       console.log("Registration not found with ID:", id);
@@ -250,6 +252,7 @@ exports.complete = async (req, res) => {
     }
     const user = await User.findById(reg.userId);
 
+    //chi xu ly khi approved
     if (reg.status !== "Approved") {
       console.log("Registration status is not Approved:", reg.status);
       return res.status(400).json({ message: "Must be approved first" });
@@ -265,6 +268,7 @@ exports.complete = async (req, res) => {
     // Add the user ID information from request or from registration
     const userId = reg.userId;
 
+    //populate du lieu user de gui mail
     try {
       await reg.populate("userId", "name email");
     } catch (populateError) {
@@ -285,6 +289,11 @@ exports.complete = async (req, res) => {
             .status(400)
             .json({ message: "Valid quantity is required" });
         }
+        //validate volume default: 350
+        let vol = parseInt(volume);
+        if (isNaN(vol) || vol < 50) {
+          vol = qty * 350;
+        }
 
         //valid blood group component
         if (
@@ -293,11 +302,9 @@ exports.complete = async (req, res) => {
           !confirmedComponent ||
           confirmedComponent === "unknown"
         ) {
-          return res
-            .status(400)
-            .json({
-              message: "Must enter blood group and compont in case unknown",
-            });
+          return res.status(400).json({
+            message: "Must enter blood group and compont in case unknown",
+          });
         }
         // --- Xử lý cập nhật nhóm máu ---
         if (confirmedBloodGroup && confirmedBloodGroup !== reg.bloodGroup) {
@@ -324,6 +331,7 @@ exports.complete = async (req, res) => {
           component: confirmedComponent || reg.component,
           status: "Completed",
           quantity: qty,
+          volume: vol,
           healthCheck: healthCheck || {},
           nextEligibleDate,
         };
@@ -367,6 +375,36 @@ exports.complete = async (req, res) => {
           });
         }
 
+        //add storage
+        try {
+          const dateAdded = new Date();
+          let dateExpired = new Date(dateAdded);
+          switch (donationHistoryData.component) {
+            case "WholeBlood":
+            case "RedCells":
+              dateExpired.setDate(dateExpired.getDate() + 35);
+              break;
+            case "Plasma":
+              dateExpired.setDate(dateExpired.getDate() + 365);
+              break;
+            case "Platelets":
+              dateExpired.setDate(dateExpired.getDate() + 5);
+              break;
+          }
+          await BloodUnit.create({
+            BloodType: donationHistoryData.bloodGroup,
+            ComponentType: donationHistoryData.component,
+            Quantity: qty,
+            Volume: vol,
+            DateAdded: dateAdded,
+            DateExpired: dateExpired,
+            SourceType: "donation",
+            SourceRef: donationHistory._id,
+          });
+        } catch (err) {
+          console.error("Error when add blood to inventory", err);
+        }
+
         // Send email notification
         let emailSent = false;
         try {
@@ -400,11 +438,11 @@ exports.complete = async (req, res) => {
             .json({ message: "Cancellation reason is required" });
         }
 
-        if (!followUpDate) {
-          return res
-            .status(400)
-            .json({ message: "Follow-up date is required" });
-        }
+        // if (!followUpDate) {
+        //   return res
+        //     .status(400)
+        //     .json({ message: "Follow-up date is required" });
+        // }
 
         const followUpDateObj = new Date(followUpDate);
         if (isNaN(followUpDateObj.getTime())) {
@@ -416,42 +454,42 @@ exports.complete = async (req, res) => {
         console.log("Creating cancelled donation history with userId:", userId);
 
         // Create donation history for canceled donation - với xử lý an toàn
-        const donationHistoryData = {
-          userId,
-          donationDate,
-          bloodGroup: reg.bloodGroup || "unknown",
-          component: reg.component || "unknown",
-          status: "Canceled",
-          cancellation: {
-            reason: cancellationReason,
-            followUpDate: followUpDateObj,
-          },
-          nextEligibleDate: followUpDateObj,
-        };
+        // const donationHistoryData = {
+        //   userId,
+        //   donationDate,
+        //   bloodGroup: reg.bloodGroup || "unknown",
+        //   component: reg.component || "unknown",
+        //   status: "Canceled",
+        //   cancellation: {
+        //     reason: cancellationReason,
+        //     followUpDate: followUpDateObj,
+        //   },
+        //   nextEligibleDate: followUpDateObj,
+        // };
 
-        console.log(
-          "Cancelled donation history data:",
-          JSON.stringify(donationHistoryData)
-        );
+        // console.log(
+        //   "Cancelled donation history data:",
+        //   JSON.stringify(donationHistoryData)
+        // );
 
-        try {
-          const donationHistory = await DonationHistory.create(
-            donationHistoryData
-          );
-          console.log(
-            "Cancelled DonationHistory created with ID:",
-            donationHistory._id
-          );
-        } catch (historyError) {
-          console.error(
-            "Error creating cancelled donation history:",
-            historyError
-          );
-          return res.status(500).json({
-            message: "Error creating cancelled donation history",
-            error: historyError.message,
-          });
-        }
+        // try {
+        //   const donationHistory = await DonationHistory.create(
+        //     donationHistoryData
+        //   );
+        //   console.log(
+        //     "Cancelled DonationHistory created with ID:",
+        //     donationHistory._id
+        //   );
+        // } catch (historyError) {
+        //   console.error(
+        //     "Error creating cancelled donation history:",
+        //     historyError
+        //   );
+        //   return res.status(500).json({
+        //     message: "Error creating cancelled donation history",
+        //     error: historyError.message,
+        //   });
+        // }
 
         // Update registration
         try {

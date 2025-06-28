@@ -29,8 +29,10 @@ const donationHistorySchema = new Schema(
     },
     quantity: {
       type: Number,
-      min: 0, // Thay đổi giá trị tối thiểu thành 0 để cho phép bỏ trống trong trường hợp hủy
+      min: 1, // Thay đổi giá trị tối thiểu thành 0 để cho phép bỏ trống trong trường hợp hủy
     },
+    volume: { type: Number, min: 1 },
+
     healthCheck: {
       weight: Number,
       height: Number,

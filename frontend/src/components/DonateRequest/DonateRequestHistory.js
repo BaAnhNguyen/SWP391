@@ -123,6 +123,10 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                 <span className="label">Số lượng:</span>
                 <span className="value">{detail.quantity ?? "?"}</span>
               </div>
+              <div className="info-row">
+                <span className="label">Tổng thể tích (ml):</span>
+                <span className="value">{detail.volume ?? "?"}</span>
+              </div>
 
               <div className="info-row">
                 <span className="label">Trạng thái:</span>

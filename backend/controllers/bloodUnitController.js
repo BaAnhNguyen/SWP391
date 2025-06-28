@@ -3,8 +3,16 @@ const BloodUnit = require("../models/BloodUnit");
 // Add a new blood unit to the inventory
 exports.addBloodUnit = async (req, res) => {
   try {
-    const { BloodType, ComponentType, Volume, DateAdded } = req.body;
-    if (!BloodType || !ComponentType || !Volume) {
+    const {
+      BloodType,
+      ComponentType,
+      Volume,
+      Quantity,
+      SourceType,
+      note,
+      DateAdded,
+    } = req.body;
+    if (!BloodType || !ComponentType || !Volume || !Quantity) {
       return res.status(400).json({ message: "Missing required fields." });
     }
     const dateAdded = DateAdded ? new Date(DateAdded) : new Date();
@@ -26,14 +34,19 @@ exports.addBloodUnit = async (req, res) => {
     const bloodUnit = new BloodUnit({
       BloodType,
       ComponentType,
-      Volume,
+      Volume: Number(Volume),
+      Quantity: Number(Quantity) || 1,
+      SourceType: SourceType || "import",
+      note,
       DateAdded: dateAdded,
-      DateExpired: dateExpired
+      DateExpired: dateExpired,
     });
     await bloodUnit.save();
     res.status(201).json(bloodUnit);
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to add blood unit." });
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to add blood unit." });
   }
 };
 
@@ -43,7 +56,9 @@ exports.getAllBloodUnits = async (req, res) => {
     const bloodUnits = await BloodUnit.find();
     res.status(200).json(bloodUnits);
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to fetch blood units." });
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to fetch blood units." });
   }
 };
 
@@ -52,13 +67,17 @@ exports.updateBloodUnit = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    const updated = await BloodUnit.findByIdAndUpdate(id, updateData, { new: true });
+    const updated = await BloodUnit.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
     if (!updated) {
       return res.status(404).json({ message: "Blood unit not found." });
     }
     res.status(200).json(updated);
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to update blood unit." });
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to update blood unit." });
   }
 };
 
@@ -72,7 +91,9 @@ exports.deleteBloodUnit = async (req, res) => {
     }
     res.status(200).json({ message: "Blood unit deleted successfully." });
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to delete blood unit." });
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to delete blood unit." });
   }
 };
 
@@ -83,8 +104,8 @@ exports.getBloodUnitsByType = async (req, res) => {
     const bloodUnits = await BloodUnit.find({ BloodType: bloodType });
     res.status(200).json(bloodUnits);
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to fetch blood units by type." });
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to fetch blood units by type." });
   }
 };
-
-

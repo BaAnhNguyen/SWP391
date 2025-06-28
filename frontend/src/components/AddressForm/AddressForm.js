@@ -3,58 +3,42 @@ import MapGL, { Marker } from "react-map-gl";
 import { SearchBox } from "@mapbox/search-js-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const MAPBOX_TOKEN = ""; //add token
+const MAPBOX_TOKEN = "";
 const DEFAULT_LOCATION = { lat: 10.776889, lng: 106.700806 };
 
 // Reverse geocode: tọa độ → place name
 async function reverseGeocode(lng, lat) {
-  console.log("Reverse geocoding for:", lng, lat);
   try {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&country=vn&language=vi&types=address,poi,place`;
-    console.log("API URL:", url);
-
     const resp = await fetch(url);
     const data = await resp.json();
-    console.log("API Response:", data);
-
     if (data.features && data.features.length > 0) {
-      const address = data.features[0].place_name;
-      console.log("Found address:", address);
-      return address;
+      return data.features[0].place_name;
     }
-    const fallback = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    console.log("Using fallback:", fallback);
-    return fallback;
+    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch (error) {
-    console.error("Reverse geocoding error:", error);
     return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
 }
 
 // Geocode: place name → tọa độ
 async function geocode(address) {
-  console.log("Geocoding for:", address);
   try {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       address
     )}.json?access_token=${MAPBOX_TOKEN}&country=vn&language=vi&types=address,poi,place&limit=1`;
-    console.log("Geocoding API URL:", url);
-
     const resp = await fetch(url);
     const data = await resp.json();
-    console.log("Geocoding API Response:", data);
-
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
-      const lat = feature.geometry.coordinates[1];
-      const lng = feature.geometry.coordinates[0];
-      const placeName = feature.place_name;
-      console.log("Found coordinates:", { lat, lng, placeName });
-      return { lat, lng, placeName };
+      return {
+        lat: feature.geometry.coordinates[1],
+        lng: feature.geometry.coordinates[0],
+        placeName: feature.place_name,
+      };
     }
     return null;
   } catch (error) {
-    console.error("Geocoding error:", error);
     return null;
   }
 }
@@ -73,17 +57,45 @@ function AddressForm({ initialValue, onChange }) {
     zoom: 16,
   });
 
-  const isUpdatingFromMarker = useRef(false);
-  const lastSavedAddress = useRef("");
-  const isUserTyping = useRef(false);
-  const hasSelectedSuggestion = useRef(false);
+  // === "Bắt" sự kiện click suggestion Mapbox ===
+  useEffect(() => {
+    // Lắng nghe sự kiện trên toàn document
+    const handleDocumentMouseDown = async (e) => {
+      const option = e.target.closest('[role="option"]');
+      if (option) {
+        // Lấy text hiển thị của suggestion
+        const place = option.innerText;
+        // Gọi geocode để lấy lại toạ độ (nếu place không đổi)
+        const result = await geocode(place);
+        if (result) {
+          setAddress(result.placeName);
+          setLat(result.lat);
+          setLng(result.lng);
+          setViewport((v) => ({
+            ...v,
+            latitude: result.lat,
+            longitude: result.lng,
+          }));
+          if (onChange) {
+            onChange({
+              address: result.placeName,
+              location: { lat: result.lat, lng: result.lng },
+            });
+          }
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleDocumentMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentMouseDown);
+    };
+  }, [onChange]);
+  // === END fix click chuột ===
 
-  // Init từ parent
   useEffect(() => {
     const newAddress = initialValue?.address || "";
     const newLat = initialValue?.location?.lat || DEFAULT_LOCATION.lat;
     const newLng = initialValue?.location?.lng || DEFAULT_LOCATION.lng;
-
     setAddress(newAddress);
     setLat(newLat);
     setLng(newLng);
@@ -92,49 +104,30 @@ function AddressForm({ initialValue, onChange }) {
       latitude: newLat,
       longitude: newLng,
     }));
-    lastSavedAddress.current = newAddress;
   }, [initialValue]);
 
-  // Log mỗi khi address thay đổi
-  useEffect(() => {
-    console.log("Address changed to:", address);
-  }, [address]);
-
-  // Thông báo parent
   const notifyChange = useCallback(
     (newAddress, newLat, newLng) => {
-      console.log("Notifying parent with:", { newAddress, newLat, newLng });
       onChange?.({
         address: newAddress,
         location: { lat: newLat, lng: newLng },
       });
-      lastSavedAddress.current = newAddress;
     },
     [onChange]
   );
 
-  // Khi user chọn suggestion từ SearchBox
+  // Khi chọn suggestion bằng bàn phím vẫn nhận từ Mapbox như cũ
   const handleRetrieve = (res) => {
-    console.log("SearchBox retrieve full response:", res);
     if (res?.features?.[0]) {
       const feature = res.features[0];
-      console.log("Selected feature:", feature);
-
-      // Thử nhiều cách lấy tên địa điểm
       const newAddress =
         feature.place_name ||
-        feature.properties?.full_address ||
-        feature.properties?.name ||
         feature.text ||
         `${feature.geometry.coordinates[1].toFixed(
           6
         )}, ${feature.geometry.coordinates[0].toFixed(6)}`;
-
       const newLat = feature.geometry.coordinates[1];
       const newLng = feature.geometry.coordinates[0];
-      console.log("SearchBox retrieve:", { newAddress, newLat, newLng });
-
-      hasSelectedSuggestion.current = true;
       setAddress(newAddress);
       setLat(newLat);
       setLng(newLng);
@@ -150,11 +143,7 @@ function AddressForm({ initialValue, onChange }) {
   // Kéo marker
   const onMarkerDragEnd = useCallback(
     async (event) => {
-      console.log("Marker drag end event:", event);
       const { lng: newLng, lat: newLat } = event.lngLat;
-      console.log("New coords:", newLat, newLng);
-
-      isUpdatingFromMarker.current = true;
       setLat(newLat);
       setLng(newLng);
       setViewport((v) => ({
@@ -166,16 +155,12 @@ function AddressForm({ initialValue, onChange }) {
       setAddress("Đang tìm địa chỉ...");
       try {
         const placeName = await reverseGeocode(newLng, newLat);
-        console.log("Reverse result:", placeName);
         setAddress(placeName);
         notifyChange(placeName, newLat, newLng);
       } catch (error) {
-        console.error("Reverse geocoding failed:", error);
         const fallback = `${newLat.toFixed(6)}, ${newLng.toFixed(6)}`;
         setAddress(fallback);
         notifyChange(fallback, newLat, newLng);
-      } finally {
-        isUpdatingFromMarker.current = false;
       }
     },
     [notifyChange]
@@ -186,16 +171,11 @@ function AddressForm({ initialValue, onChange }) {
     if (!navigator.geolocation) {
       return alert("Trình duyệt không hỗ trợ xác định vị trí!");
     }
-
-    isUpdatingFromMarker.current = true;
     setAddress("Đang lấy vị trí hiện tại...");
-
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const latNow = pos.coords.latitude;
         const lngNow = pos.coords.longitude;
-        console.log("Current location:", latNow, lngNow);
-
         setLat(latNow);
         setLng(lngNow);
         setViewport((v) => ({
@@ -206,23 +186,16 @@ function AddressForm({ initialValue, onChange }) {
 
         try {
           const placeName = await reverseGeocode(lngNow, latNow);
-          console.log("Current location address:", placeName);
           setAddress(placeName);
           notifyChange(placeName, latNow, lngNow);
         } catch (error) {
-          console.error("Failed to get address for current location:", error);
           const fallback = `${latNow.toFixed(6)}, ${lngNow.toFixed(6)}`;
           setAddress(fallback);
           notifyChange(fallback, latNow, lngNow);
-        } finally {
-          isUpdatingFromMarker.current = false;
         }
       },
       (err) => {
-        console.error("Geolocation error:", err);
         alert("Không lấy được vị trí: " + err.message);
-        setAddress(lastSavedAddress.current || "");
-        isUpdatingFromMarker.current = false;
       },
       {
         enableHighAccuracy: true,
@@ -234,53 +207,24 @@ function AddressForm({ initialValue, onChange }) {
 
   // Khi user gõ tay
   const handleAddressChange = (newAddress) => {
-    console.log("Address input changed:", newAddress);
-    if (isUpdatingFromMarker.current) return; // Ngăn không cho update khi đang từ marker
-
-    isUserTyping.current = true;
-    hasSelectedSuggestion.current = false;
     setAddress(newAddress);
   };
 
-  // Blur => geocode
+  // Blur => geocode nếu cần
   const handleAddressBlur = async () => {
-    console.log("Blur with address:", address);
-    console.log("isUpdatingFromMarker:", isUpdatingFromMarker.current);
-    console.log("hasSelectedSuggestion:", hasSelectedSuggestion.current);
-    console.log("lastSavedAddress:", lastSavedAddress.current);
-
-    isUserTyping.current = false;
-
-    // Nếu vừa chọn từ suggestion thì không cần geocode
-    if (hasSelectedSuggestion.current) {
-      hasSelectedSuggestion.current = false;
-      return;
-    }
-
-    // Nếu đang update từ marker thì không cần geocode
-    if (isUpdatingFromMarker.current) return;
-
-    // Nếu không có địa chỉ hoặc giống với địa chỉ đã lưu
-    if (!address.trim() || address === lastSavedAddress.current) {
-      return;
-    }
-
+    if (!address.trim()) return;
     // Nếu là tọa độ thô thì lưu luôn
     const coordPattern = /^-?\d+\.?\d*,\s*-?\d+\.?\d*$/;
     if (coordPattern.test(address.trim())) {
-      console.log("Raw coordinates detected, saving as is");
       notifyChange(address.trim(), lat, lng);
       return;
     }
-
     // Geocode địa chỉ
     const originalAddress = address;
     setAddress("Đang tìm tọa độ...");
-
     try {
       const result = await geocode(originalAddress.trim());
       if (result) {
-        console.log("Geocoding successful:", result);
         setLat(result.lat);
         setLng(result.lng);
         setAddress(result.placeName);
@@ -291,12 +235,10 @@ function AddressForm({ initialValue, onChange }) {
         }));
         notifyChange(result.placeName, result.lat, result.lng);
       } else {
-        console.log("Geocoding failed, keeping original address");
         setAddress(originalAddress);
         notifyChange(originalAddress, lat, lng);
       }
     } catch (error) {
-      console.error("Geocoding error:", error);
       setAddress(originalAddress);
       notifyChange(originalAddress, lat, lng);
     }
@@ -338,12 +280,6 @@ function AddressForm({ initialValue, onChange }) {
                 border: "1px solid #ccc",
               },
               onBlur: handleAddressBlur,
-              onKeyDown: (e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  e.target.blur();
-                }
-              },
             }}
           />
         </div>

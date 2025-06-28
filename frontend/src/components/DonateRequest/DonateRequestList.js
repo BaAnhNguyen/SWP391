@@ -29,6 +29,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
     temperature: "",
     hemoglobin: "",
     quantity: 1,
+    volume: 350,
     confirmedBloodGroup: "",
     confirmedComponent: "",
   });
@@ -125,6 +126,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
       temperature: "",
       hemoglobin: "",
       quantity: 1,
+      volume: 350,
       confirmedBloodGroup: request.bloodGroup || "",
       confirmedComponent: request.component || "",
     });
@@ -208,7 +210,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
         if (isNaN(qty) || qty < 1) {
           return alert(t("donateRequest.invalidQuantity"));
         }
-
+        const vol = Number(healthCheckData.volume);
+        if (isNaN(vol) || vol < 50) {
+          return alert(t("Invalid volume(50ml)"));
+        }
         // Validate nhóm máu/thành phần
         if (!healthCheckData.confirmedBloodGroup) {
           return alert("Vui lòng chọn nhóm máu xác nhận");
@@ -220,6 +225,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
         const requestData = {
           healthCheckStatus: "completed",
           quantity: qty,
+          volume: vol,
           healthCheck: {
             weight: healthCheckData.weight
               ? parseFloat(healthCheckData.weight)
@@ -770,16 +776,29 @@ const DonateRequestList = ({ userRole, refresh }) => {
               )}
               {/* Conditional form fields */}
               {activeTab === "complete" ? (
-                <div className="form-field quantity-field large-quantity">
-                  <label>{t("donateRequest.quantity")}</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    min="1"
-                    value={healthCheckData.quantity}
-                    onChange={handleHealthCheckChange}
-                  />
-                </div>
+                <>
+                  <div className="form-field quantity-field large-quantity">
+                    <label>{t("donateRequest.quantity")}</label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      min="1"
+                      value={healthCheckData.quantity}
+                      onChange={handleHealthCheckChange}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>Thể tích máu (ml)</label>
+                    <input
+                      type="number"
+                      name="volume"
+                      min="50"
+                      value={healthCheckData.volume}
+                      onChange={handleHealthCheckChange}
+                      required
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="cancel-form">
                   <div className="form-field full-width">
