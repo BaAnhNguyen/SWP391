@@ -1,6 +1,5 @@
 const NeedRequest = require("../models/NeedRequest");
 const BloodUnit = require("../models/BloodUnit");
-const BloodRequest = require("../models/BloodRequest");
 
 //create
 exports.create = async (req, res) => {
