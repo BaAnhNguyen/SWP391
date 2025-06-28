@@ -35,4 +35,7 @@ router.delete("/:id", restrictTo("Staff","Member"), ctrl.delete);
 // Assign all available blood units to a request (staff only)
 router.post("/assign-blood-units", restrictTo("Staff"), ctrl.assignBloodUnitToRequest);
 
+// Fulfill a blood request (staff only)
+router.post("/fulfill/:requestId", restrictTo("Staff"), ctrl.fulfillBloodRequest);
+
 module.exports = router;

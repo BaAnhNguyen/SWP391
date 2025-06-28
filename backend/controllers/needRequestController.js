@@ -1,4 +1,6 @@
 const NeedRequest = require("../models/NeedRequest");
+const BloodUnit = require("../models/BloodUnit");
+const BloodRequest = require("../models/BloodRequest");
 
 //create
 exports.create = async (req, res) => {
@@ -144,8 +146,6 @@ exports.delete = async (req, res) => {
   }
 };
 
-const BloodUnit = require("../models/BloodUnit");
-
 exports.assignBloodUnitToRequest = async (req, res) => {
   try {
     const { componentType, bloodType, requestId } = req.body;
@@ -174,5 +174,31 @@ exports.assignBloodUnitToRequest = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error assigning blood units." });
+  }
+};
+
+exports.fulfillBloodRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const request = await BloodRequest.findByIdAndUpdate(
+      requestId,
+      { status: "Fulfilled" },
+      { new: true }
+    );
+
+    if (!request) {
+      return res.status(404).json({ message: "Blood request not found" });
+    }
+
+    // Remove all blood units assigned to this request
+    const deleteResult = await BloodUnit.deleteMany({ assignedToRequestId: requestId });
+
+    res.status(200).json({
+      message: `Request fulfilled and ${deleteResult.deletedCount} blood unit(s) removed from storage.`,
+      request
+    });
+  } catch (error) {
+    console.error("Fulfill Error:", error);
+    res.status(500).json({ message: "Failed to fulfill request." });
   }
 };
