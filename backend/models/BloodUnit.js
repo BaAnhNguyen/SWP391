@@ -44,6 +44,11 @@ const bloodUnitSchema = new mongoose.Schema({
     ref: "DonationHistory",
   },
   note: { type: String },
+  assignedToRequestId: {
+    type: mongoose.Schema.Types.ObjectId, // or whatever ID type you use
+    ref: 'BloodRequest',
+    default: null
+  }
 });
 
 module.exports = mongoose.model("BloodUnit", bloodUnitSchema);

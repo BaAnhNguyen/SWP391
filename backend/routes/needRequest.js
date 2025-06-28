@@ -32,4 +32,7 @@ router.patch("/:id", restrictTo("Staff","Member"), ctrl.update);
 //delete need request (staff, admin and member)
 router.delete("/:id", restrictTo("Staff","Member"), ctrl.delete);
 
+// Assign all available blood units to a request (staff only)
+router.post("/assign-blood-units", restrictTo("Staff"), ctrl.assignBloodUnitToRequest);
+
 module.exports = router;
