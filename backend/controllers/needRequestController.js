@@ -54,6 +54,12 @@ exports.updateStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
+    // Only allow status values defined in the model
+    const allowedStatuses = ["Pending", "Assigned", "Fulfilled", "Rejected", "Expired", "Canceled"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
     const nr = await NeedRequest.findById(id);
     if (!nr) {
       return res.status(404).json({ message: "Need request not found" });
@@ -77,12 +83,23 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Need request not found" });
     }
 
+    // Only allow update if status is Pending
     if (req.user.role === "Member") {
-      if (nr.status !== "Open") {
+      if (nr.status !== "Pending") {
         return res
           .status(400)
-          .json({ message: "Cannot update: status not open" });
+          .json({ message: "Cannot update: status not pending" });
       }
+    }
+
+    // Validate bloodGroup and component enums
+    const allowedBloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+    const allowedComponents = ["WholeBlood", "Plasma", "Platelets", "RedCells"];
+    if (bloodGroup && !allowedBloodGroups.includes(bloodGroup)) {
+      return res.status(400).json({ message: "Invalid blood group" });
+    }
+    if (component && !allowedComponents.includes(component)) {
+      return res.status(400).json({ message: "Invalid component" });
     }
 
     if (bloodGroup) nr.bloodGroup = bloodGroup;
@@ -111,11 +128,12 @@ exports.delete = async (req, res) => {
       return res.status(404).json({ message: "Need request not found" });
     }
 
+    // Only allow delete if status is Pending for Member
     if (req.user.role === "Member") {
-      if (nr.status != "Open") {
+      if (nr.status !== "Pending") {
         return res
           .status(400)
-          .json({ message: "Cannot delete: status not open" });
+          .json({ message: "Cannot delete: status not pending" });
       }
     }
 
