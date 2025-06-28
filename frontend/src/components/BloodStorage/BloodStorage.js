@@ -371,35 +371,67 @@ const BloodStorage = () => {
               <th>Thể tích (ml)</th>
               <th>Kiểu nhập</th>
               <th>Ghi chú</th>
+              <th>Ngày hết hạn</th>
+              <th>Còn lại (ngày)</th>
+              <th>Xóa</th>
             </tr>
           </thead>
           <tbody>
             {filteredBloodInventory.length > 0 ? (
-              filteredBloodInventory.map((unit) => (
-                <tr key={unit._id}>
-                  <td>{formatDate(unit.DateAdded)}</td>
-                  <td>{unit.BloodType}</td>
-                  <td>
-                    {unit.ComponentType === "WholeBlood" && "Toàn phần"}
-                    {unit.ComponentType === "Plasma" && "Huyết tương"}
-                    {unit.ComponentType === "Platelets" && "Tiểu cầu"}
-                    {unit.ComponentType === "RedCells" && "Hồng cầu"}
-                  </td>
-                  <td>{unit.Quantity || 1}</td>
-                  <td>{unit.Volume || ""}</td>
-                  <td>
-                    {unit.SourceType === "donation"
-                      ? "Hiến máu"
-                      : unit.SourceType === "import"
-                      ? "Nhập tay"
-                      : ""}
-                  </td>
-                  <td>{unit.note || ""}</td>
-                </tr>
-              ))
+              filteredBloodInventory.map((unit) => {
+                const days = getDaysUntilExpiration(unit.DateExpired);
+                const isExpired = days <= 0;
+                return (
+                  <tr key={unit._id} className={isExpired ? "expired-row" : ""}>
+                    <td>{formatDate(unit.DateAdded)}</td>
+                    <td>{unit.BloodType}</td>
+                    <td>
+                      {unit.ComponentType === "WholeBlood" && "Toàn phần"}
+                      {unit.ComponentType === "Plasma" && "Huyết tương"}
+                      {unit.ComponentType === "Platelets" && "Tiểu cầu"}
+                      {unit.ComponentType === "RedCells" && "Hồng cầu"}
+                    </td>
+                    <td>{unit.Quantity || 1}</td>
+                    <td>{unit.Volume || ""}</td>
+                    <td>
+                      {unit.SourceType === "donation"
+                        ? "Hiến máu"
+                        : unit.SourceType === "import"
+                        ? "Nhập tay"
+                        : ""}
+                    </td>
+                    <td>{unit.note || ""}</td>
+                    <td>{formatDate(unit.DateExpired)}</td>
+                    <td
+                      style={{
+                        color: isExpired ? "#b80000" : undefined,
+                        fontWeight: isExpired ? "bold" : undefined,
+                      }}
+                    >
+                      {isExpired ? "Hết hạn" : days}
+                    </td>
+                    <td>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDeleteBloodUnit(unit._id)}
+                        style={{
+                          color: "#b80000",
+                          border: "none",
+                          background: "none",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                        }}
+                        title="Xóa bản ghi này"
+                      >
+                        ✖
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan="7">Không có bản ghi phù hợp.</td>
+                <td colSpan="10">Không có bản ghi phù hợp.</td>
               </tr>
             )}
             {/* Tổng kết cuối bảng */}
@@ -407,11 +439,18 @@ const BloodStorage = () => {
               <td colSpan="3">TỔNG</td>
               <td>{totalQuantity}</td>
               <td>{totalVolume}</td>
-              <td colSpan="2"></td>
+              <td colSpan="5"></td>
             </tr>
           </tbody>
         </table>
       </div>
+      <style>
+        {`
+        .expired-row td {
+          background: #ffe5e5 !important;
+        }
+        `}
+      </style>
     </div>
   );
 };
