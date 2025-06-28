@@ -449,11 +449,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     {request.bloodGroup}
                   </div>
                   <div className="request-details">
-                    <span className="request-by">
-                      {request.userId?.name ||
-                        request.createdBy?.name ||
-                        "Unknown"}
-                    </span>
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
                     </span>
