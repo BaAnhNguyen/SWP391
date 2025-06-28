@@ -109,3 +109,19 @@ exports.getBloodUnitsByType = async (req, res) => {
       .json({ message: err.message || "Failed to fetch blood units by type." });
   }
 };
+// Get blood units by component and blood type
+exports.getBloodUnitsByComponentAndType = async (req, res) => {
+  try {
+    const { componentType, bloodType } = req.query;
+    if (!componentType || !bloodType) {
+      return res.status(400).json({ message: "componentType and bloodType are required." });
+    }
+    const bloodUnits = await BloodUnit.find({
+      ComponentType: componentType,
+      BloodType: bloodType,
+    });
+    res.status(200).json(bloodUnits);
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to fetch blood units by component and type." });
+  }
+};

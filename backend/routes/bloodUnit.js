@@ -20,6 +20,9 @@ router.delete("/:id", restrictTo("Staff"), bloodUnitController.deleteBloodUnit);
 // Get blood units by blood type (Staff only)
 router.get("/type/:bloodType", restrictTo("Staff"), bloodUnitController.getBloodUnitsByType);
 
+// Get blood units by component and blood type (Staff only)
+router.get("/filter/by-component-and-type", restrictTo("Staff"), bloodUnitController.getBloodUnitsByComponentAndType);
+
 // You can add more routes here (e.g., get, update, delete blood units)
 
 module.exports = router;
