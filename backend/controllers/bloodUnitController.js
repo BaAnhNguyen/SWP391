@@ -119,6 +119,7 @@ exports.getBloodUnitsByComponentAndType = async (req, res) => {
     const bloodUnits = await BloodUnit.find({
       ComponentType: componentType,
       BloodType: bloodType,
+      assignedToRequestId: null
     });
     res.status(200).json(bloodUnits);
   } catch (err) {

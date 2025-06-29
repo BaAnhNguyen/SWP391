@@ -147,32 +147,28 @@ exports.delete = async (req, res) => {
 
 exports.assignBloodUnitToRequest = async (req, res) => {
   try {
-    const { componentType, bloodType, requestId } = req.body;
-    if (!componentType || !bloodType || !requestId) {
-      return res.status(400).json({ message: "componentType, bloodType, and requestId are required." });
+    const { bloodUnitId, requestId } = req.body;
+    if (!bloodUnitId || !requestId) {
+      return res.status(400).json({ message: "bloodUnitId and requestId are required." });
     }
 
-    // Find all matching blood units that are not already assigned
-    const bloodUnits = await BloodUnit.find({
-      ComponentType: componentType,
-      BloodType: bloodType,
+    // Find the blood unit by id and check if it's unassigned
+    const bloodUnit = await BloodUnit.findOne({
+      _id: bloodUnitId,
       assignedToRequestId: null
     });
 
-    if (!bloodUnits.length) {
-      return res.status(404).json({ message: "No available blood units found for the given type and component." });
+    if (!bloodUnit) {
+      return res.status(404).json({ message: "Blood unit not found or already assigned." });
     }
 
-    // Assign all found blood units to the request
-    const updatePromises = bloodUnits.map(unit =>
-      BloodUnit.findByIdAndUpdate(unit._id, { assignedToRequestId: requestId })
-    );
-    await Promise.all(updatePromises);
+    // Assign the blood unit to the request
+    await BloodUnit.findByIdAndUpdate(bloodUnitId, { assignedToRequestId: requestId });
 
-    res.status(200).json({ message: `${bloodUnits.length} blood unit(s) assigned to request.`, assignedUnitIds: bloodUnits.map(u => u._id) });
+    res.status(200).json({ message: "Blood unit assigned to request.", assignedUnitId: bloodUnitId });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error assigning blood units." });
+    res.status(500).json({ message: "Error assigning blood unit." });
   }
 };
 
