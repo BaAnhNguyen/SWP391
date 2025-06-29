@@ -44,7 +44,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         <div className="modal-header">
           <h3 className="modal-title">Chi tiết lần hiến máu</h3>
           <button className="close-btn" onClick={onClose}>
-            x
+            ✕
           </button>
         </div>
 
@@ -66,7 +66,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
             {detail.userId && (
               <div className="info-section">
                 <div className="info-row">
-                  <span className="label">Người hiến máu</span>
+                  <span className="label">Người hiến máu:</span>
                   <div className="value">
                     <div className="donor-name">{detail.userId.name || ""}</div>
                     <div className="donor-email">
@@ -77,7 +77,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                     )}
                     {detail.userId.dateOfBirth && (
                       <div>
-                        Ngày sinh{" "}
+                        Ngày sinh:{" "}
                         {new Date(
                           detail.userId.dateOfBirth
                         ).toLocaleDateString()}
@@ -85,7 +85,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                     )}
                     {detail.userId.gender && (
                       <div>
-                        Giới tính{" "}
+                        Giới tính:{" "}
                         {detail.userId.gender === "male"
                           ? "Nam"
                           : detail.userId.gender === "female"
@@ -96,41 +96,40 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                   </div>
                 </div>
               </div>
-              
             )}
 
             {/* Thông tin hiến máu */}
             <div className="info-section">
               <div className="info-row">
-                <span className="label">Ngày hiến</span>
+                <span className="label">Ngày hiến:</span>
                 <span className="value">
                   {new Date(detail.donationDate).toLocaleDateString()}
                 </span>
               </div>
 
               <div className="info-row">
-                <span className="label">Nhóm máu</span>
+                <span className="label">Nhóm máu:</span>
                 <span className="value blood-type">{detail.bloodGroup}</span>
               </div>
 
               <div className="info-row">
-                <span className="label">Thành phần</span>
+                <span className="label">Thành phần:</span>
                 <span className="value">
                   {bloodComponentVN[detail.component] || detail.component}
                 </span>
               </div>
 
               <div className="info-row">
-                <span className="label">Số lượng</span>
+                <span className="label">Số lượng:</span>
                 <span className="value">{detail.quantity ?? "?"}</span>
               </div>
               <div className="info-row">
-                <span className="label">Tổng thể tích (ml)</span>
+                <span className="label">Tổng thể tích (ml):</span>
                 <span className="value">{detail.volume ?? "?"}</span>
               </div>
 
               <div className="info-row">
-                <span className="label">Trạng thái</span>
+                <span className="label">Trạng thái:</span>
                 <span className={`value status ${detail.status.toLowerCase()}`}>
                   {detail.status}
                 </span>
@@ -140,38 +139,38 @@ const DonateHistoryDetail = ({ id, onClose }) => {
             {/* Thông tin sức khỏe */}
             {detail.healthCheck && (
               <div className="info-section">
-                <div className="section-title">Thông tin sức khỏe</div>
+                <div className="section-title">Thông tin sức khỏe:</div>
 
                 <div className="info-row">
-                  <span className="label">Cân nặng</span>
+                  <span className="label">Cân nặng:</span>
                   <span className="value">
                     {detail.healthCheck.weight ?? "?"} kg
                   </span>
                 </div>
 
                 <div className="info-row">
-                  <span className="label">Chiều cao</span>
+                  <span className="label">Chiều cao:</span>
                   <span className="value">
                     {detail.healthCheck.height ?? "?"} cm
                   </span>
                 </div>
 
                 <div className="info-row">
-                  <span className="label">Huyết áp</span>
+                  <span className="label">Huyết áp:</span>
                   <span className="value">
                     {detail.healthCheck.bloodPressure ?? "?"}
                   </span>
                 </div>
 
                 <div className="info-row">
-                  <span className="label">Nhịp tim</span>
+                  <span className="label">Mạch:</span>
                   <span className="value">
                     {detail.healthCheck.heartRate ?? "?"} bpm
                   </span>
                 </div>
 
                 <div className="info-row">
-                  <span className="label">Nhiệt độ</span>
+                  <span className="label">Nhiệt độ:</span>
                   <span className="value">
                     {detail.healthCheck.temperature ?? "?"} °C
                   </span>
@@ -182,15 +181,15 @@ const DonateHistoryDetail = ({ id, onClose }) => {
             {/* Thông tin hủy bỏ (nếu có) */}
             {detail.cancellation && (
               <div className="info-section">
-                <div className="section-title">Thông tin hủy bỏ</div>
+                <div className="section-title">Thông tin hủy bỏ:</div>
 
                 <div className="info-row">
-                  <span className="label">Lý do hủy</span>
+                  <span className="label">Lý do hủy:</span>
                   <span className="value">{detail.cancellation.reason}</span>
                 </div>
 
                 <div className="info-row">
-                  <span className="label">Ngày hẹn lại</span>
+                  <span className="label">Ngày hẹn lại:</span>
                   <span className="value">
                     {detail.cancellation.followUpDate
                       ? new Date(
@@ -201,14 +200,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                 </div>
               </div>
             )}
-            <div className="modal-footer">
-            <button className="close-modal-button" onClick={onClose}>
-              Close
-            </button>
           </div>
-          </div>
-          
-
         )}
       </div>
 
@@ -230,51 +222,47 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         
         .modal-content {
           background: #fff;
-          border-radius: 8px;
-          width: 470px; /* Giảm kích thước tổng thể */
+          border-radius: 12px;
+          min-width: 500px;
           max-width: 90vw;
-          max-height: 85vh;
+          max-height: 90vh;
           overflow-y: auto;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
         .modal-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px;
-          border-bottom: 1px solid #eaeaea;
-          background: #fafafa;
+          padding: 24px 24px 16px;
+          border-bottom: 1px solid #e5e5e5;
         }
         
         .modal-title {
           margin: 0;
-          font-size: 18px;
+          font-size: 20px;
           font-weight: 600;
-          color: #333;
+          color: #d32f2f;
         }
         
         .close-btn {
           background: none;
           border: none;
-          font-size: 20px;
+          font-size: 24px;
           cursor: pointer;
           color: #666;
-          padding: 4px;
+          padding: 4px 8px;
           border-radius: 4px;
           transition: all 0.2s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
         
         .close-btn:hover {
-          background: #f0f0f0;
+          background: #f5f5f5;
           color: #d32f2f;
         }
         
         .loading-container, .error-container {
-          padding: 24px 16px;
+          padding: 40px 24px;
           text-align: center;
         }
         
@@ -284,15 +272,13 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         }
         
         .detail-content {
-          padding: 16px;
+          padding: 24px;
         }
         
         .info-section {
-          margin-bottom: 20px;
-          padding-bottom: 12px;
+          margin-bottom: 24px;
+          padding-bottom: 16px;
           border-bottom: 1px solid #f0f0f0;
-          background: #fff;
-          border-radius: 6px;
         }
         
         .info-section:last-child {
@@ -304,16 +290,13 @@ const DonateHistoryDetail = ({ id, onClose }) => {
           font-weight: 600;
           color: #333;
           margin-bottom: 12px;
-          font-size: 15px;
-          padding: 0 0 8px 0;
-          border-bottom: 2px solid #f0f0f0;
+          font-size: 16px;
         }
         
         .info-row {
           display: flex;
-          margin-bottom: 8px;
+          margin-bottom: 12px;
           align-items: flex-start;
-          padding: 4px 0;
         }
         
         .info-row:last-child {
@@ -321,64 +304,58 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         }
         
         .label {
-          min-width: 110px;
+          min-width: 120px;
           font-weight: 500;
-          color: #666;
-          margin-right: 12px;
+          color: #555;
+          margin-right: 16px;
           flex-shrink: 0;
-          font-size: 14px;
         }
         
         .value {
           flex: 1;
           color: #333;
-          font-size: 14px;
         }
         
         .donor-name {
-          font-weight: 700;
-          font-size: 17px;
+          font-weight: 600;
+          font-size: 16px;
           margin-bottom: 4px;
-          color: red;
         }
         
         .donor-email {
           color: #666;
           margin-bottom: 4px;
-          font-size: 13px;
         }
         
         .blood-type {
-          background: rgba(211, 47, 47, 0.1);
-          color: #d32f2f;
-          padding: 3px 8px;
-          border-radius: 12px;
-          font-weight: 500;
+          background: #d32f2f;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-weight: 600;
           display: inline-block;
-          font-size: 13px;
         }
         
         .status {
-          padding: 3px 10px;
-          border-radius: 12px;
+          padding: 4px 12px;
+          border-radius: 20px;
           font-weight: 500;
           text-transform: capitalize;
           display: inline-block;
-          font-size: 13px;
         }
         
         .status.completed {
-          background: rgba(46, 125, 50, 0.1);
+          background: #e8f5e8;
           color: #2e7d32;
         }
         
         .status.pending {
-          background: rgba(245, 124, 0, 0.1);
+          background: #fff3e0;
           color: #f57c00;
         }
         
         .status.cancelled {
-          background: rgba(211, 47, 47, 0.1);
+          background: #ffebee;
           color: #d32f2f;
         }
         `}
