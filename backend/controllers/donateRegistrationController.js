@@ -183,37 +183,37 @@ exports.delete = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-//rejected status (staff)
+//update (reject/ approved)
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, rejectionReason, nextReadyDate } = req.body;
+    const { status, rejectionReason } = req.body;
 
     const reg = await DonationRegistration.findById(id);
     if (!reg)
       return res.status(404).json({ message: "Registration not found" });
 
-    if (
-      (status === "Rejected" && !rejectionReason) ||
-      (status === "Cancelled" && !rejectionReason)
-    ) {
+    // Chỉ cho phép chuyển sang Approved hoặc Rejected
+    if (!["Approved", "Rejected"].includes(status)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid status. Only approve or reject allowed." });
+    }
+
+    // Nếu rejected phải có lý do
+    if (status === "Rejected" && !rejectionReason) {
       return res
         .status(400)
         .json({ message: "Rejection reason is required when rejecting" });
     }
-    reg.status = status;
 
-    if (status === "Rejected" || status === "Cancelled") {
-      if (nextReadyDate) {
-        reg.nextReadyDate = new Date(nextReadyDate);
-      } else {
-        reg.nextReadyDate = undefined;
-      }
+    reg.status = status;
+    if (status === "Rejected") {
       reg.rejectionReason = rejectionReason;
     } else {
       reg.rejectionReason = "";
-      reg.nextReadyDate = undefined;
     }
+
     await reg.save();
     return res.json(reg);
   } catch (err) {
@@ -409,6 +409,28 @@ exports.complete = async (req, res) => {
       reg.nextReadyDate = followUpDateObj;
       await reg.save();
 
+      //create don moi in case cancel
+      let newRegistration = null;
+      let newRegData = {
+        userId: reg.userId,
+        bloodGroup: reg.bloodGroup,
+        component: reg.component,
+        readyDate: new Date(reg.nextReadyDate),
+        screening: reg.screening,
+        confirmation: reg.confirmation,
+        status: "Pending",
+      };
+      console.log(newRegData);
+
+      try {
+        newRegistration = await DonationRegistration.create(newRegData);
+      } catch (err) {
+        return res.statsu(500).json({
+          message: "Faild to create new registration",
+          error: err.message,
+          data: newRegData,
+        });
+      }
       return res.json({
         message: "Donation canceled and follow-up appointment scheduled",
         followUpDate: followUpDateObj,
