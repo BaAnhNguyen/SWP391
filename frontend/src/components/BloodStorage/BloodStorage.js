@@ -80,6 +80,7 @@ const BloodStorage = () => {
   const [bloodInventory, setBloodInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   // Lọc ngày và kiểu nhập cho bảng thống kê
   const [filterStartDate, setFilterStartDate] = useState("");
@@ -188,6 +189,7 @@ const BloodStorage = () => {
       });
       // Reload dashboard
       fetchInventory();
+      setShowAddForm(false); // Hide form after successful submission
     } catch (err) {
       alert(err.message);
     }
@@ -212,245 +214,246 @@ const BloodStorage = () => {
 
   return (
     <div className="blood-storage-container">
-      <h2>Dashboard Tồn Kho Máu</h2>
+      <h1>Trung Tâm Quản Lý Máu</h1>
 
-      {/* Form nhập máu thủ công (nhập tay) */}
-      <h3>Thêm máu vào kho (nhập tay)</h3>
-      <form className="add-blood-form" onSubmit={handleAddBloodUnit}>
-        <label>
-          Nhóm máu:
-          <select
-            name="BloodType"
-            value={newUnit.BloodType}
-            onChange={handleInputChange}
-          >
-            {bloodTypes.map((bt) => (
-              <option key={bt} value={bt}>
-                {bt}
-              </option>
+      {error && (
+        <div className="error-message" style={{
+          color: "white",
+          padding: "12px 20px",
+          background: "linear-gradient(135deg, #e74c3c, #c0392b)",
+          borderRadius: "8px",
+          margin: "15px 0",
+          textAlign: "center",
+          boxShadow: "0 4px 10px rgba(231, 76, 60, 0.2)"
+        }}>
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="loading" style={{
+          textAlign: "center",
+          padding: "30px 20px",
+          color: "#e74c3c",
+          fontSize: "1.1rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "15px"
+        }}>
+          <div className="loading-spinner"></div>
+          <div>Đang tải dữ liệu kho máu...</div>
+        </div>
+      ) : (
+        <>
+          <h2>Tổng Quan Kho Máu</h2>
+
+          <div className="blood-storage-dashboard">
+            {bloodTypes.map((type) => (
+              <div key={type} className="blood-storage-card">
+                <div className="blood-drop-icon" data-type={type}></div>
+                <h3>{type}</h3>
+                <div className={`blood-level ${getStatusClass(summaryData[type]?.status || "critical")}`}>
+                  {summaryData[type]?.total || 0} túi ({summaryData[type]?.totalVolume || 0} ml)
+                </div>
+                <div className="component-breakdown">
+                  <p><span>Toàn phần:</span> <span>{summaryData[type]?.WholeBlood || 0} ({summaryData[type]?.WholeBloodVolume || 0} ml)</span></p>
+                  <p><span>Huyết tương:</span> <span>{summaryData[type]?.Plasma || 0} ({summaryData[type]?.PlasmaVolume || 0} ml)</span></p>
+                  <p><span>Tiểu cầu:</span> <span>{summaryData[type]?.Platelets || 0} ({summaryData[type]?.PlateletsVolume || 0} ml)</span></p>
+                  <p><span>Hồng cầu:</span> <span>{summaryData[type]?.RedCells || 0} ({summaryData[type]?.RedCellsVolume || 0} ml)</span></p>
+                </div>
+              </div>
             ))}
-          </select>
-        </label>
-        <label>
-          Thành phần:
-          <select
-            name="ComponentType"
-            value={newUnit.ComponentType}
-            onChange={handleInputChange}
-          >
-            <option value="WholeBlood">Toàn phần</option>
-            <option value="Plasma">Huyết tương</option>
-            <option value="Platelets">Tiểu cầu</option>
-            <option value="RedCells">Hồng cầu</option>
-          </select>
-        </label>
-        <label>
-          Số túi:
-          <input
-            type="number"
-            name="Quantity"
-            min="1"
-            value={newUnit.Quantity}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <label>
-          Tổng thể tích (ml):
-          <input
-            type="number"
-            name="Volume"
-            min="1"
-            value={newUnit.Volume}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <label>
-          Ghi chú:
-          <input
-            type="text"
-            name="note"
-            value={newUnit.note}
-            onChange={handleInputChange}
-          />
-        </label>
-        <button type="submit" disabled={adding}>
-          {adding ? "Đang thêm..." : "Thêm vào kho"}
-        </button>
-      </form>
-
-      <div className="blood-summary-cards">
-        {bloodTypes.map((type) => (
-          <div
-            key={type}
-            className={`blood-summary-card ${getStatusClass(
-              summaryData[type]?.status || "critical"
-            )}`}
-          >
-            <div className="blood-type">{type}</div>
-            <div className="blood-level">
-              {summaryData[type]?.total || 0} túi
-              <br />
-              <span style={{ fontSize: "0.9em" }}>
-                Tổng: {summaryData[type]?.totalVolume || 0} ml
-              </span>
-            </div>
-            <div className="component-breakdown">
-              <p>
-                Toàn phần: {summaryData[type]?.WholeBlood || 0} (
-                {summaryData[type]?.WholeBloodVolume || 0} ml)
-              </p>
-              <p>
-                Huyết tương: {summaryData[type]?.Plasma || 0} (
-                {summaryData[type]?.PlasmaVolume || 0} ml)
-              </p>
-              <p>
-                Tiểu cầu: {summaryData[type]?.Platelets || 0} (
-                {summaryData[type]?.PlateletsVolume || 0} ml)
-              </p>
-              <p>
-                Hồng cầu: {summaryData[type]?.RedCells || 0} (
-                {summaryData[type]?.RedCellsVolume || 0} ml)
-              </p>
-            </div>
-            <div
-              className={`status-label ${getStatusClass(
-                summaryData[type]?.status || "critical"
-              )}`}
-            >
-              {summaryData[type]?.status === "sufficient"
-                ? "Đủ"
-                : summaryData[type]?.status === "medium"
-                ? "Trung bình"
-                : "Cảnh báo"}
-            </div>
           </div>
-        ))}
-      </div>
 
-      <h2 style={{ marginTop: 40 }}>BẢNG THỐNG KÊ/LỊCH SỬ NHẬP KHO MÁU</h2>
-      <div className="filter-row" style={{ margin: "10px 0" }}>
-        <label>
-          Từ ngày:{" "}
-          <input
-            type="date"
-            value={filterStartDate}
-            onChange={(e) => setFilterStartDate(e.target.value)}
-          />
-        </label>
-        <label>
-          Đến ngày:{" "}
-          <input
-            type="date"
-            value={filterEndDate}
-            onChange={(e) => setFilterEndDate(e.target.value)}
-          />
-        </label>
-        <label>
-          Kiểu nhập:
-          <select
-            value={filterSourceType}
-            onChange={(e) => setFilterSourceType(e.target.value)}
-          >
-            <option value="all">Tất cả</option>
-            <option value="donation">Hiến máu</option>
-            <option value="import">Nhập tay</option>
-          </select>
-        </label>
-      </div>
+          <div className="management-controls">
+            <button type="button" onClick={() => setShowAddForm(!showAddForm)} className="add-inventory-btn">
+              {showAddForm ? '✖ Ẩn Form Nhập Máu' : '➕ Thêm Máu Vào Kho'}
+            </button>
+          </div>
 
-      <div className="blood-inventory-table-wrapper">
-        <table className="blood-inventory-table">
-          <thead>
-            <tr>
-              <th>Ngày nhập</th>
-              <th>Nhóm máu</th>
-              <th>Thành phần</th>
-              <th>Số túi</th>
-              <th>Thể tích (ml)</th>
-              <th>Kiểu nhập</th>
-              <th>Ghi chú</th>
-              <th>Ngày hết hạn</th>
-              <th>Còn lại (ngày)</th>
-              <th>Xóa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBloodInventory.length > 0 ? (
-              filteredBloodInventory.map((unit) => {
-                const days = getDaysUntilExpiration(unit.DateExpired);
-                const isExpired = days <= 0;
-                return (
-                  <tr key={unit._id} className={isExpired ? "expired-row" : ""}>
-                    <td>{formatDate(unit.DateAdded)}</td>
-                    <td>{unit.BloodType}</td>
-                    <td>
-                      {unit.ComponentType === "WholeBlood" && "Toàn phần"}
-                      {unit.ComponentType === "Plasma" && "Huyết tương"}
-                      {unit.ComponentType === "Platelets" && "Tiểu cầu"}
-                      {unit.ComponentType === "RedCells" && "Hồng cầu"}
-                    </td>
-                    <td>{unit.Quantity || 1}</td>
-                    <td>{unit.Volume || ""}</td>
-                    <td>
-                      {unit.SourceType === "donation"
-                        ? "Hiến máu"
-                        : unit.SourceType === "import"
-                        ? "Nhập tay"
-                        : ""}
-                    </td>
-                    <td>{unit.note || ""}</td>
-                    <td>{formatDate(unit.DateExpired)}</td>
-                    <td
-                      style={{
-                        color: isExpired ? "#b80000" : undefined,
-                        fontWeight: isExpired ? "bold" : undefined,
-                      }}
-                    >
-                      {isExpired ? "Hết hạn" : days}
-                    </td>
-                    <td>
-                      <button
-                        className="delete-btn"
-                        onClick={() => handleDeleteBloodUnit(unit._id)}
-                        style={{
-                          color: "#b80000",
-                          border: "none",
-                          background: "none",
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                        }}
-                        title="Xóa bản ghi này"
-                      >
-                        ✖
-                      </button>
-                    </td>
+          {showAddForm && (
+            <div className="filter-section">
+              <h3>Thêm Máu Vào Kho (Nhập Tay)</h3>
+              <form className="add-blood-form filter-form" onSubmit={handleAddBloodUnit}>
+                <div className="filter-form-group">
+                  <label>Nhóm Máu:</label>
+                  <select
+                    name="BloodType"
+                    value={newUnit.BloodType}
+                    onChange={handleInputChange}
+                  >
+                    {bloodTypes.map((bt) => (
+                      <option key={bt} value={bt}>
+                        {bt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="filter-form-group">
+                  <label>Thành Phần:</label>
+                  <select
+                    name="ComponentType"
+                    value={newUnit.ComponentType}
+                    onChange={handleInputChange}
+                  >
+                    <option value="WholeBlood">Toàn phần</option>
+                    <option value="Plasma">Huyết tương</option>
+                    <option value="Platelets">Tiểu cầu</option>
+                    <option value="RedCells">Hồng cầu</option>
+                  </select>
+                </div>
+
+                <div className="filter-form-group">
+                  <label>Số Túi:</label>
+                  <input
+                    type="number"
+                    name="Quantity"
+                    min="1"
+                    value={newUnit.Quantity}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="filter-form-group">
+                  <label>Thể Tích (ml):</label>
+                  <input
+                    type="number"
+                    name="Volume"
+                    min="1"
+                    value={newUnit.Volume}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="filter-form-group">
+                  <label>Ghi Chú:</label>
+                  <input
+                    type="text"
+                    name="note"
+                    value={newUnit.note}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <button type="submit" className="submit-btn" disabled={adding}>
+                  {adding ? "Đang Xử Lý..." : "Thêm Vào Kho"}
+                </button>
+              </form>
+            </div>
+          )}
+
+          <h2>Lịch Sử Nhập Kho Máu</h2>
+          <div className="filter-row">
+            <label>
+              Từ Ngày:
+              <input
+                type="date"
+                value={filterStartDate}
+                onChange={(e) => setFilterStartDate(e.target.value)}
+              />
+            </label>
+            <label>
+              Đến Ngày:
+              <input
+                type="date"
+                value={filterEndDate}
+                onChange={(e) => setFilterEndDate(e.target.value)}
+              />
+            </label>
+            <label>
+              Kiểu Nhập:
+              <select
+                value={filterSourceType}
+                onChange={(e) => setFilterSourceType(e.target.value)}
+              >
+                <option value="all">Tất cả</option>
+                <option value="donation">Hiến máu</option>
+                <option value="import">Nhập tay</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="blood-inventory-table-wrapper">
+            <table className="blood-inventory-table">
+              <thead>
+                <tr>
+                  <th>Ngày Nhập</th>
+                  <th>Nhóm Máu</th>
+                  <th>Thành Phần</th>
+                  <th>Số Túi</th>
+                  <th>Thể Tích (ml)</th>
+                  <th>Kiểu Nhập</th>
+                  <th>Ghi Chú</th>
+                  <th>Ngày Hết Hạn</th>
+                  <th>Còn Lại (ngày)</th>
+                  <th>Xóa</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBloodInventory.length > 0 ? (
+                  filteredBloodInventory.map((unit) => {
+                    const days = getDaysUntilExpiration(unit.DateExpired);
+                    const isExpired = days <= 0;
+                    return (
+                      <tr key={unit._id} className={isExpired ? "expired-row" : ""}>
+                        <td>{formatDate(unit.DateAdded)}</td>
+                        <td>{unit.BloodType}</td>
+                        <td>
+                          {unit.ComponentType === "WholeBlood" && "Toàn phần"}
+                          {unit.ComponentType === "Plasma" && "Huyết tương"}
+                          {unit.ComponentType === "Platelets" && "Tiểu cầu"}
+                          {unit.ComponentType === "RedCells" && "Hồng cầu"}
+                        </td>
+                        <td>{unit.Quantity}</td>
+                        <td>{unit.Volume}</td>
+                        <td>
+                          {unit.SourceType === "donation"
+                            ? "Hiến máu"
+                            : unit.SourceType === "import"
+                              ? "Nhập tay"
+                              : ""}
+                        </td>
+                        <td>{unit.note || ""}</td>
+                        <td>{formatDate(unit.DateExpired)}</td>
+                        <td
+                          style={{
+                            color: isExpired ? "#b80000" : undefined,
+                            fontWeight: isExpired ? "bold" : undefined,
+                          }}
+                        >
+                          {isExpired ? "Hết hạn" : days}
+                        </td>
+                        <td>
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDeleteBloodUnit(unit._id)}
+                            title="Xóa bản ghi này"
+                          >
+                            ✖
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="10">Không có bản ghi phù hợp.</td>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan="10">Không có bản ghi phù hợp.</td>
-              </tr>
-            )}
-            {/* Tổng kết cuối bảng */}
-            <tr style={{ fontWeight: "bold", background: "#ffeaea" }}>
-              <td colSpan="3">TỔNG</td>
-              <td>{totalQuantity}</td>
-              <td>{totalVolume}</td>
-              <td colSpan="5"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <style>
-        {`
-        .expired-row td {
-          background: #ffe5e5 !important;
-        }
-        `}
-      </style>
+                )}
+                {/* Tổng kết cuối bảng */}
+                <tr style={{ fontWeight: "bold", background: "#ffeaea" }}>
+                  <td colSpan="3">TỔNG</td>
+                  <td>{totalQuantity}</td>
+                  <td>{totalVolume}</td>
+                  <td colSpan="5"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 };
