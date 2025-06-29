@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MapGL, { Marker } from "react-map-gl";
 import { SearchBox } from "@mapbox/search-js-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const MAPBOX_TOKEN = "";
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoibGg4b24iLCJhIjoiY21jZWVkaGd6MHQ3ZzJpcHVzbzUwZjM3NyJ9.HZOMcXUmOi8FtkFL7_DShQ";
 const DEFAULT_LOCATION = { lat: 10.776889, lng: 106.700806 };
 
 // Reverse geocode: tọa độ → place name
@@ -12,12 +13,9 @@ async function reverseGeocode(lng, lat) {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&country=vn&language=vi&types=address,poi,place`;
     const resp = await fetch(url);
     const data = await resp.json();
-    if (data.features && data.features.length > 0) {
-      return data.features[0].place_name;
-    }
-    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-  } catch (error) {
-    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    return data.features?.[0]?.place_name || null;
+  } catch {
+    return null;
   }
 }
 
@@ -29,16 +27,12 @@ async function geocode(address) {
     )}.json?access_token=${MAPBOX_TOKEN}&country=vn&language=vi&types=address,poi,place&limit=1`;
     const resp = await fetch(url);
     const data = await resp.json();
-    if (data.features && data.features.length > 0) {
-      const feature = data.features[0];
-      return {
-        lat: feature.geometry.coordinates[1],
-        lng: feature.geometry.coordinates[0],
-        placeName: feature.place_name,
-      };
+    if (data.features?.[0]?.geometry?.coordinates) {
+      const [lng, lat] = data.features[0].geometry.coordinates;
+      return { lat, lng, placeName: data.features[0].place_name };
     }
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -56,111 +50,74 @@ function AddressForm({ initialValue, onChange }) {
     longitude: lng,
     zoom: 16,
   });
+  const [addressValid, setAddressValid] = useState(true);
+  const [isAddressBySuggestion, setIsAddressBySuggestion] = useState(false);
 
-  // === "Bắt" sự kiện click suggestion Mapbox ===
+  // Sync initialValue khi có dữ liệu mới
   useEffect(() => {
-    // Lắng nghe sự kiện trên toàn document
-    const handleDocumentMouseDown = async (e) => {
-      const option = e.target.closest('[role="option"]');
-      if (option) {
-        // Lấy text hiển thị của suggestion
-        const place = option.innerText;
-        // Gọi geocode để lấy lại toạ độ (nếu place không đổi)
-        const result = await geocode(place);
-        if (result) {
-          setAddress(result.placeName);
-          setLat(result.lat);
-          setLng(result.lng);
-          setViewport((v) => ({
-            ...v,
-            latitude: result.lat,
-            longitude: result.lng,
-          }));
-          if (onChange) {
-            onChange({
-              address: result.placeName,
-              location: { lat: result.lat, lng: result.lng },
-            });
-          }
-        }
-      }
-    };
-    document.addEventListener("mousedown", handleDocumentMouseDown);
-    return () => {
-      document.removeEventListener("mousedown", handleDocumentMouseDown);
-    };
-  }, [onChange]);
-  // === END fix click chuột ===
-
-  useEffect(() => {
-    const newAddress = initialValue?.address || "";
-    const newLat = initialValue?.location?.lat || DEFAULT_LOCATION.lat;
-    const newLng = initialValue?.location?.lng || DEFAULT_LOCATION.lng;
-    setAddress(newAddress);
-    setLat(newLat);
-    setLng(newLng);
-    setViewport((v) => ({
-      ...v,
-      latitude: newLat,
-      longitude: newLng,
-    }));
+    const a = initialValue?.address || "";
+    const la = initialValue?.location?.lat || DEFAULT_LOCATION.lat;
+    const lo = initialValue?.location?.lng || DEFAULT_LOCATION.lng;
+    setAddress(a);
+    setLat(la);
+    setLng(lo);
+    setViewport((v) => ({ ...v, latitude: la, longitude: lo }));
+    setAddressValid(true);
+    setIsAddressBySuggestion(false);
   }, [initialValue]);
 
   const notifyChange = useCallback(
-    (newAddress, newLat, newLng) => {
+    (newAddress, newLat, newLng) =>
       onChange?.({
         address: newAddress,
         location: { lat: newLat, lng: newLng },
-      });
-    },
+      }),
     [onChange]
   );
 
-  // Khi chọn suggestion bằng bàn phím vẫn nhận từ Mapbox như cũ
+  // Xử lý chọn suggestion (chuột hoặc bàn phím)
   const handleRetrieve = (res) => {
-    if (res?.features?.[0]) {
-      const feature = res.features[0];
+    const feat = res?.features?.[0];
+    if (feat?.geometry?.coordinates) {
+      const [newLng, newLat] = feat.geometry.coordinates;
       const newAddress =
-        feature.place_name ||
-        feature.text ||
-        `${feature.geometry.coordinates[1].toFixed(
-          6
-        )}, ${feature.geometry.coordinates[0].toFixed(6)}`;
-      const newLat = feature.geometry.coordinates[1];
-      const newLng = feature.geometry.coordinates[0];
+        feat.place_name ||
+        feat.text ||
+        "Không rõ địa chỉ! Vui lòng kéo marker để chọn chính xác vị trí!";
       setAddress(newAddress);
       setLat(newLat);
       setLng(newLng);
-      setViewport((v) => ({
-        ...v,
-        latitude: newLat,
-        longitude: newLng,
-      }));
+      setViewport((v) => ({ ...v, latitude: newLat, longitude: newLng }));
+      setAddressValid(true);
+      setIsAddressBySuggestion(true);
       notifyChange(newAddress, newLat, newLng);
+    } else {
+      setAddress(
+        "Không rõ địa chỉ! Vui lòng kéo marker để chọn chính xác vị trí!"
+      );
+      setAddressValid(false);
+      setIsAddressBySuggestion(false);
     }
   };
 
-  // Kéo marker
+  // Kéo marker: reverse geocode
   const onMarkerDragEnd = useCallback(
     async (event) => {
       const { lng: newLng, lat: newLat } = event.lngLat;
       setLat(newLat);
       setLng(newLng);
-      setViewport((v) => ({
-        ...v,
-        latitude: newLat,
-        longitude: newLng,
-      }));
-
+      setViewport((v) => ({ ...v, latitude: newLat, longitude: newLng }));
       setAddress("Đang tìm địa chỉ...");
-      try {
-        const placeName = await reverseGeocode(newLng, newLat);
-        setAddress(placeName);
-        notifyChange(placeName, newLat, newLng);
-      } catch (error) {
-        const fallback = `${newLat.toFixed(6)}, ${newLng.toFixed(6)}`;
-        setAddress(fallback);
-        notifyChange(fallback, newLat, newLng);
+      const place = await reverseGeocode(newLng, newLat);
+      if (place) {
+        setAddress(place);
+        setAddressValid(true);
+        setIsAddressBySuggestion(false);
+        notifyChange(place, newLat, newLng);
+      } else {
+        setAddress("Không rõ địa chỉ!");
+        setAddressValid(false);
+        setIsAddressBySuggestion(false);
       }
     },
     [notifyChange]
@@ -168,9 +125,8 @@ function AddressForm({ initialValue, onChange }) {
 
   // "Vị trí của tôi"
   const handleGetCurrentLocation = () => {
-    if (!navigator.geolocation) {
+    if (!navigator.geolocation)
       return alert("Trình duyệt không hỗ trợ xác định vị trí!");
-    }
     setAddress("Đang lấy vị trí hiện tại...");
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -178,69 +134,58 @@ function AddressForm({ initialValue, onChange }) {
         const lngNow = pos.coords.longitude;
         setLat(latNow);
         setLng(lngNow);
-        setViewport((v) => ({
-          ...v,
-          latitude: latNow,
-          longitude: lngNow,
-        }));
-
-        try {
-          const placeName = await reverseGeocode(lngNow, latNow);
-          setAddress(placeName);
-          notifyChange(placeName, latNow, lngNow);
-        } catch (error) {
-          const fallback = `${latNow.toFixed(6)}, ${lngNow.toFixed(6)}`;
-          setAddress(fallback);
-          notifyChange(fallback, latNow, lngNow);
+        setViewport((v) => ({ ...v, latitude: latNow, longitude: lngNow }));
+        const place = await reverseGeocode(lngNow, latNow);
+        if (place) {
+          setAddress(place);
+          setAddressValid(true);
+          setIsAddressBySuggestion(false);
+          notifyChange(place, latNow, lngNow);
+        } else {
+          setAddress("Không rõ địa chỉ!");
+          setAddressValid(false);
+          setIsAddressBySuggestion(false);
         }
       },
-      (err) => {
-        alert("Không lấy được vị trí: " + err.message);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
+      (err) => alert("Không lấy được vị trí: " + err.message),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
-  // Khi user gõ tay
-  const handleAddressChange = (newAddress) => {
-    setAddress(newAddress);
+  // Gõ tay
+  const handleAddressChange = (newAddr) => {
+    setAddress(newAddr);
+    setAddressValid(true);
+    setIsAddressBySuggestion(false);
   };
 
-  // Blur => geocode nếu cần
+  // Blur → geocode nếu nhập tay
   const handleAddressBlur = async () => {
-    if (!address.trim()) return;
-    // Nếu là tọa độ thô thì lưu luôn
-    const coordPattern = /^-?\d+\.?\d*,\s*-?\d+\.?\d*$/;
-    if (coordPattern.test(address.trim())) {
-      notifyChange(address.trim(), lat, lng);
+    if (!address.trim() || isAddressBySuggestion) return;
+    const coordRegex = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
+    if (coordRegex.test(address)) {
+      setAddress("Không rõ địa chỉ!");
+      setAddressValid(false);
       return;
     }
-    // Geocode địa chỉ
-    const originalAddress = address;
     setAddress("Đang tìm tọa độ...");
-    try {
-      const result = await geocode(originalAddress.trim());
-      if (result) {
-        setLat(result.lat);
-        setLng(result.lng);
-        setAddress(result.placeName);
-        setViewport((v) => ({
-          ...v,
-          latitude: result.lat,
-          longitude: result.lng,
-        }));
-        notifyChange(result.placeName, result.lat, result.lng);
-      } else {
-        setAddress(originalAddress);
-        notifyChange(originalAddress, lat, lng);
-      }
-    } catch (error) {
-      setAddress(originalAddress);
-      notifyChange(originalAddress, lat, lng);
+    const result = await geocode(address.trim());
+    if (result) {
+      setLat(result.lat);
+      setLng(result.lng);
+      setAddress(result.placeName);
+      setViewport((v) => ({
+        ...v,
+        latitude: result.lat,
+        longitude: result.lng,
+      }));
+      setAddressValid(true);
+      notifyChange(result.placeName, result.lat, result.lng);
+    } else {
+      setAddress(
+        "Không rõ địa chỉ! Vui lòng kéo marker để chọn chính xác vị trí!"
+      );
+      setAddressValid(false);
     }
   };
 
@@ -323,9 +268,10 @@ function AddressForm({ initialValue, onChange }) {
         </MapGL>
       </div>
       <div style={{ marginTop: 8 }}>
-        <small>
-          Kéo marker hoặc nhập địa chỉ để xác nhận vị trí. Nhấn "Vị trí của tôi"
-          nếu bạn đang đứng đúng địa điểm thực tế!
+        <small style={{ color: addressValid ? "#555" : "#d00" }}>
+          {addressValid
+            ? 'Kéo marker hoặc nhập địa chỉ để xác nhận vị trí. Nhấn "Vị trí của tôi" nếu bạn đang đứng đúng địa điểm thực tế!'
+            : "Không rõ địa chỉ! Vui lòng kéo marker để chọn chính xác vị trí!"}
         </small>
       </div>
     </div>
