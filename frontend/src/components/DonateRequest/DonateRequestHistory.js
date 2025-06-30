@@ -96,7 +96,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                   </div>
                 </div>
               </div>
-              
+
             )}
 
             {/* Thông tin hiến máu */}
@@ -202,12 +202,11 @@ const DonateHistoryDetail = ({ id, onClose }) => {
               </div>
             )}
             <div className="modal-footer">
-            <button className="close-modal-button" onClick={onClose}>
-              Close
-            </button>
+              <button className="close-modal-button" onClick={onClose}>
+                Close
+              </button>
+            </div>
           </div>
-          </div>
-          
 
         )}
       </div>
@@ -411,7 +410,6 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         }
         `}
       </style>
-
     </div>
   );
 };
