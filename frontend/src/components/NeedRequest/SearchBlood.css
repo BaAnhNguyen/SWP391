@@ -1,0 +1,78 @@
+.search-blood-wrapper {
+    padding: 30px;
+    background-color: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+    margin-bottom: 20px;
+}
+
+.search-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.search-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.search-form button {
+    padding: 8px 16px;
+    background-color: #d90429;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #a50320;
+}
+
+.results-section h3,
+.results-section h4 {
+    margin-top: 20px;
+    color: #333;
+}
+
+.compatible-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.blood-badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background-color: #ffccd5;
+    color: #910029;
+    font-weight: bold;
+    border: 2px solid #d90429;
+}
+
+.note {
+    font-size: 0.85em;
+    color: #555;
+    margin-left: 5px;
+}
+
+.results-section ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.note-box {
+    background-color: #fff3cd;
+    padding: 12px;
+    border-left: 5px solid #ffc107;
+    margin-top: 20px;
+    border-radius: 6px;
+}

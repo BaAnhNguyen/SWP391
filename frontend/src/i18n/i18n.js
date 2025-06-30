@@ -378,6 +378,7 @@ const resources = {
       "needRequest.updateError": "Error updating request status",
       "needRequest.fetchError": "Error fetching blood requests",
       "needRequest.nav.createRequest": "Create Request",
+      "needRequest.nav.searchBlood": "Search Blood",
       "needRequest.nav.viewRequests": "View Requests",
       "needRequest.nav.viewAllRequests": "View All Requests",
       "needRequest.nav.viewMyRequests": "View My Requests",
@@ -526,6 +527,60 @@ const resources = {
         bloodGroupMismatch:
           "The selected blood group does not match your profile",
         detailInfo: "Detail Information",
+      },
+
+      // Blood Components Compatibility
+      bloodComponents: {
+        title: "Blood Components Compatibility",
+        description: "Different blood components have different compatibility rules",
+        wholeBlood: {
+          name: "Whole Blood",
+          description: "Contains all components of blood (red cells, white cells, platelets, and plasma)",
+          compatibility: "Follows standard ABO and Rh compatibility rules",
+          notes: "Can be donated every 56 days"
+        },
+        redCells: {
+          name: "Red Blood Cells",
+          description: "Oxygen-carrying component of blood",
+          compatibility: "Must follow ABO and Rh compatibility strictly",
+          notes: "Most commonly transfused component"
+        },
+        platelets: {
+          name: "Platelets",
+          description: "Help blood clot and prevent bleeding",
+          compatibility: "ABO compatibility preferred but not always required",
+          notes: "Have a short shelf life of only 5 days"
+        },
+        plasma: {
+          name: "Plasma",
+          description: "Liquid component carrying proteins and other substances",
+          compatibility: "Type AB is the universal plasma donor, while type O is the universal recipient",
+          notes: "Plasma compatibility is the reverse of red cell compatibility"
+        },
+        universalNotes: "Always consult medical professionals for specific transfusion needs",
+        searchTitle: "Find Compatible Blood",
+        searchDescription: "Search for compatible blood types and components before making a request",
+        yourBloodType: "Your Blood Type:",
+        componentNeeded: "Blood Component Needed:",
+        anyComponent: "-- Any Component --",
+        selectBloodType: "-- Select Blood Type --",
+        searchButton: "Search Compatible Blood",
+        searching: "Searching...",
+        resultsTitle: "Compatible Blood Types for",
+        compatibilityNote: "Blood compatibility is determined by antigens present in your blood. The results show what blood types you can safely receive.",
+        noResults: "No compatible blood units found for your criteria. Please contact a blood bank directly.",
+        tableBloodType: "Blood Type",
+        tableComponent: "Component",
+        tableAvailableUnits: "Available Units",
+        tableTotalVolume: "Total Volume (ml)",
+        errorSelectBloodType: "Please select a blood type",
+        universalDonor: "Universal Donor",
+        universalRecipient: "Universal Recipient",
+        componentInfo: "Component Information",
+        transfusionGuidelines: "Transfusion Guidelines",
+        compatible: "Compatible",
+        notCompatible: "Not Compatible",
+        limitedCompatibility: "Limited Compatibility"
       },
     },
   },
@@ -900,6 +955,7 @@ const resources = {
       "needRequest.updateError": "Lỗi khi cập nhật trạng thái yêu cầu",
       "needRequest.fetchError": "Lỗi khi lấy danh sách yêu cầu máu",
       "needRequest.nav.createRequest": "Tạo Yêu Cầu",
+      "needRequest.nav.searchBlood": "Tìm Kiếm Máu",
       "needRequest.nav.viewRequests": "Xem Yêu Cầu",
       "needRequest.nav.viewAllRequests": "Xem Tất Cả Yêu Cầu",
       "needRequest.nav.viewMyRequests": "Xem Yêu Cầu Của Tôi",
@@ -1045,6 +1101,60 @@ const resources = {
         bloodGroupError: "Nhóm máu không đúng",
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
+      },
+
+      // Blood Components Compatibility
+      bloodComponents: {
+        title: "Tương Thích Thành Phần Máu",
+        description: "Các thành phần máu khác nhau có quy tắc tương thích khác nhau",
+        wholeBlood: {
+          name: "Máu Toàn Phần",
+          description: "Chứa tất cả các thành phần của máu (hồng cầu, bạch cầu, tiểu cầu và huyết tương)",
+          compatibility: "Tuân theo quy tắc tương thích ABO và Rh tiêu chuẩn",
+          notes: "Có thể hiến mỗi 56 ngày"
+        },
+        redCells: {
+          name: "Hồng Cầu",
+          description: "Thành phần mang oxy của máu",
+          compatibility: "Phải tuân thủ nghiêm ngặt tính tương thích ABO và Rh",
+          notes: "Thành phần được truyền phổ biến nhất"
+        },
+        platelets: {
+          name: "Tiểu Cầu",
+          description: "Giúp máu đông và ngăn chảy máu",
+          compatibility: "Ưu tiên tương thích ABO nhưng không phải lúc nào cũng bắt buộc",
+          notes: "Có thời hạn sử dụng ngắn chỉ 5 ngày"
+        },
+        plasma: {
+          name: "Huyết Tương",
+          description: "Thành phần lỏng chứa protein và các chất khác",
+          compatibility: "Nhóm AB là người cho huyết tương toàn cầu, trong khi nhóm O là người nhận toàn cầu",
+          notes: "Tính tương thích huyết tương ngược với tương thích hồng cầu"
+        },
+        universalNotes: "Luôn tham khảo ý kiến chuyên gia y tế cho nhu cầu truyền máu cụ thể",
+        searchTitle: "Tìm Máu Tương Thích",
+        searchDescription: "Tìm kiếm các loại máu và thành phần tương thích trước khi yêu cầu",
+        yourBloodType: "Nhóm Máu Của Bạn:",
+        componentNeeded: "Thành Phần Máu Cần Thiết:",
+        anyComponent: "-- Bất Kỳ Thành Phần --",
+        selectBloodType: "-- Chọn Nhóm Máu --",
+        searchButton: "Tìm Máu Tương Thích",
+        searching: "Đang tìm kiếm...",
+        resultsTitle: "Nhóm Máu Tương Thích cho",
+        compatibilityNote: "Tính tương thích của máu được xác định bởi kháng nguyên có trong máu của bạn. Kết quả cho thấy loại máu nào bạn có thể nhận an toàn.",
+        noResults: "Không tìm thấy đơn vị máu tương thích với tiêu chí của bạn. Vui lòng liên hệ trực tiếp với ngân hàng máu.",
+        tableBloodType: "Nhóm Máu",
+        tableComponent: "Thành Phần",
+        tableAvailableUnits: "Đơn Vị Có Sẵn",
+        tableTotalVolume: "Tổng Thể Tích (ml)",
+        errorSelectBloodType: "Vui lòng chọn nhóm máu",
+        universalDonor: "Người Cho Toàn Cầu",
+        universalRecipient: "Người Nhận Toàn Cầu",
+        componentInfo: "Thông Tin Thành Phần",
+        transfusionGuidelines: "Hướng Dẫn Truyền Máu",
+        compatible: "Tương Thích",
+        notCompatible: "Không Tương Thích",
+        limitedCompatibility: "Tương Thích Có Giới Hạn"
       },
     },
   },

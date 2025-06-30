@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import NeedRequestForm from './NeedRequestForm';
 import NeedRequestList from './NeedRequestList';
+import SearchBlood from './SearchBlood';
 import './NeedRequest.css';
 
 const NeedRequestPage = ({ user }) => {
@@ -44,12 +45,20 @@ const NeedRequestPage = ({ user }) => {
 
       <div className="need-request-tabs">
         {!isStaff && (
-          <button
-            className={`need-request-tab ${activeTab === 'form' ? 'active' : ''}`}
-            onClick={() => setActiveTab('form')}
-          >
-            {t('needRequest.nav.createRequest')}
-          </button>
+          <>
+            <button
+              className={`need-request-tab ${activeTab === 'form' ? 'active' : ''}`}
+              onClick={() => setActiveTab('form')}
+            >
+              {t('needRequest.nav.createRequest')}
+            </button>
+            <button
+              className={`need-request-tab ${activeTab === 'search' ? 'active' : ''}`}
+              onClick={() => setActiveTab('search')}
+            >
+              {t('needRequest.nav.searchBlood')}
+            </button>
+          </>
         )}
         <button
           className={`need-request-tab ${activeTab === 'list' ? 'active' : ''}`}
@@ -61,6 +70,10 @@ const NeedRequestPage = ({ user }) => {
 
       {activeTab === 'form' && !isStaff && (
         <NeedRequestForm onRequestCreated={handleRequestCreated} />
+      )}
+
+      {activeTab === 'search' && !isStaff && (
+        <SearchBlood />
       )}
 
       {activeTab === 'list' && (
