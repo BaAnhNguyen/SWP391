@@ -145,30 +145,67 @@ exports.delete = async (req, res) => {
   }
 };
 
+// Helper function to get compatible blood types for transfusion
+function getCompatibleBloodTypes(recipientType) {
+  const compatibility = {
+    'A+': ['A+', 'A-', 'O+', 'O-'],
+    'A-': ['A-', 'O-'],
+    'B+': ['B+', 'B-', 'O+', 'O-'],
+    'B-': ['B-', 'O-'],
+    'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    'AB-': ['A-', 'B-', 'AB-', 'O-'],
+    'O+': ['O+', 'O-'],
+    'O-': ['O-'],
+  };
+  return compatibility[recipientType] || [];
+}
+
 exports.assignBloodUnitToRequest = async (req, res) => {
   try {
-    const { bloodUnitId, requestId } = req.body;
-    if (!bloodUnitId || !requestId) {
-      return res.status(400).json({ message: "bloodUnitId and requestId are required." });
+    const { requestId } = req.body;
+    if (!requestId) {
+      return res.status(400).json({ message: "requestId is required." });
     }
 
-    // Find the blood unit by id and check if it's unassigned
-    const bloodUnit = await BloodUnit.findOne({
-      _id: bloodUnitId,
+    // Find the request to get the number of units, component, and blood group
+    const request = await NeedRequest.findById(requestId);
+    if (!request) {
+      return res.status(404).json({ message: "Need request not found." });
+    }
+
+    const { units, component, bloodGroup } = request;
+    if (!units || !component || !bloodGroup) {
+      return res.status(400).json({ message: "Request is missing units, component, or bloodGroup." });
+    }
+
+    // Use the same logic as getBloodUnitsForRequest to find compatible blood units
+    const compatibleTypes = getCompatibleBloodTypes(bloodGroup);
+    if (!compatibleTypes.length) {
+      return res.status(400).json({ message: "Invalid or unsupported blood group." });
+    }
+    const availableUnits = await BloodUnit.find({
+      ComponentType: component,
+      BloodType: { $in: compatibleTypes },
       assignedToRequestId: null
-    });
+    }).limit(units);
 
-    if (!bloodUnit) {
-      return res.status(404).json({ message: "Blood unit not found or already assigned." });
+    if (availableUnits.length < units) {
+      return res.status(400).json({ message: `Not enough available blood units. Requested: ${units}, Available: ${availableUnits.length}` });
     }
 
-    // Assign the blood unit to the request
-    await BloodUnit.findByIdAndUpdate(bloodUnitId, { assignedToRequestId: requestId });
+    // Assign the found blood units to the request
+    const updatePromises = availableUnits.map(unit =>
+      BloodUnit.findByIdAndUpdate(unit._id, { assignedToRequestId: requestId })
+    );
+    await Promise.all(updatePromises);
 
-    res.status(200).json({ message: "Blood unit assigned to request.", assignedUnitId: bloodUnitId });
+    res.status(200).json({
+      message: `${units} blood unit(s) assigned to request.`,
+      assignedUnitIds: availableUnits.map(u => u._id)
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error assigning blood unit." });
+    res.status(500).json({ message: "Error assigning blood units." });
   }
 };
 

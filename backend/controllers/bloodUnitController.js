@@ -109,20 +109,41 @@ exports.getBloodUnitsByType = async (req, res) => {
       .json({ message: err.message || "Failed to fetch blood units by type." });
   }
 };
-// Get blood units by component and blood type
-exports.getBloodUnitsByComponentAndType = async (req, res) => {
+
+// Helper function to get compatible blood types for transfusion
+function getCompatibleBloodTypes(recipientType) {
+  const compatibility = {
+    'A+': ['A+', 'A-', 'O+', 'O-'],
+    'A-': ['A-', 'O-'],
+    'B+': ['B+', 'B-', 'O+', 'O-'],
+    'B-': ['B-', 'O-'],
+    'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], // universal recipient
+    'AB-': ['A-', 'B-', 'AB-', 'O-'],
+    'O+': ['O+', 'O-'],
+    'O-': ['O-'], // universal donor
+  };
+  return compatibility[recipientType] || [];
+}
+
+// Get blood units compatible for a request
+exports.getBloodUnitsForRequest = async (req, res) => {
   try {
     const { componentType, bloodType } = req.query;
     if (!componentType || !bloodType) {
       return res.status(400).json({ message: "componentType and bloodType are required." });
     }
+    // Find compatible blood types for the recipient
+    const compatibleTypes = getCompatibleBloodTypes(bloodType);
+    if (!compatibleTypes.length) {
+      return res.status(400).json({ message: "Invalid or unsupported blood type." });
+    }
     const bloodUnits = await BloodUnit.find({
       ComponentType: componentType,
-      BloodType: bloodType,
+      BloodType: { $in: compatibleTypes },
       assignedToRequestId: null
     });
     res.status(200).json(bloodUnits);
   } catch (err) {
-    res.status(500).json({ message: err.message || "Failed to fetch blood units by component and type." });
+    res.status(500).json({ message: err.message || "Failed to fetch blood units for request." });
   }
 };
