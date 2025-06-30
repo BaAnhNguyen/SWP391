@@ -3,7 +3,8 @@ import MapGL, { Marker } from "react-map-gl";
 import { SearchBox } from "@mapbox/search-js-react";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const MAPBOX_TOKEN = "";
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoibGg4b24iLCJhIjoiY21jZWVkaGd6MHQ3ZzJpcHVzbzUwZjM3NyJ9.HZOMcXUmOi8FtkFL7_DShQ";
 const DEFAULT_LOCATION = { lat: 10.776889, lng: 106.700806 };
 
 // Reverse geocode: tọa độ → place name

@@ -418,7 +418,7 @@ exports.complete = async (req, res) => {
         readyDate: new Date(reg.nextReadyDate),
         screening: reg.screening,
         confirmation: reg.confirmation,
-        status: "Pending",
+        status: "Approved",
       };
       console.log(newRegData);
 
