@@ -44,7 +44,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         <div className="modal-header">
           <h3 className="modal-title">Chi tiết lần hiến máu</h3>
           <button className="close-btn" onClick={onClose}>
-            x
+            ×
           </button>
         </div>
 
@@ -125,7 +125,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                 <span className="value">{detail.quantity ?? "?"}</span>
               </div>
               <div className="info-row">
-                <span className="label">Tổng thể tích (ml)</span>
+                <span className="label">Thể tích (ml)</span>
                 <span className="value">{detail.volume ?? "?"}</span>
               </div>
 
@@ -231,7 +231,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
         .modal-content {
           background: #fff;
           border-radius: 8px;
-          width: 470px; /* Giảm kích thước tổng thể */
+          width: 555px; /* Giảm kích thước tổng thể */
           max-width: 90vw;
           max-height: 85vh;
           overflow-y: auto;
@@ -242,36 +242,60 @@ const DonateHistoryDetail = ({ id, onClose }) => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px;
-          border-bottom: 1px solid #eaeaea;
-          background: #fafafa;
-        }
+          padding: 16px 20px;
+          background: white;
+          border-bottom: 1px solid #eee;
+}
         
         .modal-title {
           margin: 0;
-          font-size: 18px;
-          font-weight: 600;
+          font-size: 24px;
+          font-weight: 500;
           color: #333;
         }
         
         .close-btn {
           background: none;
           border: none;
-          font-size: 20px;
+          font-size: 24px;
+          line-height: 1;
           cursor: pointer;
           color: #666;
-          padding: 4px;
-          border-radius: 4px;
-          transition: all 0.2s;
+          padding: 0;
+          width: 24px;
+          height: 24px;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: all 0.2s;
         }
         
         .close-btn:hover {
-          background: #f0f0f0;
-          color: #d32f2f;
+           color: #333;
         }
+
+        .modal-footer {
+          margin:-20px;
+          padding: 15px;
+          display: flex;
+          justify-content: right;
+          border-top: 1px solid #eee;
+  }
+
+  .close-button {
+    padding: 8px 24px;
+    background: #6B7280;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .close-button:hover {
+    background: #4B5563;
+  }
         
         .loading-container, .error-container {
           padding: 24px 16px;
@@ -381,8 +405,13 @@ const DonateHistoryDetail = ({ id, onClose }) => {
           background: rgba(211, 47, 47, 0.1);
           color: #d32f2f;
         }
+
+        .detail-content,.info-row .label,.info-row .value,.section-title {
+          font-size: 1.05rem;
+        }
         `}
       </style>
+
     </div>
   );
 };
