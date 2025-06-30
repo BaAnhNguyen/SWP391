@@ -366,8 +366,10 @@
 }
 
 .blood-inventory-table thead {
-    background: linear-gradient(90deg, #e74c3c, #c0392b);
-    color: white;
+    background-color: linear-gradient(90deg, #e73c3c, #c02b2b);
+    color: black;
+    font-size: large;
+    font-weight: 600px;
 }
 
 .blood-inventory-table th {
@@ -380,7 +382,7 @@
 
 .blood-inventory-table td {
     padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid red;
     font-size: 0.95rem;
 }
 

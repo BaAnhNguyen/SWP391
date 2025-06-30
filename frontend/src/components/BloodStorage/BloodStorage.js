@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
 import "./BloodStorage.css";
+import "../../styles/colors.css";
+import "../../styles/tables.css";
+import "../../styles/blood-badges.css";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
