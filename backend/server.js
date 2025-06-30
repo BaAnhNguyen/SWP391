@@ -13,7 +13,8 @@ const needRequestRoutes = require("./routes/needRequest");
 const donationHistoryRoutes = require("./routes/donationHistory");
 const questionRoutes = require("./routes/Question");
 const bloodUnitRoutes = require("./routes/bloodUnit");
-
+const blogRoutes = require("./routes/blog");
+const commentRoutes = require("./routes/comment");
 const app = express();
 
 // Middleware
@@ -41,6 +42,8 @@ app.use("/api/question", questionRoutes);
 app.use("/api/bloodUnit", bloodUnitRoutes);
 
 app.use("/api/donationHistory", donationHistoryRoutes);
+app.use("api/blog", blogRoutes);
+app.use("api/comment", commentRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

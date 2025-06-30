@@ -105,7 +105,7 @@ exports.updateMe = async (req, res) => {
   }
 };
 
-//admin and staff get all users
+//admin  get all users
 exports.getAll = async (req, res) => {
   const users = await User.find();
   res.json(users);
@@ -127,23 +127,3 @@ exports.delete = async (req, res) => {
   const { id } = req.params;
   if (await User.findByIdAndDelete(id)) res.json({ message: "User deleted" });
 };
-
-async function getLatLngFromAddress(addressString) {
-  const apiKey = process.env.GOOGLE_API_KEY; // <--- NHỚ thay bằng API key của bạn!
-  const encodedAddress = encodeURIComponent(addressString);
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`;
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.status === "OK" && data.results.length > 0) {
-      const location = data.results[0].geometry.location;
-      return { lng: location.lng, lat: location.lat, raw: data.results[0] };
-    }
-    // Có thể log lỗi hoặc trả về null
-    return null;
-  } catch (error) {
-    console.error("Google Geocode API error:", error);
-    return null;
-  }
-}
