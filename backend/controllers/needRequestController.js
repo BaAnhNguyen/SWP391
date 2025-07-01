@@ -234,3 +234,29 @@ exports.fulfillBloodRequest = async (req, res) => {
     res.status(500).json({ message: "Failed to fulfill request." });
   }
 };
+
+// Reject a blood request with a reason
+exports.rejectBloodRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const { reason } = req.body;
+    if (!reason) {
+      return res.status(400).json({ message: "Rejection reason is required." });
+    }
+
+    const request = await NeedRequest.findByIdAndUpdate(
+      requestId,
+      { status: "Rejected", rejectionReason: reason },
+      { new: true }
+    );
+
+    if (!request) {
+      return res.status(404).json({ message: "Need request not found" });
+    }
+
+    res.status(200).json({ message: "Request rejected.", request });
+  } catch (error) {
+    console.error("Reject Error:", error);
+    res.status(500).json({ message: "Failed to reject request." });
+  }
+};

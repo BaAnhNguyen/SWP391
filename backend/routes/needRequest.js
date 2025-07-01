@@ -38,4 +38,7 @@ router.post("/assign-blood-units", restrictTo("Staff"), ctrl.assignBloodUnitToRe
 // Fulfill a blood request (staff only)
 router.post("/fulfill/:requestId", restrictTo("Staff"), ctrl.fulfillBloodRequest);
 
+// Reject a blood request (staff only)
+router.post("/reject/:requestId", restrictTo("Staff"), ctrl.rejectBloodRequest);
+
 module.exports = router;
