@@ -112,6 +112,9 @@ exports.getBloodUnitsByType = async (req, res) => {
 
 // Helper function to get compatible blood types for transfusion
 function getCompatibleBloodTypes(recipientType) {
+  // Normalize blood type to handle possible format differences
+  const normalizedType = recipientType ? recipientType.toUpperCase().replace(/\s+/g, '') : '';
+
   const compatibility = {
     'A+': ['A+', 'A-', 'O+', 'O-'],
     'A-': ['A-', 'O-'],
@@ -122,7 +125,18 @@ function getCompatibleBloodTypes(recipientType) {
     'O+': ['O+', 'O-'],
     'O-': ['O-'], // universal donor
   };
-  return compatibility[recipientType] || [];
+
+  // Handle alternative formats that might be used
+  if (normalizedType === 'APOSITIVE' || normalizedType === 'A POSITIVE') return compatibility['A+'];
+  if (normalizedType === 'ANEGATIVE' || normalizedType === 'A NEGATIVE') return compatibility['A-'];
+  if (normalizedType === 'BPOSITIVE' || normalizedType === 'B POSITIVE') return compatibility['B+'];
+  if (normalizedType === 'BNEGATIVE' || normalizedType === 'B NEGATIVE') return compatibility['B-'];
+  if (normalizedType === 'ABPOSITIVE' || normalizedType === 'AB POSITIVE') return compatibility['AB+'];
+  if (normalizedType === 'ABNEGATIVE' || normalizedType === 'AB NEGATIVE') return compatibility['AB-'];
+  if (normalizedType === 'OPOSITIVE' || normalizedType === 'O POSITIVE') return compatibility['O+'];
+  if (normalizedType === 'ONEGATIVE' || normalizedType === 'O NEGATIVE') return compatibility['O-'];
+
+  return compatibility[normalizedType] || [];
 }
 
 // Get blood units compatible for a request
@@ -133,9 +147,14 @@ exports.getBloodUnitsForRequest = async (req, res) => {
       return res.status(400).json({ message: "componentType and bloodType are required." });
     }
     // Find compatible blood types for the recipient
+    console.log("Searching for compatible types for blood type:", bloodType);
     const compatibleTypes = getCompatibleBloodTypes(bloodType);
     if (!compatibleTypes.length) {
-      return res.status(400).json({ message: "Invalid or unsupported blood type." });
+      return res.status(400).json({
+        message: "Invalid or unsupported blood type.",
+        receivedValue: bloodType,
+        supportedTypes: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+      });
     }
     const bloodUnits = await BloodUnit.find({
       ComponentType: componentType,

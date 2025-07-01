@@ -23,6 +23,9 @@ router.get("/type/:bloodType", restrictTo("Staff"), bloodUnitController.getBlood
 // Get blood units compatible for a request (Staff only)
 router.get("/filter/for-request", restrictTo("Staff"), bloodUnitController.getBloodUnitsForRequest);
 
+// Assign specific blood units to a need request (Staff only)
+router.post("/assign", restrictTo("Staff"), bloodUnitController.assignSpecificBloodUnits);
+
 // You can add more routes here (e.g., get, update, delete blood units)
 
 module.exports = router;
