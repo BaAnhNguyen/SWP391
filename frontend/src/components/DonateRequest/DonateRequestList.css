@@ -16,48 +16,92 @@
     align-items: center;
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .list-header h2 {
     color: #e74c3c;
     margin: 0;
     font-size: 1.8rem;
+    white-space: nowrap;
 }
 
 .filter-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    width: 100%;
 }
 
 .filter-container label {
     color: #666;
     font-weight: 500;
+    white-space: nowrap;
+}
+
+.date-range-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--surface-2);
+    padding: 0.5rem;
+    border-radius: 4px;
+    flex-wrap: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.date-input {
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 120px;
+    /* Cố định độ rộng của input ngày tháng */
+    min-width: 0;
+}
+
+.clear-date-button {
+    background: none;
+    border: none;
+    color: var(--text-2);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.clear-date-button:hover {
+    color: var(--error-color);
 }
 
 .status-filter {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    font-size: 0.9rem;
+    background-color: white;
+    min-width: 120px;
+    max-width: 150px;
 }
 
 .refresh-button {
-    background-color: #f7f7f7;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-2);
     font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: 4px;
 }
 
 .refresh-button:hover {
-    background-color: #eee;
+    background-color: var(--surface-2);
 }
 
 .no-requests {
@@ -979,4 +1023,191 @@
         padding: 8px 12px;
         font-size: 0.9rem;
     }
+
+    .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .date-range-filter {
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .date-range-filter label {
+        min-width: 80px;
+    }
+
+    .date-input {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .status-filter {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .refresh-button {
+        align-self: flex-end;
+        margin-top: 0.5rem;
+    }
+}
+
+/* CSS cho Modal từ chối đơn */
+.rejection-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.rejection-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.rejection-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rejection-modal-header h3 {
+    color: var(--error-color);
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.rejection-modal-body {
+    padding: 24px;
+}
+
+.rejection-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Thêm reset cho button để đảm bảo nhất quán */
+.rejection-form button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    font: inherit;
+    line-height: normal;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Modal footer cải thiện */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 24px;
+    border-top: 1px solid #eee;
+    background-color: #f9f9f9;
+    border-radius: 0 0 8px 8px;
+    align-items: center;
+}
+
+/* Style chung cho cả hai nút */
+.rejection-form .cancel-button,
+.rejection-form .reject-submit-button {
+    flex: 1;
+    width: 160px;
+    max-width: 160px;
+    height: 48px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Nút cancel cải thiện */
+.rejection-form .cancel-button {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.rejection-form .cancel-button:hover {
+    background-color: #e9ecef;
+    color: #212529;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.rejection-form .cancel-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Nút confirm rejection cải thiện */
+.rejection-form .reject-submit-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+.rejection-form .reject-submit-button:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 8px rgba(192, 57, 43, 0.4);
+    transform: translateY(-2px);
+}
+
+.rejection-form .reject-submit-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(192, 57, 43, 0.4);
+}
+
+.rejection-form .large-textarea {
+    width: 100%;
+    height: 150px !important;
+    padding: 12px;
+    font-size: 1.1rem;
+    resize: vertical;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    margin-bottom: 16px;
+    font-family: inherit;
+}
+
+.rejection-form .large-textarea:focus {
+    border-color: #e74c3c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.rejection-form .form-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+    font-size: 1.05rem;
 }

@@ -10,16 +10,20 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
-  const [quantities, setQuantities] = useState({});
-
-  const [viewingHistoryId, setViewingHistoryId] = useState(null);
   const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
 
   // Health check state
   const [showHealthCheck, setShowHealthCheck] = useState(false);
   const [healthCheckRequest, setHealthCheckRequest] = useState(null);
   const [activeTab, setActiveTab] = useState("complete");
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [rejectionData, setRejectionData] = useState({
+    requestId: null,
+    reason: "",
+  });
   const [healthCheckData, setHealthCheckData] = useState({
     weight: "",
     height: "",
@@ -142,6 +146,52 @@ const DonateRequestList = ({ userRole, refresh }) => {
     setShowHealthCheck(false);
     setHealthCheckRequest(null);
   };
+
+  const handleOpenRejectionModal = (requestId) => {
+    setRejectionData({
+      requestId: requestId,
+      reason: "",
+    });
+    setShowRejectionModal(true);
+  };
+
+  const handleCloseRejectionModal = () => {
+    setShowRejectionModal(false);
+    setRejectionData({
+      requestId: null,
+      reason: "",
+    });
+  };
+
+  const handleRejectionReasonChange = (e) => {
+    setRejectionData((prev) => ({
+      ...prev,
+      reason: e.target.value,
+    }));
+  };
+
+  const handleRejectionSubmit = (e) => {
+    e.preventDefault();
+    console.log("Handling rejection submit with data:", rejectionData);
+
+    if (!rejectionData.reason.trim()) {
+      alert(t("donateRequest.reasonRequired"));
+      return;
+    }
+
+    try {
+      handleStatusUpdate(
+        rejectionData.requestId,
+        "Rejected",
+        rejectionData.reason.trim()
+      );
+      handleCloseRejectionModal();
+    } catch (err) {
+      console.error("Error submitting rejection:", err);
+      alert(t("donateRequest.updateError"));
+    }
+  };
+
   const handleHealthCheckSubmit = async (e) => {
     e.preventDefault();
     if (!healthCheckRequest) return;
@@ -360,15 +410,38 @@ const DonateRequestList = ({ userRole, refresh }) => {
     setExpandedRequestId(expandedRequestId === id ? null : id);
   };
 
-  const handleQuantityChange = (id, value) => {
-    const v = parseInt(value, 10);
-    setQuantities((prev) => ({ ...prev, [id]: isNaN(v) ? "" : v }));
+  const getFilteredByDateRange = (requests) => {
+    if (!startDate && !endDate) return requests;
+
+    return requests.filter((request) => {
+      const requestDate = new Date(request.readyDate);
+
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return requestDate >= start && requestDate <= end;
+      }
+
+      if (startDate) {
+        const start = new Date(startDate);
+        return requestDate >= start;
+      }
+
+      if (endDate) {
+        const end = new Date(endDate);
+        return requestDate <= end;
+      }
+
+      return true;
+    });
   };
 
-  const filteredRequests =
+  const filteredRequests = getFilteredByDateRange(
     filterStatus === "all"
       ? requests
-      : requests.filter((request) => request.status === filterStatus);
+      : requests.filter((request) => request.status === filterStatus)
+  );
+
   const statusColors = {
     Pending: "var(--status-open)",
     Approved: "var(--status-approved)",
@@ -403,7 +476,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="status-filter"
           >
-            {" "}
             <option value="all">{t("donateRequest.allStatuses")}</option>
             <option value="Pending">{t("donateRequest.status.pending")}</option>
             <option value="Approved">
@@ -419,6 +491,43 @@ const DonateRequestList = ({ userRole, refresh }) => {
               {t("donateRequest.status.cancelled")}
             </option>
           </select>
+
+          <div className="date-range-filter">
+            <label>Từ ngày:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                // Nếu ngày bắt đầu lớn hơn ngày kết thúc, cập nhật ngày kết thúc
+                if (endDate && e.target.value > endDate) {
+                  setEndDate(e.target.value);
+                }
+              }}
+              className="date-input"
+            />
+
+            <label>Đến ngày:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              min={startDate}
+              className="date-input"
+            />
+
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+              className="clear-date-button"
+              title="Xóa bộ lọc ngày"
+            >
+              ×
+            </button>
+          </div>
+
           <button
             onClick={fetchRequests}
             className="refresh-button"
@@ -449,12 +558,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     {request.bloodGroup}
                   </div>
                   <div className="request-details">
-                    {isStaff &&(
-                    <span className="request-by">
-                      {request.userId?.name ||
-                        request.createdBy?.name ||
-                        "Unknown"}
-                    </span>
+                    {isStaff && (
+                      <span className="request-by">
+                        {request.userId?.name ||
+                          request.createdBy?.name ||
+                          "Unknown"}
+                      </span>
                     )}
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
@@ -471,7 +580,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     ).toLowerCase()}`
                   )}
                 </div>
-              </div>{" "}
+              </div>
               <div className="request-content">
                 {(request.status === "Rejected" ||
                   request.status === "Cancelled") &&
@@ -509,23 +618,14 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        const reason = prompt(
-                          t("donateRequest.rejectionReason") + ":"
-                        );
-                        if (reason && reason.trim()) {
-                          handleStatusUpdate(
-                            request._id,
-                            "Rejected",
-                            reason.trim()
-                          );
-                        }
+                        handleOpenRejectionModal(request._id);
                       }}
                       className="reject-button"
                     >
                       {t("donateRequest.markRejected")}
                     </button>
                   </div>
-                )}{" "}
+                )}
                 {isStaff && request.status === "Approved" && (
                   <div className="admin-actions">
                     <button
@@ -573,7 +673,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
             </div>
           ))}
         </div>
-      )}{" "}
+      )}
       {/* Model history detail*/}
       {selectedId && (
         <DonateHistoryDetail
@@ -842,6 +942,59 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   {activeTab === "complete"
                     ? t("donateRequest.confirmComplete")
                     : t("donateRequest.confirmCancel")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Rejection Modal */}
+      {showRejectionModal && (
+        <div
+          className="rejection-modal"
+          onClick={(e) =>
+            e.target.className === "rejection-modal" &&
+            handleCloseRejectionModal()
+          }
+        >
+          <div className="rejection-modal-content">
+            <div className="rejection-modal-header">
+              <h3>{t("donateRequest.rejectionModalTitle")}</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseRejectionModal}
+              >
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleRejectionSubmit} className="rejection-form">
+              <div className="rejection-modal-body">
+                <div className="form-field full-width">
+                  <label>{t("donateRequest.rejectionReason")}</label>
+                  <textarea
+                    name="reason"
+                    value={rejectionData.reason}
+                    onChange={handleRejectionReasonChange}
+                    placeholder={t("donateRequest.rejectionReasonPlaceholder")}
+                    required
+                    className="large-textarea"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={handleCloseRejectionModal}
+                >
+                  {t("common.cancel")}
+                </button>
+                <button
+                  type="submit"
+                  className="submit-button reject-submit-button"
+                >
+                  {t("donateRequest.confirmReject")}
                 </button>
               </div>
             </form>
