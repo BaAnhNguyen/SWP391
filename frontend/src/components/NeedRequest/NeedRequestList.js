@@ -342,9 +342,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
               <div className="request-content">
                 <span className="component">
                   <strong>{t("needRequest.bloodRequestType")}:</strong>{" "}
-                  {t(
-                    `common.component.${request.component.toLowerCase()}`
-                  )}
+                  {getComponentTranslation(request.component)}
                 </span>
                 <div className="request-reason">
                   <strong>{t("needRequest.reason")}:</strong> {request.reason}
@@ -432,7 +430,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                         <tr>
                           <th>{t("common.select")}</th>
                           <th>{t("common.bloodType")}</th>
-                          <th>{t("common.component")}</th>
+                          <th>{t("bloodStorage.component")}</th>
                           <th>{t("common.volume")} (mL)</th>
                           <th>{t("common.dateAdded")}</th>
                           <th>{t("common.dateExpired")}</th>
