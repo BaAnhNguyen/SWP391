@@ -25,6 +25,12 @@ import BloodStorage from "./components/BloodStorage/BloodStorage";
 import FindNear from "./components/Search/FindNear";
 // import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
+import BlogList from "./components/Blog/BlogList";
+import BlogDetail from "./components/Blog/BlogDetail";
+import BlogCreate from "./components/Blog/BlogCreate";
+import BlogMine from "./components/Blog/BlogMine";
+import BlogPending from "./components/Blog/BlogPending";
+import BlogEdit from "./components/Blog/BlogEdit";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -119,12 +125,37 @@ function App() {
               </RequireAuth>
             }
           />
+          <Route path="/blogs" element={<BlogList />} />
+          <Route
+            path="/blogs/create"
+            element={
+              <RequireAuth>
+                <BlogCreate />
+              </RequireAuth>
+            }
+          />
+          <Route path="/blogs/:id" element={<BlogDetail />} />
+          <Route
+            path="/blogs/mine"
+            element={
+              <RequireAuth>
+                <BlogMine />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/blogs/pending"
+            element={
+              <RequireAuth>
+                <AdminOnly>
+                  <BlogPending />
+                </AdminOnly>
+              </RequireAuth>
+            }
+          />
+          <Route path="/blogs/:id/edit" element={<BlogEdit />} />
         </Routes>
         <Footer />
-      </div>
-      <div>
-        <h2>Test Tìm quanh tôi (1000km)</h2>
-        <FindNear />
       </div>
     </Router>
   );

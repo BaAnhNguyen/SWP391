@@ -123,9 +123,7 @@ function AddressForm({ initialValue, onChange }) {
       const newAddress =
         feature.place_name ||
         feature.text ||
-        `${feature.geometry.coordinates[1].toFixed(
-          6
-        )}, ${feature.geometry.coordinates[0].toFixed(6)}`;
+        "Không rõ địa chỉ! Vui lòng kéo marker để chọn chính xác vị trí!";
       const newLat = feature.geometry.coordinates[1];
       const newLng = feature.geometry.coordinates[0];
       setAddress(newAddress);

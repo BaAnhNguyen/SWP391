@@ -42,8 +42,8 @@ app.use("/api/question", questionRoutes);
 app.use("/api/bloodUnit", bloodUnitRoutes);
 
 app.use("/api/donationHistory", donationHistoryRoutes);
-app.use("api/blog", blogRoutes);
-app.use("api/comment", commentRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/comments", commentRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

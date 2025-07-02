@@ -53,3 +53,14 @@ body {
   background-color: #e74c3c;
   color: white;
 }
+ 
+
+.blog-mine-container, .blog-pending-container {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+.container {
+  padding: 0 !important;
+}

@@ -9,6 +9,7 @@ function Profile() {
   const [, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [resetKey, setResetKey] = useState(0);
 
   // Lưu mọi trường, trong đó address (string hoặc object tuỳ bạn) và location (toạ độ)
   const [form, setForm] = useState({
@@ -19,9 +20,15 @@ function Profile() {
     phoneNumber: "",
     dateOfBirth: "",
     gender: "",
-    address: "", // address string hoặc object đều được
-    location: { lat: null, lng: null },
+    address: "",
+    location: null,
   });
+
+  // Khi muốn reset:
+  function handleResetForm() {
+    setForm({ address: "", location: null });
+    setResetKey((prev) => prev + 1);
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("token");

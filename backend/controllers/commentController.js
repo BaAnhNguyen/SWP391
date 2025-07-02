@@ -21,7 +21,7 @@ exports.createComment = async (req, res) => {
 exports.getComments = async (req, res) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
-      .populate("author", "name role")
+      .populate("author", "name role _id")
       .sort({ createdAt: 1 });
     res.json(comments);
   } catch (err) {

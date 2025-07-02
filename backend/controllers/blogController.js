@@ -5,11 +5,12 @@ exports.create = async (req, res) => {
   try {
     const { title, content } = req.body;
     let status = "Pending";
-    if (req.user.role === "Admin") status === "Approved";
+    if (req.user.role === "Admin") status = "Approved";
     const post = await Blog.create({
       title,
       content,
       author: req.user._id,
+      status,
     });
     res.status(201).json(post);
   } catch (err) {
@@ -118,14 +119,24 @@ exports.delete = async (req, res) => {
     if (req.user.role === "Member") {
       if (String(post.author) !== String(req.user._id))
         return res.status(403).json({ message: "Do not have permission" });
-      if (post.status !== "Pending")
-        return res
-          .status(400)
-          .json({ message: "Can not update when approved" });
     }
-    await post.deleteOne;
+    await post.deleteOne();
     res.json({ message: "Deleted" });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+// Lấy chi tiết 1 blog
+exports.getBlogById = async (req, res) => {
+  try {
+    const post = await Blog.findById(req.params.id).populate(
+      "author",
+      "name role"
+    );
+    if (!post) return res.status(404).json({ message: "Not found" });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
