@@ -13,6 +13,13 @@ const DonateRequestPage = ({ user }) => {
   // Determine if the user is a staff member or admin
   const isStaff = user?.role === "Staff" || user?.role === "Admin";
 
+  // Set default active tab to list for staff users
+  useEffect(() => {
+    if (isStaff) {
+      setActiveTab("list");
+    }
+  }, [isStaff]);
+
   // Handle successful request creation to refresh the list
   const handleRequestCreated = () => {
     if (isStaff) {
@@ -38,14 +45,16 @@ const DonateRequestPage = ({ user }) => {
         <p>{t("donateRequest.description")}</p>
       </div>{" "}
       <div className="donate-request-tabs">
-        <button
-          className={`donate-request-tab ${
-            activeTab === "form" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("form")}
-        >
-          {t("donateRequest.nav.createRequest")}
-        </button>
+        {user?.role !== "Staff" && (
+          <button
+            className={`donate-request-tab ${
+              activeTab === "form" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("form")}
+          >
+            {t("donateRequest.nav.createRequest")}
+          </button>
+        )}
         <button
           className={`donate-request-tab ${
             activeTab === "list" ? "active" : ""
@@ -67,7 +76,7 @@ const DonateRequestPage = ({ user }) => {
           </button>
         )}
       </div>{" "}
-      {activeTab === "form" && (
+      {activeTab === "form" && user?.role !== "Staff" && (
         <DonateRequestForm onRequestCreated={handleRequestCreated} />
       )}
       {activeTab === "list" && (

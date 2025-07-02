@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./BloodStorage.css";
 import "../../styles/colors.css";
@@ -33,7 +34,7 @@ function getStatusClass(status) {
   }
 }
 
-// Tổng hợp số túi & ml, chỉ máu còn hạn
+// Summarize the number of bags & ml, only for blood that hasn't expired
 const processBloodInventory = (data) => {
   const arr = Array.isArray(data) ? data : [];
   const summary = {};
@@ -80,17 +81,18 @@ const processBloodInventory = (data) => {
 };
 
 const BloodStorage = () => {
+  const { t } = useTranslation();
   const [bloodInventory, setBloodInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // Lọc ngày và kiểu nhập cho bảng thống kê
+  // Filter dates and source type for inventory table
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
   const [filterSourceType, setFilterSourceType] = useState("all");
 
-  // State cho form thêm máu nhập tay
+  // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
     BloodType: "A+",
     ComponentType: "WholeBlood",
@@ -100,7 +102,7 @@ const BloodStorage = () => {
   });
   const [adding, setAdding] = useState(false);
 
-  // Load dữ liệu kho máu
+  // Load blood storage data
   const fetchInventory = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -119,7 +121,7 @@ const BloodStorage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message || "Không thể tải kho máu.");
+        setError(err.message || "Unable to load blood storage data.");
         setBloodInventory([]);
         setLoading(false);
       });
@@ -132,14 +134,14 @@ const BloodStorage = () => {
 
   const summaryData = processBloodInventory(bloodInventory);
 
-  // Filter cho bảng lịch sử tăng kho
+  // Filter for inventory history table
   const filteredBloodInventory = (
     Array.isArray(bloodInventory) ? bloodInventory : []
   ).filter((unit) => {
-    // Lọc theo kiểu nhập
+    // Filter by source type
     if (filterSourceType !== "all" && unit.SourceType !== filterSourceType)
       return false;
-    // Lọc theo ngày nhập (DateAdded)
+    // Filter by date added
     const date = new Date(unit.DateAdded);
     if (filterStartDate && date < new Date(filterStartDate)) return false;
     if (filterEndDate && date > new Date(filterEndDate + "T23:59:59"))
@@ -147,7 +149,7 @@ const BloodStorage = () => {
     return true;
   });
 
-  // Tổng số túi và tổng ml của filter hiện tại
+  // Total bags and volume for current filter
   const totalQuantity = filteredBloodInventory.reduce(
     (sum, unit) => sum + (Number(unit.Quantity) || 1),
     0
@@ -157,13 +159,13 @@ const BloodStorage = () => {
     0
   );
 
-  // Xử lý thay đổi form nhập tay
+  // Handle changes to the manual entry form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewUnit((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Xử lý submit thêm máu nhập tay
+  // Handle submission of manual blood entry
   const handleAddBloodUnit = async (e) => {
     e.preventDefault();
     setAdding(true);
@@ -182,7 +184,7 @@ const BloodStorage = () => {
           SourceType: "import",
         }),
       });
-      if (!res.ok) throw new Error("Không thể thêm máu vào kho!");
+      if (!res.ok) throw new Error(t("bloodStorage.addError"));
       setNewUnit({
         BloodType: "A+",
         ComponentType: "WholeBlood",
@@ -199,9 +201,9 @@ const BloodStorage = () => {
     setAdding(false);
   };
 
-  // Xóa máu khỏi kho
+  // Delete blood from storage
   const handleDeleteBloodUnit = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa đơn vị máu này không?"))
+    if (!window.confirm(t("bloodStorage.deleteConfirm")))
       return;
     try {
       const token = localStorage.getItem("token");
@@ -211,13 +213,40 @@ const BloodStorage = () => {
       });
       fetchInventory();
     } catch (err) {
-      alert("Lỗi khi xóa đơn vị máu!");
+      alert(t("bloodStorage.deleteError"));
+    }
+  };
+
+  // Add translations for blood components and operations
+  const getComponentTranslation = (componentType) => {
+    switch (componentType) {
+      case "WholeBlood":
+        return t("bloodStorage.wholeBlood");
+      case "Plasma":
+        return t("bloodStorage.plasma");
+      case "Platelets":
+        return t("bloodStorage.platelets");
+      case "RedCells":
+        return t("bloodStorage.redCells");
+      default:
+        return componentType;
+    }
+  };
+
+  const getSourceTypeTranslation = (sourceType) => {
+    switch (sourceType) {
+      case "donation":
+        return t("bloodStorage.donation");
+      case "import":
+        return t("bloodStorage.import");
+      default:
+        return sourceType;
     }
   };
 
   return (
     <div className="blood-storage-container">
-      <h1>Trung Tâm Quản Lý Máu</h1>
+      <h1>{t("bloodStorage.centerTitle")}</h1>
 
       {error && (
         <div className="error-message" style={{
@@ -245,11 +274,11 @@ const BloodStorage = () => {
           gap: "15px"
         }}>
           <div className="loading-spinner"></div>
-          <div>Đang tải dữ liệu kho máu...</div>
+          <div>{t("bloodStorage.loading")}</div>
         </div>
       ) : (
         <>
-          <h2>Tổng Quan Kho Máu</h2>
+          <h2>{t("bloodStorage.overview")}</h2>
 
           <div className="blood-storage-dashboard">
             {bloodTypes.map((type) => (
@@ -257,13 +286,13 @@ const BloodStorage = () => {
                 <div className="blood-drop-icon" data-type={type}></div>
                 <h3>{type}</h3>
                 <div className={`blood-level ${getStatusClass(summaryData[type]?.status || "critical")}`}>
-                  {summaryData[type]?.total || 0} túi ({summaryData[type]?.totalVolume || 0} ml)
+                  {summaryData[type]?.total || 0} {t("bloodStorage.units")} ({summaryData[type]?.totalVolume || 0} ml)
                 </div>
                 <div className="component-breakdown">
-                  <p><span>Toàn phần:</span> <span>{summaryData[type]?.WholeBlood || 0} ({summaryData[type]?.WholeBloodVolume || 0} ml)</span></p>
-                  <p><span>Huyết tương:</span> <span>{summaryData[type]?.Plasma || 0} ({summaryData[type]?.PlasmaVolume || 0} ml)</span></p>
-                  <p><span>Tiểu cầu:</span> <span>{summaryData[type]?.Platelets || 0} ({summaryData[type]?.PlateletsVolume || 0} ml)</span></p>
-                  <p><span>Hồng cầu:</span> <span>{summaryData[type]?.RedCells || 0} ({summaryData[type]?.RedCellsVolume || 0} ml)</span></p>
+                  <p><span>{t("bloodStorage.wholeBlood")}:</span> <span>{summaryData[type]?.WholeBlood || 0} ({summaryData[type]?.WholeBloodVolume || 0} ml)</span></p>
+                  <p><span>{t("bloodStorage.plasma")}:</span> <span>{summaryData[type]?.Plasma || 0} ({summaryData[type]?.PlasmaVolume || 0} ml)</span></p>
+                  <p><span>{t("bloodStorage.platelets")}:</span> <span>{summaryData[type]?.Platelets || 0} ({summaryData[type]?.PlateletsVolume || 0} ml)</span></p>
+                  <p><span>{t("bloodStorage.redCells")}:</span> <span>{summaryData[type]?.RedCells || 0} ({summaryData[type]?.RedCellsVolume || 0} ml)</span></p>
                 </div>
               </div>
             ))}
@@ -271,16 +300,16 @@ const BloodStorage = () => {
 
           <div className="management-controls">
             <button type="button" onClick={() => setShowAddForm(!showAddForm)} className="add-inventory-btn">
-              {showAddForm ? '✖ Ẩn Form Nhập Máu' : '➕ Thêm Máu Vào Kho'}
+              {showAddForm ? `✖ ${t("bloodStorage.hideForm")}` : `➕ ${t("bloodStorage.addToStorage")}`}
             </button>
           </div>
 
           {showAddForm && (
             <div className="filter-section">
-              <h3>Thêm Máu Vào Kho (Nhập Tay)</h3>
+              <h3>{t("bloodStorage.manualEntry")}</h3>
               <form className="add-blood-form filter-form" onSubmit={handleAddBloodUnit}>
                 <div className="filter-form-group">
-                  <label>Nhóm Máu:</label>
+                  <label>{t("bloodStorage.bloodType")}:</label>
                   <select
                     name="BloodType"
                     value={newUnit.BloodType}
@@ -295,21 +324,21 @@ const BloodStorage = () => {
                 </div>
 
                 <div className="filter-form-group">
-                  <label>Thành Phần:</label>
+                  <label>{t("bloodStorage.component")}:</label>
                   <select
                     name="ComponentType"
                     value={newUnit.ComponentType}
                     onChange={handleInputChange}
                   >
-                    <option value="WholeBlood">Toàn phần</option>
-                    <option value="Plasma">Huyết tương</option>
-                    <option value="Platelets">Tiểu cầu</option>
-                    <option value="RedCells">Hồng cầu</option>
+                    <option value="WholeBlood">{t("bloodStorage.wholeBlood")}</option>
+                    <option value="Plasma">{t("bloodStorage.plasma")}</option>
+                    <option value="Platelets">{t("bloodStorage.platelets")}</option>
+                    <option value="RedCells">{t("bloodStorage.redCells")}</option>
                   </select>
                 </div>
 
                 <div className="filter-form-group">
-                  <label>Số Túi:</label>
+                  <label>{t("bloodStorage.units")}:</label>
                   <input
                     type="number"
                     name="Quantity"
@@ -320,7 +349,7 @@ const BloodStorage = () => {
                 </div>
 
                 <div className="filter-form-group">
-                  <label>Thể Tích (ml):</label>
+                  <label>{t("bloodStorage.volume")} (ml):</label>
                   <input
                     type="number"
                     name="Volume"
@@ -331,7 +360,7 @@ const BloodStorage = () => {
                 </div>
 
                 <div className="filter-form-group">
-                  <label>Ghi Chú:</label>
+                  <label>{t("bloodStorage.note")}:</label>
                   <input
                     type="text"
                     name="note"
@@ -341,16 +370,16 @@ const BloodStorage = () => {
                 </div>
 
                 <button type="submit" className="submit-btn" disabled={adding}>
-                  {adding ? "Đang Xử Lý..." : "Thêm Vào Kho"}
+                  {adding ? t("bloodStorage.processing") : t("bloodStorage.addToInventory")}
                 </button>
               </form>
             </div>
           )}
 
-          <h2>Lịch Sử Nhập Kho Máu</h2>
+          <h2>{t("bloodStorage.inventoryHistory")}</h2>
           <div className="filter-row">
             <label>
-              Từ Ngày:
+              {t("bloodStorage.fromDate")}:
               <input
                 type="date"
                 value={filterStartDate}
@@ -358,7 +387,7 @@ const BloodStorage = () => {
               />
             </label>
             <label>
-              Đến Ngày:
+              {t("bloodStorage.toDate")}:
               <input
                 type="date"
                 value={filterEndDate}
@@ -366,14 +395,14 @@ const BloodStorage = () => {
               />
             </label>
             <label>
-              Kiểu Nhập:
+              {t("bloodStorage.sourceType")}:
               <select
                 value={filterSourceType}
                 onChange={(e) => setFilterSourceType(e.target.value)}
               >
-                <option value="all">Tất cả</option>
-                <option value="donation">Hiến máu</option>
-                <option value="import">Nhập tay</option>
+                <option value="all">{t("bloodStorage.all")}</option>
+                <option value="donation">{t("bloodStorage.donation")}</option>
+                <option value="import">{t("bloodStorage.import")}</option>
               </select>
             </label>
           </div>
@@ -382,16 +411,16 @@ const BloodStorage = () => {
             <table className="blood-inventory-table">
               <thead>
                 <tr>
-                  <th>Ngày Nhập</th>
-                  <th>Nhóm Máu</th>
-                  <th>Thành Phần</th>
-                  <th>Số Túi</th>
-                  <th>Thể Tích (ml)</th>
-                  <th>Kiểu Nhập</th>
-                  <th>Ghi Chú</th>
-                  <th>Ngày Hết Hạn</th>
-                  <th>Còn Lại (ngày)</th>
-                  <th>Xóa</th>
+                  <th>{t("bloodStorage.dateAdded")}</th>
+                  <th>{t("bloodStorage.bloodType")}</th>
+                  <th>{t("bloodStorage.component")}</th>
+                  <th>{t("bloodStorage.units")}</th>
+                  <th>{t("bloodStorage.volume")} (ml)</th>
+                  <th>{t("bloodStorage.sourceType")}</th>
+                  <th>{t("bloodStorage.note")}</th>
+                  <th>{t("bloodStorage.expirationDate")}</th>
+                  <th>{t("bloodStorage.daysLeft")}</th>
+                  <th>{t("bloodStorage.delete")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -404,19 +433,12 @@ const BloodStorage = () => {
                         <td>{formatDate(unit.DateAdded)}</td>
                         <td>{unit.BloodType}</td>
                         <td>
-                          {unit.ComponentType === "WholeBlood" && "Toàn phần"}
-                          {unit.ComponentType === "Plasma" && "Huyết tương"}
-                          {unit.ComponentType === "Platelets" && "Tiểu cầu"}
-                          {unit.ComponentType === "RedCells" && "Hồng cầu"}
+                          {getComponentTranslation(unit.ComponentType)}
                         </td>
                         <td>{unit.Quantity}</td>
                         <td>{unit.Volume}</td>
                         <td>
-                          {unit.SourceType === "donation"
-                            ? "Hiến máu"
-                            : unit.SourceType === "import"
-                              ? "Nhập tay"
-                              : ""}
+                          {getSourceTypeTranslation(unit.SourceType)}
                         </td>
                         <td>{unit.note || ""}</td>
                         <td>{formatDate(unit.DateExpired)}</td>
@@ -426,13 +448,13 @@ const BloodStorage = () => {
                             fontWeight: isExpired ? "bold" : undefined,
                           }}
                         >
-                          {isExpired ? "Hết hạn" : days}
+                          {isExpired ? t("bloodStorage.expired") : days}
                         </td>
                         <td>
                           <button
                             className="delete-btn"
                             onClick={() => handleDeleteBloodUnit(unit._id)}
-                            title="Xóa bản ghi này"
+                            title={t("bloodStorage.deleteTitle")}
                           >
                             ✖
                           </button>
@@ -442,12 +464,12 @@ const BloodStorage = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="10">Không có bản ghi phù hợp.</td>
+                    <td colSpan="10">{t("bloodStorage.noRecords")}</td>
                   </tr>
                 )}
                 {/* Tổng kết cuối bảng */}
                 <tr style={{ fontWeight: "bold", background: "#ffeaea" }}>
-                  <td colSpan="3">TỔNG</td>
+                  <td colSpan="3">{t("bloodStorage.total")}</td>
                   <td>{totalQuantity}</td>
                   <td>{totalVolume}</td>
                   <td colSpan="5"></td>

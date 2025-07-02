@@ -25,12 +25,6 @@ import BloodStorage from "./components/BloodStorage/BloodStorage";
 import FindNear from "./components/Search/FindNear";
 // import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
-import BlogList from "./components/Blog/BlogList";
-import BlogDetail from "./components/Blog/BlogDetail";
-import BlogCreate from "./components/Blog/BlogCreate";
-import BlogMine from "./components/Blog/BlogMine";
-import BlogPending from "./components/Blog/BlogPending";
-import BlogEdit from "./components/Blog/BlogEdit";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -43,6 +37,15 @@ function StaffOnly({ children }) {
     children
   ) : (
     <Navigate to="/" replace />
+  );
+}
+
+function NonAdminOnly({ children }) {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  return user.role !== "Admin" ? (
+    children
+  ) : (
+    <Navigate to="/permission-denied" replace />
   );
 }
 
@@ -59,6 +62,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/permission-denied" element={<PermissionDenied />} />
           <Route
             path="/profile"
             element={
@@ -81,9 +85,11 @@ function App() {
             path="/donate"
             element={
               <RequireAuth>
-                <DonateRequestPage
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <DonateRequestPage
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />
@@ -91,9 +97,11 @@ function App() {
             path="/donation-history"
             element={
               <RequireAuth>
-                <DonateRequestHistory
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <DonateRequestHistory
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />
@@ -101,9 +109,11 @@ function App() {
             path="/blood-requests"
             element={
               <RequireAuth>
-                <NeedRequestPage
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <NeedRequestPage
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />

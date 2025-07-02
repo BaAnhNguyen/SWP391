@@ -266,7 +266,7 @@ const MedicalHealth = () => {
                     </button>
                     <button
                       onClick={() => handleDelete(question._id)}
-                      className="delete-btn"
+                      className="delete-button"
                     >
                       {t("medicalHealth.delete")}
                     </button>
