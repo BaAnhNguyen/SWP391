@@ -66,7 +66,8 @@ function Header() {
             </Link>
             <hr />
             <div className="user-role">({user.role})</div>
-          </div>          {user.role === "Admin" && (
+          </div>
+          {user.role === "Admin" && (
             <Link to="/admin" className="nav-link admin-link">
               {t("nav.adminPanel")}
             </Link>
@@ -130,7 +131,7 @@ function Header() {
                 </Link>
               </li>
             )}
-            {user && (user.role === "Staff") && (
+            {user && (user.role === "Staff" || user.role === "Admin") && (
               <li>
                 <Link to="/blood-storage" className="nav-link">
                   {t("nav.bloodStorage")}

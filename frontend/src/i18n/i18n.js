@@ -513,6 +513,7 @@ const resources = {
           "Please explain why this donation request is being rejected...",
         reasonRequired: "Reason is required",
         confirmReject: "Confirm Rejection",
+        detailInfo: "Detail Infomation",
       },
 
       // Blood Components Compatibility

@@ -25,6 +25,7 @@ import BloodStorage from "./components/BloodStorage/BloodStorage";
 import FindNear from "./components/Search/FindNear";
 // import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
+import PermissionDenied from "./components/PermissionDenied/PermissionDenied";
 
 function AdminOnly({ children }) {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -37,6 +38,15 @@ function StaffOnly({ children }) {
     children
   ) : (
     <Navigate to="/" replace />
+  );
+}
+
+function NonAdminOnly({ children }) {
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  return user.role !== "Admin" ? (
+    children
+  ) : (
+    <Navigate to="/permission-denied" replace />
   );
 }
 
@@ -53,6 +63,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/permission-denied" element={<PermissionDenied />} />
           <Route
             path="/profile"
             element={
@@ -75,9 +86,11 @@ function App() {
             path="/donate"
             element={
               <RequireAuth>
-                <DonateRequestPage
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <DonateRequestPage
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />
@@ -85,9 +98,11 @@ function App() {
             path="/donation-history"
             element={
               <RequireAuth>
-                <DonateRequestHistory
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <DonateRequestHistory
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />
@@ -95,9 +110,11 @@ function App() {
             path="/blood-requests"
             element={
               <RequireAuth>
-                <NeedRequestPage
-                  user={JSON.parse(localStorage.getItem("user")) || {}}
-                />
+                <NonAdminOnly>
+                  <NeedRequestPage
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </NonAdminOnly>
               </RequireAuth>
             }
           />
