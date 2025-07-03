@@ -330,7 +330,8 @@ const resources = {
       "donate.submit": "Register Donation",
       "donate.success": "Registration successful!",
       "donate.submitError": "Failed to register donation",
-      "donateRequest.nav.viewAllRequests": "View all Registration",
+      "donateRequest.nav.viewAllRequests": "View All Registration",
+      "donateRequest.nav.viewMyRequests": "View Registraion",
       "donateRequest.nav.createRequest": "Register Donation",
 
       // Language Switcher
@@ -374,9 +375,12 @@ const resources = {
       "needRequest.assignError": "Error assigning blood units",
       "needRequest.status.assigned": "Assigned",
       "needRequest.assignBloodUnits": "Assign Blood Units",
-      "needRequest.fetchBloodUnitsError": "Error fetching compatible blood units",
-      "needRequest.noCompatibleBloodUnits": "No compatible blood units available",
-      "needRequest.selectionInfo": "Selected {{selected}} of {{required}} required units",
+      "needRequest.fetchBloodUnitsError":
+        "Error fetching compatible blood units",
+      "needRequest.noCompatibleBloodUnits":
+        "No compatible blood units available",
+      "needRequest.selectionInfo":
+        "Selected {{selected}} of {{required}} required units",
       "common.bloodType": "Blood Type",
       "common.component": "Component",
       "common.volume": "Volume",
@@ -439,7 +443,8 @@ const resources = {
       "bloodStorage.fetchError": "Error fetching blood inventory",
       "bloodStorage.addError": "Unable to add blood to storage!",
       "bloodStorage.deleteError": "Error when deleting blood unit!",
-      "bloodStorage.confirmDelete": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.confirmDelete":
+        "Are you sure you want to delete this blood unit?",
       "bloodStorage.centerTitle": "Blood Management Center",
       "bloodStorage.overview": "Blood Storage Overview",
       "bloodStorage.loading": "Loading blood inventory data...",
@@ -465,7 +470,8 @@ const resources = {
       "bloodStorage.noRecords": "No matching records found.",
       "bloodStorage.total": "TOTAL",
       "bloodStorage.deleteTitle": "Delete this record",
-      "bloodStorage.confirmDelete": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.confirmDelete":
+        "Are you sure you want to delete this blood unit?",
       "bloodStorage.noUnits": "No blood units available",
 
       // Donate Request
@@ -905,6 +911,7 @@ const resources = {
       "donate.success": "Đăng ký thành công!",
       "donate.submitError": "Đăng ký hiến máu thất bại",
       "donateRequest.nav.viewAllRequests": "Xem tất cả đơn đăng ký ",
+      "donateRequest.nav.viewMyRequests": "Đơn hiến máu",
       "donateRequest.nav.createRequest": "Đăng ký hiến máu",
 
       // Language Switcher
@@ -949,7 +956,8 @@ const resources = {
       "needRequest.assignBloodUnits": "Phân bổ đơn vị máu",
       "needRequest.fetchBloodUnitsError": "Lỗi khi lấy đơn vị máu tương thích",
       "needRequest.noCompatibleBloodUnits": "Không có đơn vị máu tương thích",
-      "needRequest.selectionInfo": "Đã chọn {{selected}} trong số {{required}} đơn vị yêu cầu",
+      "needRequest.selectionInfo":
+        "Đã chọn {{selected}} trong số {{required}} đơn vị yêu cầu",
       "common.bloodType": "Nhóm máu",
       "common.component": "Thành phần",
       "common.volume": "Thể tích",
@@ -1012,7 +1020,8 @@ const resources = {
       "bloodStorage.fetchError": "Error fetching blood storage data",
       "bloodStorage.addError": "Error adding blood unit",
       "bloodStorage.deleteError": "Error deleting blood unit",
-      "bloodStorage.confirmDelete": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.confirmDelete":
+        "Are you sure you want to delete this blood unit?",
       "bloodStorage.noUnits": "No blood units available",
 
       // Donate Request

@@ -465,9 +465,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
               {isStaff ? t("common.role.staff") : t("common.role.member")}
             </span>
           </h2>
-          {!isStaff && (
-            <p className="member-notice">{t("donateRequest.memberNotice")}</p>
-          )}
         </div>
         <div className="filter-container">
           <label>{t("donateRequest.filterByStatus")}:</label>

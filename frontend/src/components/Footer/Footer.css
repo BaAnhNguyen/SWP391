@@ -73,13 +73,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  /* Giảm kích thước từ 35px xuống 30px */
+  height: 30px;
+  /* Giảm kích thước từ 35px xuống 30px */
   border-radius: 50%;
   background-color: #34495e;
   color: white;
   text-decoration: none;
   transition: all 0.3s ease;
+  font-size: 0.85rem;
+  /* Giảm kích thước chữ trong icon */
 }
 
 .social-links a:hover {

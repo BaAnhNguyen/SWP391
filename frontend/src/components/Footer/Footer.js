@@ -18,18 +18,18 @@ function Footer() {
           <h3>{t('footer.quickLinks')}</h3>
           <ul>
             <li><Link to="/">{t('nav.home')}</Link></li>
-            <li><Link to="/about">{t('nav.about')}</Link></li>
+            {/* <li><Link to="/about">{t('nav.about')}</Link></li>
             <li><Link to="/donation-process">{t('nav.donationProcess')}</Link></li>
-            <li><Link to="/upcoming-drives">{t('nav.upcomingDrives')}</Link></li>
+            <li><Link to="/upcoming-drives">{t('nav.upcomingDrives')}</Link></li> */}
             <li><Link to="/contact">{t('nav.contact')}</Link></li>
           </ul>
         </div>
         
         <div className="footer-section contact">
           <h3>{t('footer.contact')}</h3>
-          <p><i className="icon">📍</i> {t('footer.address')}</p>
-          <p><i className="icon">📞</i> {t('footer.phone')}</p>
-          <p><i className="icon">✉️</i> {t('footer.email')}</p>
+          <p>{t('footer.address')}</p>
+          <p>{t('footer.phone')}</p>
+          <p>{t('footer.email')}</p>
           <div className="social-links">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">FB</a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">TW</a>
