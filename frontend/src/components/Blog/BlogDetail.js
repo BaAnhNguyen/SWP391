@@ -76,19 +76,12 @@ const BlogDetail = () => {
   // Get role info
   const getRoleInfo = (role) => {
     switch (role) {
-      case "admin":
+      case "Admin":
         return {
           text: "Quản trị viên",
           color: "#dc2626",
           bg: "#fee2e2",
           icon: "👑",
-        };
-      case "moderator":
-        return {
-          text: "Kiểm duyệt viên",
-          color: "#7c3aed",
-          bg: "#ede9fe",
-          icon: "🛡️",
         };
       default:
         return {

@@ -24,13 +24,6 @@ export default function CommentItem({ comment, postId, onReload }) {
     userId && authorId && String(userId) === String(authorId);
   const isAdmin = currentUser && currentUser.role === "Admin";
 
-  // Debug log
-  console.log("currentUser:", currentUser);
-  console.log("userId:", userId);
-  console.log("comment.author:", comment.author);
-  console.log("authorId:", authorId);
-  console.log("isOwnComment:", isOwnComment);
-
   const handleEdit = () => {
     setIsEditing(true);
     setEditContent(comment.content);
@@ -214,7 +207,12 @@ export default function CommentItem({ comment, postId, onReload }) {
 
       {/* Nested Replies */}
       {comment.replies?.length > 0 && (
-        <div className="replies-container">
+        <div
+          className={
+            "replies-container" +
+            (comment.parent ? " replies-nested" : " replies-first")
+          }
+        >
           {comment.replies.map((reply, index) => (
             <div key={reply._id} className="reply-wrapper">
               <CommentItem
@@ -332,6 +330,22 @@ export default function CommentItem({ comment, postId, onReload }) {
         .edit-icon,
         .delete-icon {
           font-size: 13px;
+        }
+        .replies-container {
+          /* Không thụt mặc định */
+          margin-left: 0;
+          border-left: none;
+          padding-left: 0;
+        }
+        .replies-first {
+          margin-left: 32px; /* Chỉ replies của comment root mới thụt vào */
+          border-left: 2px solid #e9ecef;
+          padding-left: 16px;
+        }
+        .replies-nested {
+          margin-left: 0;
+          border-left: none;
+          padding-left: 0;
         }
       `}</style>
     </>
