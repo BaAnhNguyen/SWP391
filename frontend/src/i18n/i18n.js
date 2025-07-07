@@ -389,7 +389,13 @@ const resources = {
       "common.accept": "Accept",
       "common.cancel": "Cancel",
       "common.select": "Select",
-
+      "needRequest.status.pending": "Pending",
+      "needRequest.nav.viewAllRequests": "View all request",
+      "needRequest.unit": "unit",
+      "needRequest.bloodRequestType": "blood type",
+      "needRequest.nav.createRequest": "Create request",
+      "needRequest.nav.searchBlood": "Search blood type",
+      "needRequest.nav.viewMyRequests": "View my request",
       // Common
       common: {
         delete: "Delete",
@@ -966,6 +972,13 @@ const resources = {
       "common.accept": "Đồng ý",
       "common.cancel": "Hủy",
       "common.select": "Chọn",
+      "needRequest.status.pending": "Chờ duyệt",
+      "needRequest.nav.viewAllRequests": "Xem các yêu cầu",
+      "needRequest.unit": "đơn vị máu",
+      "needRequest.bloodRequestType": "loại máu",
+      "needRequest.nav.createRequest": "Yêu cầu nhận máu",
+      "needRequest.nav.searchBlood": "Search Compatible Blood",
+      "needRequest.nav.viewMyRequests": "Xem yêu cầu nhận máu",
 
       // Common
       common: {
@@ -1135,14 +1148,14 @@ const resources = {
         },
         universalNotes:
           "Luôn tham khảo ý kiến chuyên gia y tế cho nhu cầu truyền máu cụ thể",
-        searchTitle: "Tìm Máu Tương Thích",
+        searchTitle: "Find Compatible Blood",
         searchDescription:
-          "Tìm kiếm các loại máu và thành phần tương thích trước khi yêu cầu",
-        yourBloodType: "Nhóm Máu Của Bạn:",
-        componentNeeded: "Thành Phần Máu Cần Thiết:",
-        anyComponent: "-- Bất Kỳ Thành Phần --",
-        selectBloodType: "-- Chọn Nhóm Máu --",
-        searchButton: "Tìm Máu Tương Thích",
+          "Search for compatible blood types and components before making a request",
+        yourBloodType: "Your Blood Type:",
+        componentNeeded: "Blood Component Needed:",
+        anyComponent: "-- Any Component --",
+        selectBloodType: "-- Select Blood Type --",
+        searchButton: "Search Compatible Blood",
         searching: "Đang tìm kiếm...",
         resultsTitle: "Nhóm Máu Tương Thích cho",
         compatibilityNote:

@@ -1,0 +1,118 @@
+/* Color palette for the Blood Donation System */
+:root {
+    /* Primary Colors */
+    --primary-red: #dc2626;
+    --primary-red-dark: #b91c1c;
+    --primary-red-light: #fee2e2;
+
+    /* Secondary Colors */
+    --secondary-blue: #2563eb;
+    --secondary-blue-dark: #1d4ed8;
+    --secondary-blue-light: #dbeafe;
+
+    /* Neutral Colors */
+    --neutral-white: #ffffff;
+    --neutral-gray-50: #f9fafb;
+    --neutral-gray-100: #f3f4f6;
+    --neutral-gray-200: #e5e7eb;
+    --neutral-gray-300: #d1d5db;
+    --neutral-gray-400: #9ca3af;
+    --neutral-gray-500: #6b7280;
+    --neutral-gray-600: #4b5563;
+    --neutral-gray-700: #374151;
+    --neutral-gray-800: #1f2937;
+    --neutral-gray-900: #111827;
+
+    /* Status Colors */
+    --success-green: #10b981;
+    --success-green-light: #d1fae5;
+    --warning-yellow: #f59e0b;
+    --warning-yellow-light: #fef3c7;
+    --error-red: #ef4444;
+    --error-red-light: #fecaca;
+    --info-blue: #3b82f6;
+    --info-blue-light: #dbeafe;
+
+    /* Blood Type Colors */
+    --blood-o-positive: #dc2626;
+    --blood-o-negative: #b91c1c;
+    --blood-a-positive: #ea580c;
+    --blood-a-negative: #c2410c;
+    --blood-b-positive: #ca8a04;
+    --blood-b-negative: #a16207;
+    --blood-ab-positive: #059669;
+    --blood-ab-negative: #047857;
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--primary-red);
+}
+
+.text-secondary {
+    color: var(--secondary-blue);
+}
+
+.text-success {
+    color: var(--success-green);
+}
+
+.text-warning {
+    color: var(--warning-yellow);
+}
+
+.text-error {
+    color: var(--error-red);
+}
+
+.text-info {
+    color: var(--info-blue);
+}
+
+.bg-primary {
+    background-color: var(--primary-red);
+}
+
+.bg-secondary {
+    background-color: var(--secondary-blue);
+}
+
+.bg-success {
+    background-color: var(--success-green);
+}
+
+.bg-warning {
+    background-color: var(--warning-yellow);
+}
+
+.bg-error {
+    background-color: var(--error-red);
+}
+
+.bg-info {
+    background-color: var(--info-blue);
+}
+
+.border-primary {
+    border-color: var(--primary-red);
+}
+
+.border-secondary {
+    border-color: var(--secondary-blue);
+}
+
+.border-success {
+    border-color: var(--success-green);
+}
+
+.border-warning {
+    border-color: var(--warning-yellow);
+}
+
+.border-error {
+    border-color: var(--error-red);
+}
+
+.border-info {
+    border-color: var(--info-blue);
+}

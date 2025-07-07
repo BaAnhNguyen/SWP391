@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SearchBlood.css';
 
 const compatibilityChart = {
@@ -12,11 +13,17 @@ const compatibilityChart = {
     'O-': ['O-']
 };
 
-const bloodComponents = ['Whole Blood', 'Red Blood Cells', 'Platelets', 'Plasma'];
-
 const SearchBlood = () => {
+    const { t } = useTranslation();
     const [bloodType, setBloodType] = useState('');
     const [showResults, setShowResults] = useState(false);
+
+    const bloodComponents = [
+        t('common.component.wholeblood'),
+        t('common.component.redcells'),
+        t('common.component.platelets'),
+        t('common.component.plasma')
+    ];
 
     const handleSearch = () => {
         if (bloodType) {
@@ -26,42 +33,42 @@ const SearchBlood = () => {
 
     return (
         <div className="search-blood-wrapper">
-            <h2>Tìm nhóm máu tương thích</h2>
+            <h2>{t('bloodComponents.searchTitle')}</h2>
             <div className="search-form">
-                <label>Chọn nhóm máu của bạn:</label>
+                <label>{t('bloodComponents.yourBloodType')}</label>
                 <select value={bloodType} onChange={(e) => setBloodType(e.target.value)}>
-                    <option value="">-- Chọn nhóm máu --</option>
+                    <option value="">{t('bloodComponents.selectBloodType')}</option>
                     {Object.keys(compatibilityChart).map(type => (
                         <option key={type} value={type}>{type}</option>
                     ))}
                 </select>
-                <button onClick={handleSearch}>Tìm kiếm</button>
+                <button onClick={handleSearch}>{t('bloodComponents.searchButton')}</button>
             </div>
 
             {showResults && (
                 <div className="results-section">
-                    <h3>Nhóm máu {bloodType} có thể nhận từ:</h3>
+                    <h3>{t('bloodComponents.resultsTitle')} {bloodType}:</h3>
                     <div className="compatible-list">
                         {compatibilityChart[bloodType].map(type => (
                             <span className="blood-badge" key={type}>
                                 {type}
-                                {type === 'O-' && <span className="note"> (Người cho phổ quát)</span>}
-                                {bloodType === 'AB+' && type === 'AB+' && <span className="note"> (Người nhận phổ quát)</span>}
+                                {type === 'O-' && <span className="note"> ({t('bloodComponents.universalDonor')})</span>}
+                                {bloodType === 'AB+' && type === 'AB+' && <span className="note"> ({t('bloodComponents.universalRecipient')})</span>}
                             </span>
                         ))}
                     </div>
 
-                    <h4>Thành phần máu tương thích:</h4>
+                    <h4>{t('bloodComponents.componentInfo')}:</h4>
                     <ul>
                         {bloodComponents.map(component => (
                             <li key={component}>
-                                <strong>{component}</strong> - có thể được truyền nếu phù hợp với điều kiện y tế.
+                                <strong>{component}</strong> - {t('bloodComponents.compatible')}
                             </li>
                         ))}
                     </ul>
 
                     <div className="note-box">
-                        <strong>Lưu ý:</strong> Đây là bảng minh họa dựa trên nguyên tắc truyền máu cơ bản. Luôn tham khảo bác sĩ hoặc nhân viên y tế để đảm bảo an toàn truyền máu.
+                        <strong>{t('bloodComponents.transfusionGuidelines')}:</strong> {t('bloodComponents.universalNotes')}
                     </div>
                 </div>
             )}

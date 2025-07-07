@@ -1,0 +1,186 @@
+/* Blood Type Badges */
+.blood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 40px;
+    height: 24px;
+}
+
+/* Blood Type Specific Colors */
+.blood-badge.o-positive {
+    background: var(--blood-o-positive);
+}
+
+.blood-badge.o-negative {
+    background: var(--blood-o-negative);
+}
+
+.blood-badge.a-positive {
+    background: var(--blood-a-positive);
+}
+
+.blood-badge.a-negative {
+    background: var(--blood-a-negative);
+}
+
+.blood-badge.b-positive {
+    background: var(--blood-b-positive);
+}
+
+.blood-badge.b-negative {
+    background: var(--blood-b-negative);
+}
+
+.blood-badge.ab-positive {
+    background: var(--blood-ab-positive);
+}
+
+.blood-badge.ab-negative {
+    background: var(--blood-ab-negative);
+}
+
+/* Blood Badge Sizes */
+.blood-badge.small {
+    font-size: 10px;
+    padding: 2px 6px;
+    min-width: 32px;
+    height: 20px;
+}
+
+.blood-badge.large {
+    font-size: 14px;
+    padding: 6px 12px;
+    min-width: 48px;
+    height: 32px;
+}
+
+/* Blood Status Badges */
+.blood-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    min-width: 60px;
+    height: 24px;
+}
+
+.blood-status-badge.available {
+    background: var(--success-green-light);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+.blood-status-badge.low {
+    background: var(--warning-yellow-light);
+    color: var(--warning-yellow);
+    border: 1px solid var(--warning-yellow);
+}
+
+.blood-status-badge.critical {
+    background: var(--error-red-light);
+    color: var(--error-red);
+    border: 1px solid var(--error-red);
+}
+
+.blood-status-badge.expired {
+    background: var(--neutral-gray-200);
+    color: var(--neutral-gray-600);
+    border: 1px solid var(--neutral-gray-400);
+}
+
+/* Blood Unit Cards */
+.blood-unit-card {
+    background: var(--neutral-white);
+    border: 1px solid var(--neutral-gray-200);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px 0;
+    transition: all 0.2s;
+}
+
+.blood-unit-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.blood-unit-card .blood-type {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.blood-unit-card .blood-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--neutral-gray-600);
+}
+
+.blood-unit-card .blood-quantity {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-red);
+}
+
+/* Blood Compatibility Chart */
+.blood-compatibility {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.blood-compatibility-item {
+    text-align: center;
+    padding: 12px;
+    background: var(--neutral-gray-50);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.blood-compatibility-item.compatible {
+    border-color: var(--success-green);
+    background: var(--success-green-light);
+}
+
+.blood-compatibility-item.incompatible {
+    border-color: var(--error-red);
+    background: var(--error-red-light);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .blood-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+        min-width: 32px;
+        height: 20px;
+    }
+
+    .blood-unit-card {
+        padding: 12px;
+    }
+
+    .blood-unit-card .blood-type {
+        font-size: 20px;
+    }
+
+    .blood-compatibility {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 4px;
+    }
+}
