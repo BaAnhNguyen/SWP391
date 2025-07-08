@@ -203,8 +203,7 @@ const BloodStorage = () => {
 
   // Delete blood from storage
   const handleDeleteBloodUnit = async (id) => {
-    if (!window.confirm(t("bloodStorage.deleteConfirm")))
-      return;
+    if (!window.confirm(t("bloodStorage.deleteConfirm"))) return;
     try {
       const token = localStorage.getItem("token");
       await fetch(`${API_BASE_URL}/bloodunit/${id}`, {
@@ -249,30 +248,36 @@ const BloodStorage = () => {
       <h1>{t("bloodStorage.centerTitle")}</h1>
 
       {error && (
-        <div className="error-message" style={{
-          color: "white",
-          padding: "12px 20px",
-          background: "linear-gradient(135deg, #e74c3c, #c0392b)",
-          borderRadius: "8px",
-          margin: "15px 0",
-          textAlign: "center",
-          boxShadow: "0 4px 10px rgba(231, 76, 60, 0.2)"
-        }}>
+        <div
+          className="error-message"
+          style={{
+            color: "white",
+            padding: "12px 20px",
+            background: "linear-gradient(135deg, #e74c3c, #c0392b)",
+            borderRadius: "8px",
+            margin: "15px 0",
+            textAlign: "center",
+            boxShadow: "0 4px 10px rgba(231, 76, 60, 0.2)",
+          }}
+        >
           {error}
         </div>
       )}
 
       {loading ? (
-        <div className="loading" style={{
-          textAlign: "center",
-          padding: "30px 20px",
-          color: "#e74c3c",
-          fontSize: "1.1rem",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "15px"
-        }}>
+        <div
+          className="loading"
+          style={{
+            textAlign: "center",
+            padding: "30px 20px",
+            color: "#e74c3c",
+            fontSize: "1.1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "15px",
+          }}
+        >
           <div className="loading-spinner"></div>
           <div>{t("bloodStorage.loading")}</div>
         </div>
@@ -285,29 +290,67 @@ const BloodStorage = () => {
               <div key={type} className="blood-storage-card">
                 <div className="blood-drop-icon" data-type={type}></div>
                 <h3>{type}</h3>
-                <div className={`blood-level ${getStatusClass(summaryData[type]?.status || "critical")}`}>
-                  {summaryData[type]?.total || 0} {t("bloodStorage.units")} ({summaryData[type]?.totalVolume || 0} ml)
+                <div
+                  className={`blood-level ${getStatusClass(
+                    summaryData[type]?.status || "critical"
+                  )}`}
+                >
+                  {summaryData[type]?.total || 0} {t("bloodStorage.units")} (
+                  {summaryData[type]?.totalVolume || 0} ml)
                 </div>
                 <div className="component-breakdown">
-                  <p><span>{t("bloodStorage.wholeBlood")}:</span> <span>{summaryData[type]?.WholeBlood || 0} ({summaryData[type]?.WholeBloodVolume || 0} ml)</span></p>
-                  <p><span>{t("bloodStorage.plasma")}:</span> <span>{summaryData[type]?.Plasma || 0} ({summaryData[type]?.PlasmaVolume || 0} ml)</span></p>
-                  <p><span>{t("bloodStorage.platelets")}:</span> <span>{summaryData[type]?.Platelets || 0} ({summaryData[type]?.PlateletsVolume || 0} ml)</span></p>
-                  <p><span>{t("bloodStorage.redCells")}:</span> <span>{summaryData[type]?.RedCells || 0} ({summaryData[type]?.RedCellsVolume || 0} ml)</span></p>
+                  <p>
+                    <span>{t("bloodStorage.wholeBlood")}:</span>{" "}
+                    <span>
+                      {summaryData[type]?.WholeBlood || 0} (
+                      {summaryData[type]?.WholeBloodVolume || 0} ml)
+                    </span>
+                  </p>
+                  <p>
+                    <span>{t("bloodStorage.plasma")}:</span>{" "}
+                    <span>
+                      {summaryData[type]?.Plasma || 0} (
+                      {summaryData[type]?.PlasmaVolume || 0} ml)
+                    </span>
+                  </p>
+                  <p>
+                    <span>{t("bloodStorage.platelets")}:</span>{" "}
+                    <span>
+                      {summaryData[type]?.Platelets || 0} (
+                      {summaryData[type]?.PlateletsVolume || 0} ml)
+                    </span>
+                  </p>
+                  <p>
+                    <span>{t("bloodStorage.redCells")}:</span>{" "}
+                    <span>
+                      {summaryData[type]?.RedCells || 0} (
+                      {summaryData[type]?.RedCellsVolume || 0} ml)
+                    </span>
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="management-controls">
-            <button type="button" onClick={() => setShowAddForm(!showAddForm)} className="add-inventory-btn">
-              {showAddForm ? `✖ ${t("bloodStorage.hideForm")}` : `➕ ${t("bloodStorage.addToStorage")}`}
+            <button
+              type="button"
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="add-inventory-btn"
+            >
+              {showAddForm
+                ? `✖ ${t("bloodStorage.hideForm")}`
+                : `➕ ${t("bloodStorage.addToStorage")}`}
             </button>
           </div>
 
           {showAddForm && (
             <div className="filter-section">
               <h3>{t("bloodStorage.manualEntry")}</h3>
-              <form className="add-blood-form filter-form" onSubmit={handleAddBloodUnit}>
+              <form
+                className="add-blood-form filter-form"
+                onSubmit={handleAddBloodUnit}
+              >
                 <div className="filter-form-group">
                   <label>{t("bloodStorage.bloodType")}:</label>
                   <select
@@ -330,10 +373,16 @@ const BloodStorage = () => {
                     value={newUnit.ComponentType}
                     onChange={handleInputChange}
                   >
-                    <option value="WholeBlood">{t("bloodStorage.wholeBlood")}</option>
+                    <option value="WholeBlood">
+                      {t("bloodStorage.wholeBlood")}
+                    </option>
                     <option value="Plasma">{t("bloodStorage.plasma")}</option>
-                    <option value="Platelets">{t("bloodStorage.platelets")}</option>
-                    <option value="RedCells">{t("bloodStorage.redCells")}</option>
+                    <option value="Platelets">
+                      {t("bloodStorage.platelets")}
+                    </option>
+                    <option value="RedCells">
+                      {t("bloodStorage.redCells")}
+                    </option>
                   </select>
                 </div>
 
@@ -370,7 +419,9 @@ const BloodStorage = () => {
                 </div>
 
                 <button type="submit" className="submit-btn" disabled={adding}>
-                  {adding ? t("bloodStorage.processing") : t("bloodStorage.addToInventory")}
+                  {adding
+                    ? t("bloodStorage.processing")
+                    : t("bloodStorage.addToInventory")}
                 </button>
               </form>
             </div>
@@ -417,7 +468,7 @@ const BloodStorage = () => {
                   <th>{t("bloodStorage.units")}</th>
                   <th>{t("bloodStorage.volume")} (ml)</th>
                   <th>{t("bloodStorage.sourceType")}</th>
-                  <th>{t("bloodStorage.note")}</th>
+                  <th>{t("bloodStorage.note")} / Nguoi hien</th>
                   <th>{t("bloodStorage.expirationDate")}</th>
                   <th>{t("bloodStorage.daysLeft")}</th>
                   <th>{t("bloodStorage.delete")}</th>
@@ -429,18 +480,25 @@ const BloodStorage = () => {
                     const days = getDaysUntilExpiration(unit.DateExpired);
                     const isExpired = days <= 0;
                     return (
-                      <tr key={unit._id} className={isExpired ? "expired-row" : ""}>
+                      <tr
+                        key={unit._id}
+                        className={isExpired ? "expired-row" : ""}
+                      >
                         <td>{formatDate(unit.DateAdded)}</td>
                         <td>{unit.BloodType}</td>
-                        <td>
-                          {getComponentTranslation(unit.ComponentType)}
-                        </td>
+                        <td>{getComponentTranslation(unit.ComponentType)}</td>
                         <td>{unit.Quantity}</td>
                         <td>{unit.Volume}</td>
+                        <td>{getSourceTypeTranslation(unit.SourceType)}</td>
                         <td>
-                          {getSourceTypeTranslation(unit.SourceType)}
+                          {unit.donorName ? (
+                            <span style={{ color: "#c0392b", fontWeight: 500 }}>
+                              {unit.donorName}
+                            </span>
+                          ) : (
+                            <span>{unit.note || ""}</span>
+                          )}
                         </td>
-                        <td>{unit.note || ""}</td>
                         <td>{formatDate(unit.DateExpired)}</td>
                         <td
                           style={{

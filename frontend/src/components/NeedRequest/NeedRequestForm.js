@@ -11,6 +11,7 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     units: 1,
     reason: "",
   });
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -31,6 +32,10 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,13 +48,22 @@ const NeedRequestForm = ({ onRequestCreated }) => {
         throw new Error(t("common.notAuthenticated"));
       }
 
+      // Chuẩn bị dữ liệu gửi lên
+      const formDataToSend = new FormData();
+      formDataToSend.append("bloodGroup", formData.bloodGroup);
+      formDataToSend.append("component", formData.component);
+      formDataToSend.append("units", formData.units);
+      formDataToSend.append("reason", formData.reason);
+      if (file) {
+        formDataToSend.append("attachment", file);
+      }
+
       const response = await fetch(`${API_BASE_URL}/needrequest`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       if (!response.ok) {
@@ -63,6 +77,7 @@ const NeedRequestForm = ({ onRequestCreated }) => {
         units: 1,
         reason: "",
       });
+      setFile(null);
 
       if (onRequestCreated) {
         onRequestCreated();
@@ -86,7 +101,11 @@ const NeedRequestForm = ({ onRequestCreated }) => {
 
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="need-request-form">
+      <form
+        onSubmit={handleSubmit}
+        className="need-request-form"
+        encType="multipart/form-data"
+      >
         <div className="form-group">
           <label htmlFor="bloodGroup">
             {t("needRequest.bloodGroup")}
@@ -163,6 +182,35 @@ const NeedRequestForm = ({ onRequestCreated }) => {
             rows="4"
             placeholder={t("needRequest.reasonPlaceholder")}
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="attachment">
+            {t("needRequest.attachment") || "Ảnh/Giấy tờ liên quan"}
+          </label>
+          <input
+            type="file"
+            id="attachment"
+            name="attachment"
+            accept="image/*"
+            className="form-control"
+            onChange={handleFileChange}
+          />
+          {/* Preview ảnh nếu có */}
+          {file && (
+            <div style={{ marginTop: 8 }}>
+              <img
+                src={URL.createObjectURL(file)}
+                alt="Preview"
+                style={{
+                  maxWidth: 200,
+                  maxHeight: 200,
+                  border: "1px solid #ccc",
+                  borderRadius: 8,
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <button type="submit" className="submit-button" disabled={loading}>

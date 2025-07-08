@@ -33,8 +33,20 @@ const needRequestSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Assigned", "Fulfilled", "Rejected", "Expired", "Canceled"],
+    enum: [
+      "Pending",
+      "Assigned",
+      "Fulfilled",
+      "Rejected",
+      "Expired",
+      "Canceled",
+      "Completed",
+    ],
     default: "Pending",
+  },
+  attachment: {
+    type: String, // Lưu URL của file ảnh trên server/cloud
+    required: false,
   },
 });
 

@@ -1,11 +1,17 @@
 const NeedRequest = require("../models/NeedRequest");
 const BloodUnit = require("../models/BloodUnit");
+const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 
 //create
 exports.create = async (req, res) => {
   try {
     const { bloodGroup, component, units, reason } = req.body;
     const createdBy = req.user._id;
+
+    let attachmentURL = null;
+    if (req.file) {
+      attachmentURL = req.file.path;
+    }
 
     if (units < 1) {
       return res.status(400).json({ message: "Units must be at least 1" });
@@ -17,6 +23,7 @@ exports.create = async (req, res) => {
       component,
       units,
       reason,
+      attachment: attachmentURL,
     });
     return res.status(200).json(nr);
   } catch (err) {
@@ -56,7 +63,15 @@ exports.updateStatus = async (req, res) => {
     const { status } = req.body;
 
     // Only allow status values defined in the model
-    const allowedStatuses = ["Pending", "Assigned", "Fulfilled", "Rejected", "Expired", "Canceled"];
+    const allowedStatuses = [
+      "Pending",
+      "Assigned",
+      "Fulfilled",
+      "Rejected",
+      "Expired",
+      "Canceled",
+      "Completed",
+    ];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
@@ -94,7 +109,16 @@ exports.update = async (req, res) => {
     }
 
     // Validate bloodGroup and component enums
-    const allowedBloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
+    const allowedBloodGroups = [
+      "A+",
+      "A-",
+      "B+",
+      "B-",
+      "O+",
+      "O-",
+      "AB+",
+      "AB-",
+    ];
     const allowedComponents = ["WholeBlood", "Plasma", "Platelets", "RedCells"];
     if (bloodGroup && !allowedBloodGroups.includes(bloodGroup)) {
       return res.status(400).json({ message: "Invalid blood group" });
@@ -163,7 +187,7 @@ exports.assignBloodUnitToRequest = async (req, res) => {
 
     if (needRequest.status !== "Open" && needRequest.status !== "Pending") {
       return res.status(400).json({
-        message: "Can only assign blood units to open or pending requests"
+        message: "Can only assign blood units to open or pending requests",
       });
     }
 
@@ -178,16 +202,18 @@ exports.assignBloodUnitToRequest = async (req, res) => {
     const availableBloodUnits = await BloodUnit.find({
       BloodType: { $in: compatibleBloodTypes },
       ComponentType: componentType,
-      assignedToRequestId: null
+      assignedToRequestId: null,
     }).limit(needRequest.units);
 
     if (availableBloodUnits.length === 0) {
-      return res.status(404).json({ message: "No compatible blood units available" });
+      return res
+        .status(404)
+        .json({ message: "No compatible blood units available" });
     }
 
     if (availableBloodUnits.length < needRequest.units) {
       return res.status(400).json({
-        message: `Only ${availableBloodUnits.length} compatible blood units available, but ${needRequest.units} needed`
+        message: `Only ${availableBloodUnits.length} compatible blood units available, but ${needRequest.units} needed`,
       });
     }
 
@@ -203,27 +229,12 @@ exports.assignBloodUnitToRequest = async (req, res) => {
 
     return res.status(200).json({
       message: "Blood units assigned successfully",
-      assignedUnits: availableBloodUnits.length
+      assignedUnits: availableBloodUnits.length,
     });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
-
-// Helper function to get compatible blood types for transfusion
-function getCompatibleBloodTypes(recipientType) {
-  const compatibility = {
-    'A+': ['A+', 'A-', 'O+', 'O-'],
-    'A-': ['A-', 'O-'],
-    'B+': ['B+', 'B-', 'O+', 'O-'],
-    'B-': ['B-', 'O-'],
-    'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], // universal recipient
-    'AB-': ['A-', 'B-', 'AB-', 'O-'],
-    'O+': ['O+', 'O-'],
-    'O-': ['O-'], // universal donor
-  };
-  return compatibility[recipientType] || [];
-}
 
 // Fulfill a blood request and remove assigned blood units from storage
 exports.fulfillBloodRequest = async (req, res) => {
@@ -240,11 +251,13 @@ exports.fulfillBloodRequest = async (req, res) => {
     }
 
     // Remove all blood units assigned to this request
-    const deleteResult = await BloodUnit.deleteMany({ assignedToRequestId: requestId });
+    const deleteResult = await BloodUnit.deleteMany({
+      assignedToRequestId: requestId,
+    });
 
     res.status(200).json({
       message: `Request fulfilled and ${deleteResult.deletedCount} blood unit(s) removed from storage.`,
-      request
+      request,
     });
   } catch (error) {
     console.error("Fulfill Error:", error);

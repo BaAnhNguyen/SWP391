@@ -365,6 +365,8 @@ exports.complete = async (req, res) => {
           DateExpired: dateExpired,
           SourceType: "donation",
           SourceRef: donationHistory._id,
+          donorName: user?.name,
+          donorId: user?._id,
         });
       } catch (err) {
         // Không cản trở flow, chỉ log

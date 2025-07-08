@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { model } = require("mongoose");
 const ctrl = require("../controllers/needRequestController");
 const { protect, restrictTo } = require("../middlewares/auth");
+const upload = require("../middlewares/upload");
 
 router.use(protect);
 
@@ -21,22 +22,35 @@ router.get("/", (req, res) => {
 });
 
 //create new need request
-router.post("/",restrictTo("Member"), ctrl.create);
+router.post(
+  "/",
+  restrictTo("Member"),
+  upload.single("attachment"),
+  ctrl.create
+);
 
 //update need request status (staff and admin)
 router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
 
 //update need request details (staff, admin and member)
-router.patch("/:id", restrictTo("Staff","Member"), ctrl.update);
+router.patch("/:id", restrictTo("Staff", "Member"), ctrl.update);
 
 //delete need request (staff, admin and member)
-router.delete("/:id", restrictTo("Staff","Member"), ctrl.delete);
+router.delete("/:id", restrictTo("Staff", "Member"), ctrl.delete);
 
 // Assign all available blood units to a request (staff only)
-router.post("/assign-blood-units", restrictTo("Staff"), ctrl.assignBloodUnitToRequest);
+router.post(
+  "/assign-blood-units",
+  restrictTo("Staff"),
+  ctrl.assignBloodUnitToRequest
+);
 
 // Fulfill a blood request (staff only)
-router.post("/fulfill/:requestId", restrictTo("Staff"), ctrl.fulfillBloodRequest);
+router.post(
+  "/fulfill/:requestId",
+  restrictTo("Staff"),
+  ctrl.fulfillBloodRequest
+);
 
 // Reject a blood request (staff only)
 router.post("/reject/:requestId", restrictTo("Staff"), ctrl.rejectBloodRequest);

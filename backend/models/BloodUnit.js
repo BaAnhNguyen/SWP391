@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose, Types } = require("mongoose");
 
 const bloodUnitSchema = new mongoose.Schema({
   BloodType: {
@@ -43,12 +43,15 @@ const bloodUnitSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "DonationHistory",
   },
+  donorName: { type: String },
+  donorId: { type: Types.ObjectId, ref: "User" },
+
   note: { type: String },
   assignedToRequestId: {
     type: mongoose.Schema.Types.ObjectId, // or whatever ID type you use
-    ref: 'BloodRequest',
-    default: null
-  }
+    ref: "BloodRequest",
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("BloodUnit", bloodUnitSchema);
