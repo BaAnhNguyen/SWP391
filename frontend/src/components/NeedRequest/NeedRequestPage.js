@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import NeedRequestForm from './NeedRequestForm';
 import NeedRequestList from './NeedRequestList';
 import SearchBlood from './SearchBlood';
@@ -7,11 +8,20 @@ import './NeedRequest.css';
 
 const NeedRequestPage = ({ user }) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('form');
   const [refreshList, setRefreshList] = useState(false);
 
   // Determine if the user is a staff member or admin
   const isStaff = user?.role === 'Staff' || user?.role === 'Admin';
+
+  // Check for refresh parameter in URL query
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.has('refresh')) {
+      setRefreshList(true);
+    }
+  }, [location.search]);
 
   // Set default active tab to list for staff users
   useEffect(() => {

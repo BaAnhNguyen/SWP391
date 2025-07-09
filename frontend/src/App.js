@@ -136,6 +136,18 @@ function App() {
             }
           />
           <Route
+            path="/staff/need-requests"
+            element={
+              <RequireAuth>
+                <StaffOnly>
+                  <NeedRequestPage
+                    user={JSON.parse(localStorage.getItem("user")) || {}}
+                  />
+                </StaffOnly>
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/staff/assign-blood-units/:requestId"
             element={
               <RequireAuth>

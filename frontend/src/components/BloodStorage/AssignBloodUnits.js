@@ -408,7 +408,8 @@ const AssignBloodUnits = () => {
             }
 
             alert("Blood units assigned successfully!");
-            navigate("/staff/need-requests");
+            // Add a timestamp as a query parameter to force the page to refresh
+            navigate(`/staff/need-requests?refresh=${Date.now()}`);
         } catch (err) {
             setError(err.message);
         } finally {
