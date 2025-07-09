@@ -1,6 +1,12 @@
 const NeedRequest = require("../models/NeedRequest");
 const BloodUnit = require("../models/BloodUnit");
 const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
+const {
+  sendMail,
+  getAppointmentMail,
+  buildAssignedUnitsTable,
+} = require("../service/emailNeedRequest");
+const User = require("../models/User");
 
 //create
 exports.create = async (req, res) => {
@@ -169,70 +175,121 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Assign blood units to a request
-exports.assignBloodUnitToRequest = async (req, res) => {
+// Assign specific blood units to a need request
+exports.assignSpecificBloodUnits = async (req, res) => {
   try {
-    const { requestId } = req.body;
+    const { requestId, bloodUnitIds, appointmentDate } = req.body;
 
-    if (!requestId) {
-      return res.status(400).json({ message: "Request ID is required" });
+    // Validate input parameters
+    if (
+      !requestId ||
+      !bloodUnitIds ||
+      !Array.isArray(bloodUnitIds) ||
+      bloodUnitIds.length === 0
+    ) {
+      return res.status(400).json({
+        message: "Valid requestId and bloodUnitIds array are required.",
+      });
     }
 
     // Find the need request
     const needRequest = await NeedRequest.findById(requestId);
 
     if (!needRequest) {
-      return res.status(404).json({ message: "Blood request not found" });
+      return res.status(404).json({ message: "Blood need request not found" });
     }
 
-    if (needRequest.status !== "Open" && needRequest.status !== "Pending") {
+    // Verify the request is in a state that can be assigned
+    if (needRequest.status !== "Pending") {
       return res.status(400).json({
-        message: "Can only assign blood units to open or pending requests",
+        message: "Can only assign blood units to pending requests",
       });
     }
 
-    // Find compatible blood units
-    const bloodType = needRequest.bloodGroup;
-    const componentType = needRequest.component;
-
-    // Get compatible blood types for the given blood type
-    const compatibleBloodTypes = getCompatibleBloodTypes(bloodType);
-
-    // Find compatible blood units that are not already assigned
-    const availableBloodUnits = await BloodUnit.find({
-      BloodType: { $in: compatibleBloodTypes },
-      ComponentType: componentType,
-      assignedToRequestId: null,
-    }).limit(needRequest.units);
-
-    if (availableBloodUnits.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No compatible blood units available" });
-    }
-
-    if (availableBloodUnits.length < needRequest.units) {
+    // Verify that enough units are being assigned
+    if (bloodUnitIds.length < needRequest.units) {
       return res.status(400).json({
-        message: `Only ${availableBloodUnits.length} compatible blood units available, but ${needRequest.units} needed`,
+        message: `This request needs ${needRequest.units} units, but only ${bloodUnitIds.length} were selected`,
       });
     }
 
-    // Assign blood units to the request
-    for (const unit of availableBloodUnits) {
+    // Get compatible blood types for this request
+    const compatibleTypes = getCompatibleBloodTypes(needRequest.bloodGroup);
+
+    // Check all blood units
+    const selectedUnits = await BloodUnit.find({
+      _id: { $in: bloodUnitIds },
+    });
+
+    // Verify all units exist
+    if (selectedUnits.length !== bloodUnitIds.length) {
+      return res.status(400).json({
+        message: "One or more selected blood units could not be found",
+      });
+    }
+
+    // Verify all units are available and compatible
+    for (const unit of selectedUnits) {
+      // Check if already assigned
+      if (unit.assignedToRequestId) {
+        return res.status(400).json({
+          message: `Blood unit ${unit._id} is already assigned to another request`,
+        });
+      }
+
+      // Check component type
+      if (unit.ComponentType !== needRequest.component) {
+        return res.status(400).json({
+          message: `Blood unit ${unit._id} has component type ${unit.ComponentType} but request needs ${needRequest.component}`,
+        });
+      }
+
+      // Check blood type compatibility
+      if (!compatibleTypes.includes(unit.BloodType)) {
+        return res.status(400).json({
+          message: `Blood unit ${unit._id} has blood type ${unit.BloodType} which is not compatible with request blood type ${needRequest.bloodGroup}`,
+        });
+      }
+    }
+
+    // Assign all blood units to the request
+    for (const unit of selectedUnits) {
       unit.assignedToRequestId = requestId;
       await unit.save();
     }
 
     // Update request status to "Assigned"
     needRequest.status = "Assigned";
+    if (appointmentDate) needRequest.appointmentDate = appointmentDate;
     await needRequest.save();
 
+    //mai
+    let emailSent = false;
+    try {
+      const member = await User.findById(needRequest.createdBy);
+      if (member && member.email) {
+        const tableHtml = buildAssignedUnitsTable(selectedUnits);
+        const { subject, html } = getAppointmentMail(
+          member.name,
+          appointmentDate,
+          tableHtml
+        );
+        await sendMail(member.email, subject, html);
+        emailSent = true;
+      }
+    } catch (err) {}
+
     return res.status(200).json({
-      message: "Blood units assigned successfully",
-      assignedUnits: availableBloodUnits.length,
+      message: emailSent
+        ? "Blood units successfully assigned and mail sent to member."
+        : "Blood units assigned. But mail could not be sent.",
+      assignedUnits: selectedUnits.length,
+      requestId: requestId,
     });
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      message: err.message || "Failed to assign blood units to request",
+    });
   }
 };
 
@@ -240,9 +297,9 @@ exports.assignBloodUnitToRequest = async (req, res) => {
 exports.fulfillBloodRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
-    const request = await BloodRequest.findByIdAndUpdate(
+    const request = await NeedRequest.findByIdAndUpdate(
       requestId,
-      { status: "Fulfilled" },
+      { status: "Fulfilled", fulfilledAt: new Date() },
       { new: true }
     );
 
@@ -288,5 +345,35 @@ exports.rejectBloodRequest = async (req, res) => {
   } catch (error) {
     console.error("Reject Error:", error);
     res.status(500).json({ message: "Failed to reject request." });
+  }
+};
+
+exports.confirm = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const userId = req.user._id;
+    const request = await NeedRequest.findById(requestId);
+    if (!request)
+      return res.status(404).json({ message: "Need request not found" });
+
+    //member only can confirm when fulfilled
+    if (request.createdBy.toString() != userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not the owner of this request" });
+    }
+    if (request.status !== "Fulfilled") {
+      return res
+        .status(400)
+        .json({ message: "can only confirm when status is fulfield" });
+    }
+
+    request.status = "Completed";
+    request.completedAt = new Date();
+    await request.save();
+
+    res.json({ message: "Request completed" });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Fail to confirm" });
   }
 };

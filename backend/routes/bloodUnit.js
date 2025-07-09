@@ -18,14 +18,17 @@ router.patch("/:id", restrictTo("Staff"), bloodUnitController.updateBloodUnit);
 router.delete("/:id", restrictTo("Staff"), bloodUnitController.deleteBloodUnit);
 
 // Get blood units by blood type (Staff only)
-router.get("/type/:bloodType", restrictTo("Staff"), bloodUnitController.getBloodUnitsByType);
+router.get(
+  "/type/:bloodType",
+  restrictTo("Staff"),
+  bloodUnitController.getBloodUnitsByType
+);
 
 // Get blood units compatible for a request (Staff only)
-router.get("/filter/for-request", restrictTo("Staff"), bloodUnitController.getBloodUnitsForRequest);
-
-// Assign specific blood units to a need request (Staff only)
-router.post("/assign", restrictTo("Staff"), bloodUnitController.assignSpecificBloodUnits);
-
-// You can add more routes here (e.g., get, update, delete blood units)
+router.get(
+  "/filter/for-request",
+  restrictTo("Staff"),
+  bloodUnitController.getBloodUnitsForRequest
+);
 
 module.exports = router;

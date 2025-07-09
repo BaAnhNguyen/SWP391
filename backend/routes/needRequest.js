@@ -42,7 +42,7 @@ router.delete("/:id", restrictTo("Staff", "Member"), ctrl.delete);
 router.post(
   "/assign-blood-units",
   restrictTo("Staff"),
-  ctrl.assignBloodUnitToRequest
+  ctrl.assignSpecificBloodUnits
 );
 
 // Fulfill a blood request (staff only)
@@ -51,6 +51,8 @@ router.post(
   restrictTo("Staff"),
   ctrl.fulfillBloodRequest
 );
+
+router.patch("/confirm/:requestId", restrictTo("Member"), ctrl.confirm);
 
 // Reject a blood request (staff only)
 router.post("/reject/:requestId", restrictTo("Staff"), ctrl.rejectBloodRequest);

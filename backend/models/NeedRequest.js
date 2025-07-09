@@ -48,6 +48,9 @@ const needRequestSchema = new Schema({
     type: String, // Lưu URL của file ảnh trên server/cloud
     required: false,
   },
+  appointmentDate: { type: Date },
+  fulfilledAt: { type: Date },
+  completedAt: { type: Date },
 });
 
 module.exports = model("NeedRequest", needRequestSchema);
