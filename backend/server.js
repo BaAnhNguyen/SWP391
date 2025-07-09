@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const passport = require("passport");
+const cron = require("node-cron");
+const autoConfirmRequest = require("./service/autoConfirm");
 
 require("./config/passport");
 
@@ -44,6 +46,13 @@ app.use("/api/bloodUnit", bloodUnitRoutes);
 app.use("/api/donationHistory", donationHistoryRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/comments", commentRoutes);
+
+//cron
+cron.schedule("0 2 * * *", async () => {
+  console.log("=== Auto-confirm job start ===");
+  await autoConfirmRequest();
+  console.log("=== Auto-confirm job end ===");
+});
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
