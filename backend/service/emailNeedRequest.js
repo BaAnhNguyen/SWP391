@@ -87,4 +87,4 @@ async function sendMail(to, subject, html) {
   await transporter.sendMail(mailOptions);
 }
 
-module.exports = { getAppointmentMail, sendMail };
+module.exports = { getAppointmentMail, sendMail, buildAssignedUnitsTable };

@@ -268,17 +268,19 @@ exports.assignSpecificBloodUnits = async (req, res) => {
     try {
       const member = await User.findById(needRequest.createdBy);
       if (member && member.email) {
-        const tableHtml = buildAssignedUnitsTable(selectedUnits);
         const { subject, html } = getAppointmentMail(
           member.name,
           appointmentDate,
-          tableHtml
+          selectedUnits
         );
         await sendMail(member.email, subject, html);
         emailSent = true;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error("Error sending mail:", err);
+    }
 
+    console.log(emailSent);
     return res.status(200).json({
       message: emailSent
         ? "Blood units successfully assigned and mail sent to member."
