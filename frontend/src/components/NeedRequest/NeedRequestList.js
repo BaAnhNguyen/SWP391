@@ -348,6 +348,46 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   <strong>{t("needRequest.reason")}:</strong> {request.reason}
                 </div>
 
+                {request.attachment && (
+                  <div className="attachment-container">
+                    <strong>{t("needRequest.attachment")}:</strong>
+                    <div className="image-preview">
+                      {request.attachment.toLowerCase().endsWith('.jpg') ||
+                        request.attachment.toLowerCase().endsWith('.jpeg') ||
+                        request.attachment.toLowerCase().endsWith('.png') ? (
+                        <>
+                          <img
+                            src={request.attachment}
+                            alt="Request attachment"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(request.attachment, '_blank');
+                            }}
+                          />
+                          <button
+                            className="view-full-image"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(request.attachment, '_blank');
+                            }}
+                          >
+                            {t("needRequest.fullImage")}
+                          </button>
+                        </>
+                      ) : (
+                        <a
+                          href={request.attachment}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {t("needRequest.viewAttachment")}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {isStaff && request.status === "Open" && (
                   <div className="admin-actions">
                     <button

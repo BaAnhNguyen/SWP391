@@ -395,7 +395,11 @@ const resources = {
       "needRequest.bloodRequestType": "blood type",
       "needRequest.nav.createRequest": "Create request",
       "needRequest.nav.searchBlood": "Search blood type",
-      "needRequest.nav.viewMyRequests": "View my request",
+      "needRequest.nav.viewMyRequests": "View my requests",
+      "needRequest.attachment": "Medical Documentation",
+      "needRequest.viewAttachment": "View Attachment",
+      "needRequest.fullImage": "View Full Image",
+
       // Common
       common: {
         delete: "Delete",
@@ -979,6 +983,8 @@ const resources = {
       "needRequest.nav.createRequest": "Yêu cầu nhận máu",
       "needRequest.nav.searchBlood": "Search Compatible Blood",
       "needRequest.nav.viewMyRequests": "Xem yêu cầu nhận máu",
+      "needRequest.attachment": "Tài Liệu Y Tế",
+      "needRequest.viewAttachment": "Xem Tệp Đính Kèm",
 
       // Common
       common: {

@@ -12,6 +12,7 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     reason: "",
   });
   const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -33,7 +34,19 @@ const NeedRequestForm = ({ onRequestCreated }) => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    // Create preview for image files
+    if (selectedFile && (selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/png')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFilePreview(e.target.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    } else {
+      setFilePreview(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -78,6 +91,7 @@ const NeedRequestForm = ({ onRequestCreated }) => {
         reason: "",
       });
       setFile(null);
+      setFilePreview(null);
 
       if (onRequestCreated) {
         onRequestCreated();
@@ -186,29 +200,33 @@ const NeedRequestForm = ({ onRequestCreated }) => {
 
         <div className="form-group">
           <label htmlFor="attachment">
-            {t("needRequest.attachment") || "Ảnh/Giấy tờ liên quan"}
+            {t("needRequest.attachment")}
           </label>
           <input
             type="file"
             id="attachment"
             name="attachment"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/jpg,application/pdf"
             className="form-control"
             onChange={handleFileChange}
           />
-          {/* Preview ảnh nếu có */}
-          {file && (
-            <div style={{ marginTop: 8 }}>
+          {/* Preview for image files */}
+          {filePreview && (
+            <div className="file-preview">
+              <h4>{t("needRequest.attachment")}</h4>
               <img
-                src={URL.createObjectURL(file)}
+                src={filePreview}
                 alt="Preview"
-                style={{
-                  maxWidth: 200,
-                  maxHeight: 200,
-                  border: "1px solid #ccc",
-                  borderRadius: 8,
-                }}
+                className="attachment-preview"
+                onClick={() => window.open(filePreview, '_blank')}
               />
+              <button
+                className="view-full-image"
+                type="button"
+                onClick={() => window.open(filePreview, '_blank')}
+              >
+                {t("needRequest.fullImage")}
+              </button>
             </div>
           )}
         </div>

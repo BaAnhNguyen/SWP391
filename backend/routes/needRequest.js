@@ -52,8 +52,6 @@ router.post(
   ctrl.fulfillBloodRequest
 );
 
-router.patch("/confirm/:requestId", restrictTo("Member"), ctrl.confirm);
-
 // Reject a blood request (staff only)
 router.post("/reject/:requestId", restrictTo("Staff"), ctrl.rejectBloodRequest);
 
