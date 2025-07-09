@@ -381,24 +381,7 @@ const resources = {
         "No compatible blood units available",
       "needRequest.selectionInfo":
         "Selected {{selected}} of {{required}} required units",
-      "common.bloodType": "Blood Type",
-      "common.component": "Component",
-      "common.volume": "Volume",
-      "common.dateAdded": "Date Added",
-      "common.dateExpired": "Expiry Date",
-      "common.accept": "Accept",
-      "common.cancel": "Cancel",
-      "common.select": "Select",
-      "needRequest.status.pending": "Pending",
-      "needRequest.nav.viewAllRequests": "View all request",
-      "needRequest.unit": "unit",
-      "needRequest.bloodRequestType": "blood type",
-      "needRequest.nav.createRequest": "Create request",
-      "needRequest.nav.searchBlood": "Search blood type",
-      "needRequest.nav.viewMyRequests": "View my requests",
-      "needRequest.attachment": "Medical Documentation",
-      "needRequest.viewAttachment": "View Attachment",
-      "needRequest.fullImage": "View Full Image",
+      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
 
       // Common
       common: {
@@ -968,23 +951,7 @@ const resources = {
       "needRequest.noCompatibleBloodUnits": "Không có đơn vị máu tương thích",
       "needRequest.selectionInfo":
         "Đã chọn {{selected}} trong số {{required}} đơn vị yêu cầu",
-      "common.bloodType": "Nhóm máu",
-      "common.component": "Thành phần",
-      "common.volume": "Thể tích",
-      "common.dateAdded": "Ngày thêm",
-      "common.dateExpired": "Ngày hết hạn",
-      "common.accept": "Đồng ý",
-      "common.cancel": "Hủy",
-      "common.select": "Chọn",
-      "needRequest.status.pending": "Chờ duyệt",
-      "needRequest.nav.viewAllRequests": "Xem các yêu cầu",
-      "needRequest.unit": "đơn vị máu",
-      "needRequest.bloodRequestType": "loại máu",
-      "needRequest.nav.createRequest": "Yêu cầu nhận máu",
-      "needRequest.nav.searchBlood": "Search Compatible Blood",
-      "needRequest.nav.viewMyRequests": "Xem yêu cầu nhận máu",
-      "needRequest.attachment": "Tài Liệu Y Tế",
-      "needRequest.viewAttachment": "Xem Tệp Đính Kèm",
+      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
 
       // Common
       common: {

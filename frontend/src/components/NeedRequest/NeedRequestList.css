@@ -157,9 +157,11 @@
 }
 
 .request-card.expanded .request-content {
-  max-height: 300px;
+  max-height: 500px;
   padding: 1rem;
   border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
 }
 
 .request-by,
@@ -169,20 +171,22 @@
 
 .admin-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .fulfill-button,
 .expire-button,
 .delete-button,
 .assign-button {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 
 .fulfill-button {
@@ -206,19 +210,44 @@
 .delete-button {
   background-color: #e74c3c;
   color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  font-weight: bold;
 }
 
 .delete-button:hover {
   background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .assign-button {
   background-color: #3498db;
   color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  font-weight: bold;
 }
 
 .assign-button:hover {
   background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.request-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.request-action-buttons .assign-button,
+.request-action-buttons .delete-button {
+  flex: 1;
+  min-width: 120px;
+  max-width: 200px;
+  margin: 0;
 }
 
 .loading {
@@ -414,21 +443,28 @@
 .attachment-container {
   margin-top: 15px;
   padding-top: 10px;
+  padding-bottom: 10px;
   border-top: 1px dashed #ddd;
+  display: flex;
+  flex-direction: column;
 }
 
 .image-preview {
   margin-top: 10px;
   text-align: center;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .image-preview img {
-  width: 100%;
+  max-width: 150px;
+  max-height: 120px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
+  object-fit: contain;
 }
 
 .image-preview img:hover {

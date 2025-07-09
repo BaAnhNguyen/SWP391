@@ -412,29 +412,43 @@ const NeedRequestList = ({ userRole, refresh }) => {
                 )}
 
                 {(isStaff || request.status === "Open") && (
-                  <>
+                  <div className="request-action-buttons">
                     {isStaff && (request.status === "Open" || request.status === "Pending") && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAssign(request._id);
+                          }}
+                          className="assign-button"
+                        >
+                          {t("needRequest.assign")}
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(request._id);
+                          }}
+                          className="delete-button"
+                        >
+                          {t("common.delete")}
+                        </button>
+                      </>
+                    )}
+
+                    {!isStaff && request.status === "Open" && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleAssign(request._id);
+                          handleDelete(request._id);
                         }}
-                        className="assign-button"
+                        className="delete-button"
                       >
-                        {t("needRequest.assign")}
+                        {t("common.delete")}
                       </button>
                     )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(request._id);
-                      }}
-                      className="delete-button"
-                    >
-                      {t("common.delete")}
-                    </button>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
