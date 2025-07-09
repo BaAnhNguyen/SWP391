@@ -116,6 +116,38 @@ const NeedRequestList = ({ userRole, refresh }) => {
     navigate(`/staff/assign-blood-units/${id}`);
   };
 
+  const handleFulfillRequest = async (id) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error(t("common.notAuthenticated"));
+      }
+
+      const response = await fetch(`${API_BASE_URL}/needrequest/fulfill/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || t("needRequest.fulfillError"));
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      fetchRequests(); // Refresh the list
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fulfilling request:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleExpandRequest = (id) => {
     setExpandedRequestId(expandedRequestId === id ? null : id);
   };
@@ -322,6 +354,20 @@ const NeedRequestList = ({ userRole, refresh }) => {
                           {t("common.delete")}
                         </button>
                       </>
+                    )}
+
+                    {isStaff && request.status === "Assigned" && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(t("needRequest.confirmFulfill"))) {
+                            handleFulfillRequest(request._id);
+                          }
+                        }}
+                        className="fulfill-button"
+                      >
+                        {t("needRequest.markFulfilled")}
+                      </button>
                     )}
 
                     {!isStaff && request.status === "Open" && (

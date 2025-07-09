@@ -398,6 +398,9 @@ const resources = {
       "needRequest.confirmAssignment": "Confirm Assignment",
       "needRequest.fetchBloodUnitsError": "Failed to fetch blood units",
       "needRequest.bloodTypeNormalized": "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
+      "needRequest.confirmFulfill": "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
+      "needRequest.markFulfilled": "Mark as Fulfilled",
+      "needRequest.fulfillError": "Error fulfilling blood request",
 
       // Common
       common: {
