@@ -120,23 +120,44 @@ exports.getBloodUnitsForRequest = async (req, res) => {
         .status(400)
         .json({ message: "componentType and bloodType are required." });
     }
+
+    // Enhanced debugging for blood type issues
+    console.log("Request query parameters:", req.query);
+    console.log("Blood type received:", bloodType);
+    console.log("Blood type length:", bloodType.length);
+    console.log("Blood type character analysis:", Array.from(bloodType).map(c => `${c}:${c.charCodeAt(0)}`).join(', '));
+
+    // Try to normalize the blood type ourselves before passing to getCompatibleBloodTypes
+    const normalizedBloodType = bloodType.trim().toUpperCase();
+    console.log("Normalized blood type:", normalizedBloodType);
+
     // Find compatible blood types for the recipient
-    console.log("Searching for compatible types for blood type:", bloodType);
-    const compatibleTypes = getCompatibleBloodTypes(bloodType);
+    console.log("Searching for compatible types for blood type:", normalizedBloodType);
+    const compatibleTypes = getCompatibleBloodTypes(normalizedBloodType);
+    console.log("Compatible types found:", compatibleTypes);
+
     if (!compatibleTypes.length) {
+      console.log("No compatible types found for:", normalizedBloodType);
+      console.log("Available in compatibility map:", Object.keys(require('../utils/bloodCompatibility').compatibility));
+
       return res.status(400).json({
         message: "Invalid or unsupported blood type.",
         receivedValue: bloodType,
+        normalizedValue: normalizedBloodType,
         supportedTypes: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
       });
     }
+
     const bloodUnits = await BloodUnit.find({
       ComponentType: componentType,
       BloodType: { $in: compatibleTypes },
       assignedToRequestId: null,
     });
+
+    console.log(`Found ${bloodUnits.length} compatible blood units for ${normalizedBloodType}`);
     res.status(200).json(bloodUnits);
   } catch (err) {
+    console.error("Error in getBloodUnitsForRequest:", err);
     res.status(500).json({
       message: err.message || "Failed to fetch blood units for request.",
     });

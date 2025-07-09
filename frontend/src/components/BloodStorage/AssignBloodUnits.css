@@ -1,0 +1,647 @@
+/* AssignBloodUnits.css */
+.assign-blood-units-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Header Section */
+.page-header {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.back-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.back-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* Request Details Card */
+.request-details-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #e74c3c;
+}
+
+.request-details-card h2 {
+    color: #e74c3c;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.request-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.info-item span {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Urgency badges */
+.urgency-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.urgency-low {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.urgency-medium {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.urgency-high {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.urgency-critical {
+    background-color: #721c24;
+    color: white;
+}
+
+/* Selection Summary */
+.selection-summary {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.summary-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+/* Filters Section */
+.filters-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #e74c3c;
+}
+
+/* Blood Units Section */
+.blood-units-section {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.blood-units-section h3 {
+    color: #e74c3c;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+}
+
+.no-units-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blood-units-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.9rem;
+}
+
+.blood-units-table th {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-bottom: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.blood-units-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.blood-units-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.blood-units-table tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+.select-column {
+    width: 50px;
+    text-align: center;
+}
+
+/* Blood type badges */
+.blood-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-align: center;
+    min-width: 40px;
+    color: white;
+}
+
+.blood-Apos {
+    background-color: #ff6b6b;
+}
+
+.blood-Aneg {
+    background-color: #ff8e8e;
+}
+
+.blood-Bpos {
+    background-color: #4ecdc4;
+}
+
+.blood-Bneg {
+    background-color: #45b7b8;
+}
+
+.blood-ABpos {
+    background-color: #9b59b6;
+}
+
+.blood-ABneg {
+    background-color: #bb79d6;
+}
+
+.blood-Opos {
+    background-color: #e67e22;
+}
+
+.blood-Oneg {
+    background-color: #f39c12;
+}
+
+/* Source type badges */
+.source-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.source-donation {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.source-import {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.source-unknown {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Expiry status indicators */
+.expiry-critical {
+    background-color: #f8d7da !important;
+    border-left: 4px solid #dc3545;
+}
+
+.expiry-warning {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107;
+}
+
+.expiry-safe {
+    background-color: inherit;
+}
+
+/* Note cell styling */
+.note-cell {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+}
+
+/* Selected and disabled unit styling */
+.selected-unit {
+    background-color: #e3f2fd !important;
+    border-left: 4px solid #2196f3 !important;
+    box-shadow: inset 0 0 0 1px rgba(33, 150, 243, 0.3);
+}
+
+.disabled-unit {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.disabled-unit:hover {
+    background-color: inherit !important;
+}
+
+.blood-units-table tr:not(.disabled-unit) {
+    cursor: pointer;
+}
+
+/* Assignment Form */
+.assignment-form {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #2ecc71;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.form-group input[type="datetime-local"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #2ecc71;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.assign-button,
+.cancel-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.assign-button {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.assign-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(46, 204, 113, 0.4);
+}
+
+.assign-button:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.cancel-button {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.cancel-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+/* Loading and Error States */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 5px solid #dc3545;
+}
+
+/* Blood Type Notice */
+.blood-type-notice {
+    display: flex;
+    align-items: center;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.notice-icon {
+    font-size: 1.2rem;
+}
+
+.notice-text {
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .blood-units-table {
+        font-size: 0.85rem;
+    }
+
+    .blood-units-table th,
+    .blood-units-table td {
+        padding: 10px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .assign-blood-units-container {
+        padding: 10px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .request-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .selection-summary {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .filter-group {
+        min-width: auto;
+    }
+
+    /* Hide some columns on mobile */
+    .blood-units-table th:nth-child(5),
+    /* Quantity */
+    .blood-units-table th:nth-child(9),
+    /* Source Type */
+    .blood-units-table th:nth-child(10),
+    /* Donor Name */
+    .blood-units-table th:nth-child(11),
+    /* Note */
+    .blood-units-table td:nth-child(5),
+    .blood-units-table td:nth-child(9),
+    .blood-units-table td:nth-child(10),
+    .blood-units-table td:nth-child(11) {
+        display: none;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .assign-button,
+    .cancel-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .blood-units-table {
+        font-size: 0.8rem;
+    }
+
+    .blood-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    .source-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+}
+
+/* Error Display Styling */
+.error-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 40px auto;
+    max-width: 800px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 10px;
+}
+
+.error-message h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.error-message p {
+    color: #555;
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.error-actions button {
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    transition: all 0.2s;
+}
+
+.retry-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.retry-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

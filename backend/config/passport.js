@@ -2,6 +2,14 @@ const passport = require("passport");
 const { Strategy } = require("passport-google-oauth20");
 const User = require("../models/User");
 
+// Check if required environment variables are set
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  console.error("❌ Error: Google OAuth credentials are missing!");
+  console.error("Please ensure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set in your .env file");
+  console.error("See GOOGLE_OAUTH_SETUP.md for setup instructions");
+  process.exit(1);
+}
+
 passport.use(
   new Strategy(
     {

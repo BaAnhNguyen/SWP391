@@ -22,6 +22,7 @@ import NeedRequestPage from "./components/NeedRequest/NeedRequestPage";
 import DonateRequestPage from "./components/DonateRequest/DonateRequestPage";
 import DonateRequestHistory from "./components/DonateRequest/DonateRequestHistory";
 import BloodStorage from "./components/BloodStorage/BloodStorage";
+import AssignBloodUnits from "./components/BloodStorage/AssignBloodUnits";
 import FindNear from "./components/Search/FindNear";
 import BlogList from "./components/Blog/BlogList";
 import BlogDetail from "./components/Blog/BlogDetail";
@@ -133,7 +134,17 @@ function App() {
                 </StaffOnly>
               </RequireAuth>
             }
-          />{" "}
+          />
+          <Route
+            path="/staff/assign-blood-units/:requestId"
+            element={
+              <RequireAuth>
+                <StaffOnly>
+                  <AssignBloodUnits />
+                </StaffOnly>
+              </RequireAuth>
+            }
+          />
           <Route
             path="/address"
             element={
