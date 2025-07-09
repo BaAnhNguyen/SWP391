@@ -159,17 +159,32 @@ exports.delete = async (req, res) => {
       return res.status(404).json({ message: "Need request not found" });
     }
 
-    // Only allow delete if status is Pending for Member
+    // Members can delete if status is Pending, Open or Completed
     if (req.user.role === "Member") {
-      if (nr.status !== "Pending") {
+      if (
+        nr.status !== "Pending" &&
+        nr.status !== "Open" &&
+        nr.status !== "Completed"
+      ) {
         return res
           .status(400)
-          .json({ message: "Cannot delete: status not pending" });
+          .json({
+            message:
+              "Cannot delete: request is in progress. Status must be Pending, Open, or Completed to delete.",
+          });
+      }
+
+      // For member, ensure they only delete their own requests
+      if (nr.createdBy.toString() !== req.user._id.toString()) {
+        return res
+          .status(403)
+          .json({ message: "You are not authorized to delete this request" });
       }
     }
 
+    // Staff can delete any request, especially if it's Completed
     await NeedRequest.findByIdAndDelete(id);
-    return res.json({ message: "Need request deleted" });
+    return res.json({ message: "Need request deleted successfully" });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -276,9 +291,7 @@ exports.assignSpecificBloodUnits = async (req, res) => {
         await sendMail(member.email, subject, html);
         emailSent = true;
       }
-    } catch (err) {
-      console.error("Error sending mail:", err);
-    }
+    } catch (err) {}
 
     console.log(emailSent);
     return res.status(200).json({
@@ -353,12 +366,17 @@ exports.rejectBloodRequest = async (req, res) => {
 exports.confirm = async (req, res) => {
   try {
     const { requestId } = req.params;
+    console.log(`Received complete request for ID: ${requestId}`);
+    console.log(`Request params:`, req.params);
+
     const userId = req.user._id;
     const request = await NeedRequest.findById(requestId);
-    if (!request)
+    if (!request) {
+      console.log(`Request with ID ${requestId} not found`);
       return res.status(404).json({ message: "Need request not found" });
+    }
 
-    //member only can confirm when fulfilled
+    // Member only can confirm when fulfilled
     if (request.createdBy.toString() != userId.toString()) {
       return res
         .status(403)
@@ -367,15 +385,21 @@ exports.confirm = async (req, res) => {
     if (request.status !== "Fulfilled") {
       return res
         .status(400)
-        .json({ message: "can only confirm when status is fulfield" });
+        .json({ message: "Can only confirm when status is fulfilled" });
     }
 
     request.status = "Completed";
     request.completedAt = new Date();
     await request.save();
 
-    res.json({ message: "Request completed" });
+    res.status(200).json({
+      message: "Blood request completed successfully",
+      request,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message || "Fail to confirm" });
+    console.error("Error completing request:", err);
+    res
+      .status(500)
+      .json({ message: err.message || "Failed to complete request" });
   }
 };

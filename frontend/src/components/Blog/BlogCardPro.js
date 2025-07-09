@@ -100,8 +100,12 @@ export default function BlogCardPro({
           <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
         </h3>
         <p className="blog-excerpt">
-          {blog.content?.substring(0, 150)}
-          {blog.content?.length > 150 && "..."}
+          {blog.content
+            ? blog.content.replace(/<[^>]+>/g, "").substring(0, 150)
+            : ""}
+          {blog.content &&
+            blog.content.replace(/<[^>]+>/g, "").length > 150 &&
+            "..."}
         </p>
         <div className="blog-meta">
           {blog.author?.name && (

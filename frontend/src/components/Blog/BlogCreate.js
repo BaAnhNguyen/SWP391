@@ -1,33 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
+import { EditorState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import draftToHtml from "draftjs-to-html";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const BlogCreate = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-  });
+  const [title, setTitle] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [wordCount, setWordCount] = useState(0);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (name === "content") {
-      setWordCount(value.length);
-    }
+    setTitle(e.target.value);
   };
+
+  useEffect(() => {
+    // Calculate text-only character count from editor state
+    const contentState = editorState.getCurrentContent();
+    const plainText = contentState.getPlainText("");
+    setWordCount(plainText.length);
+  }, [editorState]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.title.trim() || !formData.content.trim()) {
+    const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+
+    if (!title.trim() || !content.trim() || content === "<p></p>") {
       alert("Vui lòng điền đầy đủ thông tin!");
       return;
     }
@@ -35,9 +38,13 @@ const BlogCreate = () => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(`${API_BASE_URL}/blogs`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/blogs`,
+        { title, content },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (response.status === 201) {
         alert("Tạo bài viết thành công! Bài viết đang chờ duyệt.");
@@ -52,7 +59,7 @@ const BlogCreate = () => {
   };
 
   const handleCancel = () => {
-    if (formData.title.trim() || formData.content.trim()) {
+    if (title.trim() || editorState.getCurrentContent().hasText()) {
       if (window.confirm("Bạn có chắc chắn muốn hủy? Nội dung sẽ bị mất.")) {
         navigate("/blogs/mine");
       }
@@ -87,7 +94,7 @@ const BlogCreate = () => {
                 type="text"
                 id="title"
                 name="title"
-                value={formData.title}
+                value={title}
                 onChange={handleInputChange}
                 placeholder="Nhập tiêu đề hấp dẫn cho bài viết của bạn..."
                 className="form-input title-input"
@@ -101,15 +108,59 @@ const BlogCreate = () => {
                 <span className="required-mark">*</span>
               </label>
               <div className="content-input-container">
-                <textarea
-                  id="content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleInputChange}
+                <Editor
+                  editorState={editorState}
+                  onEditorStateChange={setEditorState}
+                  wrapperClassName="rich-editor-wrapper"
+                  editorClassName="rich-editor-body"
+                  toolbarClassName="rich-editor-toolbar"
                   placeholder="Viết nội dung bài viết của bạn ở đây... Hãy chia sẻ những thông tin hữu ích về hiến máu!"
-                  className="form-input content-input"
-                  rows="15"
-                  required
+                  toolbar={{
+                    options: [
+                      "inline",
+                      "blockType",
+                      "fontSize",
+                      "fontFamily",
+                      "list",
+                      "textAlign",
+                      "colorPicker",
+                      "link",
+                      "emoji",
+                      "history",
+                    ],
+                    inline: {
+                      options: ["bold", "italic", "underline", "strikethrough"],
+                    },
+                    blockType: {
+                      inDropdown: true,
+                      options: [
+                        "Normal",
+                        "H1",
+                        "H2",
+                        "H3",
+                        "H4",
+                        "H5",
+                        "H6",
+                        "Blockquote",
+                      ],
+                    },
+                    fontSize: {
+                      options: [
+                        8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72,
+                        96,
+                      ],
+                    },
+                    fontFamily: {
+                      options: [
+                        "Arial",
+                        "Georgia",
+                        "Impact",
+                        "Tahoma",
+                        "Times New Roman",
+                        "Verdana",
+                      ],
+                    },
+                  }}
                 />
                 <div className="word-counter">
                   <span
@@ -138,8 +189,8 @@ const BlogCreate = () => {
                 className="btn btn-submit"
                 disabled={
                   isSubmitting ||
-                  !formData.title.trim() ||
-                  !formData.content.trim()
+                  !title.trim() ||
+                  !editorState.getCurrentContent().hasText()
                 }
               >
                 {isSubmitting ? (
@@ -292,10 +343,24 @@ const BlogCreate = () => {
           position: relative;
         }
 
-        .content-input {
-          resize: vertical;
-          min-height: 300px;
-          line-height: 1.6;
+        .rich-editor-wrapper {
+          border: 1px solid #ced4da;
+          border-radius: 8px;
+          overflow: hidden;
+          min-height: 400px;
+        }
+
+        .rich-editor-toolbar {
+          border: none !important;
+          border-bottom: 1px solid #ced4da !important;
+          background-color: #f8f9fa !important;
+        }
+
+        .rich-editor-body {
+          min-height: 350px !important;
+          padding: 10px 15px !important;
+          font-family: inherit !important;
+          font-size: 16px !important;
         }
 
         .word-counter {

@@ -273,7 +273,10 @@ const BlogDetail = () => {
       {/* Blog Content */}
       <div className="blog-content">
         <div className="content-wrapper">
-          <div className="content-text">{blog.content}</div>
+          <div
+            className="content-text"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          ></div>
         </div>
       </div>
 
