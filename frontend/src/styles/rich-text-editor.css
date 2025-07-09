@@ -1,0 +1,141 @@
+/* Rich Text Editor Styles for Draft.js */
+
+/* Editor Containers */
+.rich-editor-wrapper,
+.comment-editor-wrapper {
+    border: 1px solid #ced4da !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Toolbar Styles */
+.rich-editor-toolbar,
+.comment-editor-toolbar {
+    border: none !important;
+    border-bottom: 1px solid #ced4da !important;
+    background-color: #f8f9fa !important;
+    padding: 8px !important;
+}
+
+/* Editor Body Styles */
+.rich-editor-body,
+.comment-editor-body {
+    padding: 15px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    color: #333 !important;
+}
+
+/* Different heights for blog editor vs comment editor */
+.rich-editor-body {
+    min-height: 350px !important;
+}
+
+.comment-editor-body {
+    min-height: 100px !important;
+}
+
+/* Toolbar Buttons */
+.rdw-option-wrapper {
+    border: 1px solid #ced4da !important;
+    padding: 5px !important;
+    min-width: 25px !important;
+    height: 25px !important;
+    border-radius: 4px !important;
+    margin: 0 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+.rdw-option-wrapper:hover {
+    background: #e9ecef !important;
+}
+
+.rdw-option-active {
+    background: #dee2e6 !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2) !important;
+}
+
+/* Dropdown Styles */
+.rdw-dropdown-wrapper {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    margin: 0 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+.rdw-dropdown-wrapper:hover {
+    background: #e9ecef !important;
+}
+
+.rdw-dropdown-optionwrapper {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Custom styles for rendered content */
+.content-text h1,
+.content-text h2,
+.content-text h3,
+.content-text h4,
+.content-text h5,
+.content-text h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.content-text h1 {
+    font-size: 2em;
+}
+
+.content-text h2 {
+    font-size: 1.75em;
+}
+
+.content-text h3 {
+    font-size: 1.5em;
+}
+
+.content-text h4 {
+    font-size: 1.25em;
+}
+
+.content-text p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+}
+
+.content-text ol,
+.content-text ul {
+    padding-left: 2em;
+    margin-bottom: 1em;
+}
+
+.content-text li {
+    margin-bottom: 0.5em;
+}
+
+.content-text a {
+    color: #e74c3c;
+    text-decoration: none;
+}
+
+.content-text a:hover {
+    text-decoration: underline;
+}
+
+.content-text blockquote {
+    margin: 1em 0;
+    padding: 0.5em 1em;
+    border-left: 4px solid #e74c3c;
+    background-color: #f8f9fa;
+    font-style: italic;
+}
+
+.content-text img {
+    max-width: 100%;
+    height: auto;
+    margin: 1em 0;
+    border-radius: 8px;
+}

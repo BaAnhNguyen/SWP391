@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config";
+import { EditorState, ContentState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function CommentItem({ comment, postId, onReload }) {
   const [showReply, setShowReply] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(comment.content);
+  const [editorState, setEditorState] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,30 +29,53 @@ export default function CommentItem({ comment, postId, onReload }) {
     userId && authorId && String(userId) === String(authorId);
   const isAdmin = currentUser && currentUser.role === "Admin";
 
+  // Initialize editor state when going into edit mode
+  const initializeEditor = () => {
+    try {
+      const blocksFromHtml = htmlToDraft(comment.content);
+      const { contentBlocks, entityMap } = blocksFromHtml;
+      const contentState = ContentState.createFromBlockArray(
+        contentBlocks,
+        entityMap
+      );
+      setEditorState(EditorState.createWithContent(contentState));
+    } catch (error) {
+      // Fallback if parsing HTML fails
+      setEditorState(
+        EditorState.createWithText(comment.content.replace(/<[^>]+>/g, ""))
+      );
+    }
+  };
+
   const handleEdit = () => {
     setIsEditing(true);
-    setEditContent(comment.content);
+    initializeEditor();
     setError(null);
   };
 
   const handleEditCancel = () => {
     setIsEditing(false);
-    setEditContent(comment.content);
+    setEditorState(null);
     setError(null);
   };
 
   const handleEditSave = async () => {
-    if (!editContent.trim()) {
+    if (!editorState.getCurrentContent().hasText()) {
       setError("Nội dung không được để trống!");
       return;
     }
     setLoading(true);
     setError(null);
+
     try {
+      const content = draftToHtml(
+        convertToRaw(editorState.getCurrentContent())
+      );
+
       const token = localStorage.getItem("token");
       await axios.put(
         `${API_BASE_URL}/comments/${comment._id}`,
-        { content: editContent },
+        { content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setIsEditing(false);
@@ -118,26 +146,29 @@ export default function CommentItem({ comment, postId, onReload }) {
           <div className="comment-body">
             {isEditing ? (
               <div className="edit-form">
-                <textarea
-                  className="comment-edit-input"
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  rows={3}
-                  maxLength={500}
-                  disabled={loading}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    fontSize: 15,
-                    borderRadius: 8,
-                    border: "1px solid #e5e7eb",
-                  }}
-                />
+                {editorState && (
+                  <Editor
+                    editorState={editorState}
+                    onEditorStateChange={setEditorState}
+                    wrapperClassName="comment-editor-wrapper"
+                    editorClassName="comment-editor-body"
+                    toolbarClassName="comment-editor-toolbar"
+                    toolbar={{
+                      options: ["inline", "colorPicker", "link", "emoji"],
+                      inline: {
+                        options: ["bold", "italic", "underline"],
+                      },
+                    }}
+                    readOnly={loading}
+                  />
+                )}
                 <div className="edit-action-group">
                   <button
                     className="edit-save-btn"
                     onClick={handleEditSave}
-                    disabled={loading}
+                    disabled={
+                      loading || !editorState?.getCurrentContent().hasText()
+                    }
                   >
                     💾 Lưu
                   </button>
@@ -152,7 +183,10 @@ export default function CommentItem({ comment, postId, onReload }) {
                 </div>
               </div>
             ) : (
-              <p className="comment-text">{comment.content}</p>
+              <p
+                className="comment-text"
+                dangerouslySetInnerHTML={{ __html: comment.content }}
+              ></p>
             )}
           </div>
 
@@ -229,123 +263,153 @@ export default function CommentItem({ comment, postId, onReload }) {
       )}
 
       <style jsx>{`
-        /* Updated styles with red theme */
-        .edit-form {
-          margin-top: 8px;
+        .comment-item {
+          margin-bottom: 1rem;
+          padding: 1rem;
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
+        .is-reply {
+          margin-left: 2rem;
+          border-left: 3px solid #e74c3c;
+        }
+
+        .author-info {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .author-details {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .author-name {
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        .comment-time {
+          font-size: 0.75rem;
+          color: #7f8c8d;
+        }
+
+        .comment-body {
+          margin-bottom: 0.5rem;
+        }
+
+        .comment-text {
+          white-space: pre-wrap;
+          line-height: 1.5;
+          color: #2c3e50;
+        }
+
+        .comment-actions {
+          display: flex;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+        }
+
+        .reply-btn,
+        .edit-btn,
+        .delete-btn {
+          background: none;
+          border: none;
+          padding: 0;
+          color: #7f8c8d;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: inherit;
+        }
+
+        .reply-btn:hover,
+        .edit-btn:hover {
+          color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+          color: #c0392b;
+        }
+
+        .replies-count {
+          margin-left: auto;
+          color: #7f8c8d;
+          font-size: 0.875rem;
+        }
+
+        .comment-editor-wrapper {
+          border: 1px solid #ced4da;
+          border-radius: 8px;
+          overflow: hidden;
+          margin-bottom: 12px;
+        }
+
+        .comment-editor-toolbar {
+          border: none !important;
+          border-bottom: 1px solid #ced4da !important;
+          background-color: #f8f9fa !important;
+        }
+
+        .comment-editor-body {
+          min-height: 100px !important;
+          padding: 10px !important;
+          font-family: inherit !important;
+          font-size: 14px !important;
+        }
+
         .edit-action-group {
           display: flex;
           align-items: center;
-          gap: 12px;
-          margin-top: 10px;
+          gap: 0.5rem;
         }
-        .edit-save-btn {
-          background: linear-gradient(135deg, #e74c3c, #c0392b);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          padding: 8px 16px;
-          font-size: 14px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        .edit-save-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #c0392b, #a93226);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-        }
-        .edit-save-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none;
-        }
+
+        .edit-save-btn,
         .edit-cancel-btn {
-          background: #f8f9fa;
-          color: #6c757d;
-          border: 2px solid #e9ecef;
-          border-radius: 8px;
-          padding: 8px 16px;
-          font-size: 14px;
-          font-weight: 600;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
           cursor: pointer;
-          transition: all 0.3s ease;
+          font-weight: 600;
+          font-size: 0.875rem;
         }
-        .edit-cancel-btn:hover:not(:disabled) {
-          background: #e9ecef;
-          border-color: #e74c3c;
-          color: #e74c3c;
-          transform: translateY(-1px);
+
+        .edit-save-btn {
+          background-color: #e74c3c;
+          color: #fff;
+          border: none;
         }
-        .edit-cancel-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none;
+
+        .edit-cancel-btn {
+          background-color: #f8f9fa;
+          border: 1px solid #ced4da;
         }
+
         .edit-error-msg {
           color: #e74c3c;
-          margin-left: 10px;
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 0.875rem;
+          margin-left: 0.5rem;
         }
-        .edit-btn,
-        .delete-btn {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          font-size: 13px;
-          font-weight: 600;
-          border: 2px solid transparent;
-          cursor: pointer;
-          transition: all 0.3s ease;
+
+        .reply-form-container {
+          margin-top: 1rem;
         }
-        .edit-btn {
-          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-          color: #e74c3c;
-          border-color: #e9ecef;
-          margin-left: 8px;
+
+        .reply-form-wrapper {
+          margin-left: 2rem;
         }
-        .edit-btn:hover {
-          background: linear-gradient(135deg, #e74c3c, #c0392b);
-          color: white;
-          border-color: #e74c3c;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
-        }
-        .delete-btn {
-          background: linear-gradient(135deg, #fdf2f2, #fef2f2);
-          color: #e74c3c;
-          border-color: #e74c3c;
-          margin-left: 8px;
-        }
-        .delete-btn:hover {
-          background: linear-gradient(135deg, #e74c3c, #c0392b);
-          color: white;
-          border-color: #e74c3c;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-        }
-        .edit-icon,
-        .delete-icon {
-          font-size: 13px;
-        }
-        .replies-container {
-          /* Không thụt mặc định */
-          margin-left: 0;
-          border-left: none;
-          padding-left: 0;
-        }
-        .replies-first {
-          margin-left: 32px; /* Chỉ replies của comment root mới thụt vào */
-          border-left: 2px solid #e9ecef;
-          padding-left: 16px;
-        }
-        .replies-nested {
-          margin-left: 0;
-          border-left: none;
-          padding-left: 0;
+
+        @media (max-width: 640px) {
+          .is-reply {
+            margin-left: 1rem;
+          }
+
+          .reply-form-wrapper {
+            margin-left: 1rem;
+          }
         }
       `}</style>
     </>
