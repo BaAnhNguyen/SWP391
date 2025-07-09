@@ -504,18 +504,35 @@ const BloodStorage = () => {
                           style={{
                             color: isExpired ? "#b80000" : undefined,
                             fontWeight: isExpired ? "bold" : undefined,
+                            minWidth: "100px",
                           }}
                         >
                           {isExpired ? t("bloodStorage.expired") : days}
-                        </td>
-                        <td>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleDeleteBloodUnit(unit._id)}
-                            title={t("bloodStorage.deleteTitle")}
-                          >
-                            ✖
-                          </button>
+                          <div style={{ fontSize: "12px", marginTop: 2 }}>
+                            {isExpired ? (
+                              <span style={{ color: "#b80000" }}>
+                                {t("bloodStorage.expired")}
+                              </span>
+                            ) : unit.assignedToRequestId ? (
+                              <>
+                                <span
+                                  style={{ color: "#1976d2", fontWeight: 500 }}
+                                >
+                                  Đã cấp phát
+                                </span>
+                                <br />
+                                <span style={{ color: "#2c3e50" }}>
+                                  {unit.assignedToRequestId.assignedTo?.name ||
+                                    unit.assignedToRequestId.createdBy?.name ||
+                                    "Không rõ người nhận"}
+                                </span>
+                              </>
+                            ) : (
+                              <span style={{ color: "#43a047" }}>
+                                Còn trong kho
+                              </span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );

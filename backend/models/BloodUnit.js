@@ -49,7 +49,7 @@ const bloodUnitSchema = new mongoose.Schema({
   note: { type: String },
   assignedToRequestId: {
     type: mongoose.Schema.Types.ObjectId, // or whatever ID type you use
-    ref: "BloodRequest",
+    ref: "NeedRequest",
     default: null,
   },
 });

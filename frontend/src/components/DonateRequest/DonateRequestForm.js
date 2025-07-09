@@ -69,6 +69,13 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         }
         const userData = await response.json();
         setUserProfile(userData);
+
+        if (userData.bloodGroup) {
+          setFormData((prev) => ({
+            ...prev,
+            bloodGroup: userData.bloodGroup,
+          }));
+        }
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }

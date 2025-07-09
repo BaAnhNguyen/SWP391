@@ -166,12 +166,10 @@ exports.delete = async (req, res) => {
         nr.status !== "Open" &&
         nr.status !== "Completed"
       ) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "Cannot delete: request is in progress. Status must be Pending, Open, or Completed to delete.",
-          });
+        return res.status(400).json({
+          message:
+            "Cannot delete: request is in progress. Status must be Pending, Open, or Completed to delete.",
+        });
       }
 
       // For member, ensure they only delete their own requests
@@ -273,6 +271,7 @@ exports.assignSpecificBloodUnits = async (req, res) => {
       await unit.save();
     }
 
+    needRequest.assignedTo = needRequest.createdBy;
     // Update request status to "Assigned"
     needRequest.status = "Assigned";
     if (appointmentDate) needRequest.appointmentDate = appointmentDate;

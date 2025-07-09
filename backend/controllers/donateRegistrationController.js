@@ -92,7 +92,7 @@ exports.create = async (req, res) => {
 
     const reg = await DonationRegistration.create({
       userId,
-      bloodGroup,
+      bloodGroup: bloodGroup,
       component,
       readyDate,
       screening,
@@ -340,7 +340,7 @@ exports.complete = async (req, res) => {
         }
       }
 
-      // Tạo BloodUnit
+      // Tạo BloodUnit, mỗi đơn vị 1 record riêng
       try {
         const dateAdded = new Date();
         let dateExpired = new Date(dateAdded);
@@ -356,18 +356,22 @@ exports.complete = async (req, res) => {
             dateExpired.setDate(dateExpired.getDate() + 5);
             break;
         }
-        await BloodUnit.create({
-          BloodType: donationHistoryData.bloodGroup,
-          ComponentType: donationHistoryData.component,
-          Quantity: qty,
-          Volume: vol,
-          DateAdded: dateAdded,
-          DateExpired: dateExpired,
-          SourceType: "donation",
-          SourceRef: donationHistory._id,
-          donorName: user?.name,
-          donorId: user?._id,
-        });
+        const bloodUnits = [];
+        for (let i = 0; i < qty; i++) {
+          bloodUnits.push({
+            BloodType: donationHistoryData.bloodGroup,
+            ComponentType: donationHistoryData.component,
+            Quantity: 1,
+            Volume: vol, // hoặc vol / qty nếu volume là tổng
+            DateAdded: dateAdded,
+            DateExpired: dateExpired,
+            SourceType: "donation",
+            SourceRef: donationHistory._id,
+            donorName: user?.name,
+            donorId: user?._id,
+          });
+        }
+        await BloodUnit.insertMany(bloodUnits);
       } catch (err) {
         // Không cản trở flow, chỉ log
         console.error("Error when add blood to inventory", err);

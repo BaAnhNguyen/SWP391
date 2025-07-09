@@ -1,4 +1,5 @@
 const BloodUnit = require("../models/BloodUnit");
+const NeedRequest = require("../models/NeedRequest");
 const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 
 // Add a new blood unit to the inventory
@@ -16,35 +17,50 @@ exports.addBloodUnit = async (req, res) => {
     if (!BloodType || !ComponentType || !Volume || !Quantity) {
       return res.status(400).json({ message: "Missing required fields." });
     }
+    const quantity = Number(Quantity) || 1;
+    const volume = Number(Volume);
     const dateAdded = DateAdded ? new Date(DateAdded) : new Date();
-    const dateExpired = new Date(dateAdded);
+
+    let expireDays = 0;
     switch (ComponentType) {
       case "WholeBlood":
       case "RedCells":
-        dateExpired.setDate(dateExpired.getDate() + 35);
+        expireDays = 35;
         break;
       case "Plasma":
-        dateExpired.setDate(dateExpired.getDate() + 365);
+        expireDays = 365;
         break;
       case "Platelets":
-        dateExpired.setDate(dateExpired.getDate() + 5);
+        expireDays = 5;
         break;
       default:
         return res.status(400).json({ message: "Invalid ComponentType." });
     }
-    const bloodUnit = new BloodUnit({
-      BloodType,
-      ComponentType,
-      Volume: Number(Volume),
-      Quantity: Number(Quantity) || 1,
-      SourceType: SourceType || "import",
-      note,
-      DateAdded: dateAdded,
-      DateExpired: dateExpired,
+
+    let bloodUnits = [];
+    for (let i = 0; i < quantity; i++) {
+      const dateExpired = new Date(dateAdded);
+      dateExpired.setDate(dateExpired.getDate() + expireDays);
+      bloodUnits.push({
+        BloodType,
+        ComponentType,
+        Volume: volume,
+        Quantity: 1,
+        SourceType: SourceType || "import",
+        note,
+        DateAdded: dateAdded,
+        DateExpired: dateExpired,
+      });
+    }
+
+    const result = await BloodUnit.insertMany(bloodUnits);
+
+    res.status(201).json({
+      message: `Added ${result.length} blood unit(s) successfully.`,
+      bloodUnits: result,
     });
-    await bloodUnit.save();
-    res.status(201).json(bloodUnit);
   } catch (err) {
+    console.error("addBloodUnit error:", err); // giữ dòng này để debug
     res
       .status(500)
       .json({ message: err.message || "Failed to add blood unit." });
@@ -54,9 +70,13 @@ exports.addBloodUnit = async (req, res) => {
 // Get all blood units in the inventory
 exports.getAllBloodUnits = async (req, res) => {
   try {
-    const bloodUnits = await BloodUnit.find();
+    const bloodUnits = await BloodUnit.find().populate({
+      path: "assignedToRequestId",
+      populate: { path: "createdBy", select: "name" },
+    });
     res.status(200).json(bloodUnits);
   } catch (err) {
+    console.error("getAllBloodUnits error:", err);
     res
       .status(500)
       .json({ message: err.message || "Failed to fetch blood units." });
@@ -125,20 +145,31 @@ exports.getBloodUnitsForRequest = async (req, res) => {
     console.log("Request query parameters:", req.query);
     console.log("Blood type received:", bloodType);
     console.log("Blood type length:", bloodType.length);
-    console.log("Blood type character analysis:", Array.from(bloodType).map(c => `${c}:${c.charCodeAt(0)}`).join(', '));
+    console.log(
+      "Blood type character analysis:",
+      Array.from(bloodType)
+        .map((c) => `${c}:${c.charCodeAt(0)}`)
+        .join(", ")
+    );
 
     // Try to normalize the blood type ourselves before passing to getCompatibleBloodTypes
     const normalizedBloodType = bloodType.trim().toUpperCase();
     console.log("Normalized blood type:", normalizedBloodType);
 
     // Find compatible blood types for the recipient
-    console.log("Searching for compatible types for blood type:", normalizedBloodType);
+    console.log(
+      "Searching for compatible types for blood type:",
+      normalizedBloodType
+    );
     const compatibleTypes = getCompatibleBloodTypes(normalizedBloodType);
     console.log("Compatible types found:", compatibleTypes);
 
     if (!compatibleTypes.length) {
       console.log("No compatible types found for:", normalizedBloodType);
-      console.log("Available in compatibility map:", Object.keys(require('../utils/bloodCompatibility').compatibility));
+      console.log(
+        "Available in compatibility map:",
+        Object.keys(require("../utils/bloodCompatibility").compatibility)
+      );
 
       return res.status(400).json({
         message: "Invalid or unsupported blood type.",
@@ -154,7 +185,9 @@ exports.getBloodUnitsForRequest = async (req, res) => {
       assignedToRequestId: null,
     });
 
-    console.log(`Found ${bloodUnits.length} compatible blood units for ${normalizedBloodType}`);
+    console.log(
+      `Found ${bloodUnits.length} compatible blood units for ${normalizedBloodType}`
+    );
     res.status(200).json(bloodUnits);
   } catch (err) {
     console.error("Error in getBloodUnitsForRequest:", err);
