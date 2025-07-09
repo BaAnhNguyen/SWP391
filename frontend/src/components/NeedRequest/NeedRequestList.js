@@ -148,6 +148,43 @@ const NeedRequestList = ({ userRole, refresh }) => {
     }
   };
 
+  const handleCompleteRequest = async (id) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error(t("common.notAuthenticated"));
+      }
+
+      // Add debug logging
+      console.log(`Attempting to complete request with ID: ${id}`);
+      const completeUrl = `${API_BASE_URL}/needrequest/complete/${id}`;
+      console.log(`Complete URL: ${completeUrl}`);
+
+      const response = await fetch(completeUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || t("needRequest.completeError"));
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+      fetchRequests(); // Refresh the list
+    } catch (err) {
+      setError(err.message);
+      console.error("Error completing request:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleExpandRequest = (id) => {
     setExpandedRequestId(expandedRequestId === id ? null : id);
   };
@@ -172,6 +209,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
     Pending: "var(--status-open)",
     Assigned: "var(--status-assigned)",
     Fulfilled: "var(--status-fulfilled)",
+    Completed: "var(--status-completed)",
     Expired: "var(--status-expired)",
   };
 
@@ -206,6 +244,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <option value="Open">{t("needRequest.status.open")}</option>
             <option value="Assigned">{t("needRequest.status.assigned")}</option>
             <option value="Fulfilled">{t("needRequest.status.fulfilled")}</option>
+            <option value="Completed">{t("needRequest.status.completed")}</option>
             <option value="Expired">{t("needRequest.status.expired")}</option>
           </select>
           <button
@@ -330,47 +369,20 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   </div>
                 )}
 
-                {(isStaff || request.status === "Open") && (
-                  <div className="request-action-buttons">
-                    {isStaff && (request.status === "Open" || request.status === "Pending") && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAssign(request._id);
-                          }}
-                          className="assign-button"
-                        >
-                          {t("needRequest.assign")}
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(request._id);
-                          }}
-                          className="delete-button"
-                        >
-                          {t("common.delete")}
-                        </button>
-                      </>
-                    )}
-
-                    {isStaff && request.status === "Assigned" && (
+                <div className="request-action-buttons">
+                  {/* Staff actions for Open/Pending requests */}
+                  {isStaff && (request.status === "Open" || request.status === "Pending") && (
+                    <>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (window.confirm(t("needRequest.confirmFulfill"))) {
-                            handleFulfillRequest(request._id);
-                          }
+                          handleAssign(request._id);
                         }}
-                        className="fulfill-button"
+                        className="assign-button"
                       >
-                        {t("needRequest.markFulfilled")}
+                        {t("needRequest.assign")}
                       </button>
-                    )}
 
-                    {!isStaff && request.status === "Open" && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -380,9 +392,65 @@ const NeedRequestList = ({ userRole, refresh }) => {
                       >
                         {t("common.delete")}
                       </button>
-                    )}
-                  </div>
-                )}
+                    </>
+                  )}
+
+                  {/* Staff action for Assigned requests */}
+                  {isStaff && request.status === "Assigned" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(t("needRequest.confirmFulfill"))) {
+                          handleFulfillRequest(request._id);
+                        }
+                      }}
+                      className="fulfill-button"
+                    >
+                      {t("needRequest.markFulfilled")}
+                    </button>
+                  )}
+
+                  {/* Member action for Fulfilled requests */}
+                  {!isStaff && request.status === "Fulfilled" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(t("needRequest.confirmComplete"))) {
+                          handleCompleteRequest(request._id);
+                        }
+                      }}
+                      className="complete-button"
+                    >
+                      {t("needRequest.markCompleted")}
+                    </button>
+                  )}
+
+                  {/* Delete button for completed requests - available to both staff and members */}
+                  {request.status === "Completed" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(request._id);
+                      }}
+                      className="delete-button"
+                    >
+                      {t("common.delete")}
+                    </button>
+                  )}
+
+                  {/* Member action for Open requests */}
+                  {!isStaff && request.status === "Open" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(request._id);
+                      }}
+                      className="delete-button"
+                    >
+                      {t("common.delete")}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
