@@ -56,7 +56,10 @@ router.post(
 router.post("/reject/:requestId", restrictTo("Staff"), ctrl.rejectBloodRequest);
 
 // Complete a fulfilled blood request (member only)
-router.post("/complete/:requestId", restrictTo("Member"), ctrl.confirm);
+router.post("/complete/:requestId", (req, res, next) => {
+  console.log("Complete route accessed with params:", req.params);
+  next();
+}, restrictTo("Member"), ctrl.confirm);
 
 //take one request
 router.get("/:id", ctrl.getNeedRequestById);

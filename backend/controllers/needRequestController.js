@@ -293,7 +293,7 @@ exports.assignSpecificBloodUnits = async (req, res) => {
         await sendMail(member.email, subject, html);
         emailSent = true;
       }
-    } catch (err) {}
+    } catch (err) { }
 
     console.log(emailSent);
     return res.status(200).json({
@@ -372,10 +372,14 @@ exports.rejectBloodRequest = async (req, res) => {
 
 exports.confirm = async (req, res) => {
   try {
+    console.log("Confirm endpoint called with params:", req.params);
     const { requestId } = req.params;
     const userId = req.user._id;
+    console.log(`Confirming request: ${requestId} by user: ${userId}`);
+
     const request = await NeedRequest.findById(requestId);
     if (!request) {
+      console.log(`Request not found with ID: ${requestId}`);
       return res.status(404).json({ message: "Need request not found" });
     }
 

@@ -11,6 +11,7 @@
   --status-fulfilled: #2ecc71;
   --status-completed: #17a2b8;
   --status-expired: #e67e22;
+  --status-matched: #f39c12;
 }
 
 .list-header {
@@ -59,9 +60,7 @@
   transition: all 0.2s;
 }
 
-.refresh-button:hover {
-  background-color: #eee;
-}
+
 
 .no-requests {
   text-align: center;
@@ -145,6 +144,16 @@
   text-transform: uppercase;
 }
 
+/* Smaller badge for Matched status */
+.status-badge-matched {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.6rem;
+  border-radius: 10px;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  transform: scale(0.9);
+}
+
 :root {
   --status-open: #3498db;
   --status-assigned: #9b59b6;
@@ -186,10 +195,9 @@
   padding: 6px 12px;
   border-radius: 4px;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
   margin-right: 8px;
   display: inline-flex;
   align-items: center;
@@ -203,42 +211,35 @@
   font-weight: bold;
 }
 
-.fulfill-button:hover {
-  background-color: #27ae60;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+
 
 .expire-button {
   background-color: #f39c12;
   color: white;
 }
 
-.expire-button:hover {
-  background-color: #d35400;
-}
+
 
 .delete-button {
   background-color: #e74c3c;
   color: white;
-  font-size: 1rem;
+  font-size: 0.9rem;
   padding: 10px 20px;
-  font-weight: bold;
-}
-
-.delete-button:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
 }
 
 .assign-button {
-  background-color: #3498db;
+  background-color: #2ecc71;
   color: white;
-}
-
-.assign-button:hover {
-  background-color: #2980b9;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 30px;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .complete-button {
@@ -246,9 +247,7 @@
   color: white;
 }
 
-.complete-button:hover {
-  background-color: #138496;
-}
+
 
 .request-action-buttons {
   display: flex;

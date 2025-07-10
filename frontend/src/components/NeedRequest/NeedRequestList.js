@@ -160,17 +160,24 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(t("common.notAuthenticated"));
       }
 
-      // Add debug logging
+      // Debug logging
+      console.log(`API_BASE_URL value: ${API_BASE_URL}`);
       console.log(`Attempting to complete request with ID: ${id}`);
+
+      // Make sure we have the correct path format
       const completeUrl = `${API_BASE_URL}/needrequest/complete/${id}`;
       console.log(`Complete URL: ${completeUrl}`);
 
+      // Make the request with proper error handling
       const response = await fetch(completeUrl, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+      }).catch(error => {
+        console.error("Network error during complete request:", error);
+        throw new Error("Network error: " + error.message);
       });
 
       if (!response.ok) {
@@ -212,6 +219,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
     Open: "var(--status-open)",
     Pending: "var(--status-open)",
     Assigned: "var(--status-assigned)",
+    Matched: "var(--status-matched)",
     Fulfilled: "var(--status-fulfilled)",
     Completed: "var(--status-completed)",
     Expired: "var(--status-expired)",
@@ -245,6 +253,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <option value="all">{t("needRequest.allStatuses")}</option>
             <option value="Open">{t("needRequest.status.open")}</option>
             <option value="Assigned">{t("needRequest.status.assigned")}</option>
+            <option value="Matched">{t("needRequest.status.matched")}</option>
             <option value="Fulfilled">
               {t("needRequest.status.fulfilled")}
             </option>
@@ -270,9 +279,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -297,7 +305,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   </div>
                 </div>
                 <div
-                  className="status-badge"
+                  className={`status-badge ${request.status === "Matched" ? "status-badge-matched" : ""}`}
                   style={{ backgroundColor: statusColors[request.status] }}
                 >
                   {t(`needRequest.status.${request.status.toLowerCase()}`)}
@@ -318,8 +326,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <strong>{t("needRequest.attachment")}:</strong>
                     <div className="image-preview">
                       {request.attachment.toLowerCase().endsWith(".jpg") ||
-                      request.attachment.toLowerCase().endsWith(".jpeg") ||
-                      request.attachment.toLowerCase().endsWith(".png") ? (
+                        request.attachment.toLowerCase().endsWith(".jpeg") ||
+                        request.attachment.toLowerCase().endsWith(".png") ? (
                         <>
                           <img
                             src={request.attachment}
@@ -446,6 +454,24 @@ const NeedRequestList = ({ userRole, refresh }) => {
                       {t("common.delete")}
                     </button>
                   )}
+
+                  {/* Staff delete button for Fulfilled, Assigned, Expired requests */}
+                  {isStaff &&
+                    (request.status === "Fulfilled" ||
+                      request.status === "Expired" ||
+                      request.status === "Rejected") && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(t("needRequest.confirmDelete"))) {
+                            handleDelete(request._id);
+                          }
+                        }}
+                        className="delete-button"
+                      >
+                        {t("common.delete")}
+                      </button>
+                    )}
 
                   {/* Member action for Open requests */}
                   {!isStaff && request.status === "Open" && (
