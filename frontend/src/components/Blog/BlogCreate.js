@@ -123,42 +123,38 @@ const BlogCreate = () => {
                       "fontFamily",
                       "list",
                       "textAlign",
-                      "colorPicker",
-                      "link",
-                      "emoji",
                       "history",
                     ],
                     inline: {
                       options: ["bold", "italic", "underline", "strikethrough"],
+                      inDropdown: false,
+                      className: "toolbarInline",
+                    },
+                    list: {
+                      options: ["unordered", "ordered"],
+                      inDropdown: false,
+                      className: "toolbarList",
+                    },
+                    textAlign: {
+                      inDropdown: false,
+                      className: "toolbarAlign",
+                    },
+                    history: {
+                      inDropdown: false,
+                      className: "toolbarHistory",
                     },
                     blockType: {
                       inDropdown: true,
-                      options: [
-                        "Normal",
-                        "H1",
-                        "H2",
-                        "H3",
-                        "H4",
-                        "H5",
-                        "H6",
-                        "Blockquote",
-                      ],
+                      dropdownClassName: "blockTypeDropdown",
+                      options: ["Normal", "H1", "H2", "H3", "H4"],
                     },
                     fontSize: {
-                      options: [
-                        8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72,
-                        96,
-                      ],
+                      options: [10, 12, 14, 16, 18, 24, 30, 36],
+                      className: "fontSizeDropdown",
                     },
                     fontFamily: {
-                      options: [
-                        "Arial",
-                        "Georgia",
-                        "Impact",
-                        "Tahoma",
-                        "Times New Roman",
-                        "Verdana",
-                      ],
+                      options: ["Arial", "Times New Roman", "Verdana"],
+                      className: "fontFamilyDropdown",
                     },
                   }}
                 />
@@ -354,13 +350,79 @@ const BlogCreate = () => {
           border: none !important;
           border-bottom: 1px solid #ced4da !important;
           background-color: #f8f9fa !important;
+          padding: 8px 4px !important;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          position: relative !important;
+        }
+
+        .rich-editor-toolbar button {
+          border-radius: 4px !important;
+          margin: 0 1px !important;
+          padding: 5px !important;
+          border: 1px solid #e9ecef !important;
+        }
+
+        .rich-editor-toolbar button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .rich-editor-toolbar button.rdw-option-active {
+          background-color: #e74c3c !important;
+          color: white !important;
+        }
+
+        .rich-editor-toolbar .rdw-dropdown-wrapper {
+          border-radius: 4px !important;
+          margin: 0 4px !important;
+          border: 1px solid #ced4da !important;
+          background-color: white !important;
+        }
+
+        .rich-editor-toolbar .rdw-dropdown-optionwrapper {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+          border-radius: 4px !important;
+        }
+
+        .rich-editor-toolbar .rdw-dropdown-carettoopen {
+          border-top-color: #555 !important;
+        }
+
+        .rich-editor-toolbar .toolbarInline,
+        .rich-editor-toolbar .toolbarList,
+        .rich-editor-toolbar .toolbarAlign {
+          margin-right: 8px !important;
+          padding-right: 8px !important;
+          border-right: 1px solid #e9ecef !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory {
+          position: absolute !important;
+          right: 10px !important;
+          top: 8px !important;
+          border-left: 1px solid #e9ecef !important;
+          padding-left: 8px !important;
+          background-color: #f8f9fa !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory button {
+          background-color: #f8f9fa !important;
+          border-color: #e9ecef !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
         }
 
         .rich-editor-body {
           min-height: 350px !important;
-          padding: 10px 15px !important;
+          padding: 15px 20px !important;
           font-family: inherit !important;
           font-size: 16px !important;
+          line-height: 1.6 !important;
         }
 
         .word-counter {
