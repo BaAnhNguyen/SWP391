@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import NeedRequestForm from './NeedRequestForm';
-import NeedRequestList from './NeedRequestList';
-import SearchBlood from './SearchBlood';
-import './NeedRequest.css';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+import NeedRequestForm from "./NeedRequestForm";
+import NeedRequestList from "./NeedRequestList";
+import SearchBlood from "./SearchBlood";
+import "./NeedRequest.css";
 
 const NeedRequestPage = ({ user }) => {
   const { t } = useTranslation();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState('form');
+  const [activeTab, setActiveTab] = useState("form");
   const [refreshList, setRefreshList] = useState(false);
 
   // Determine if the user is a staff member or admin
-  const isStaff = user?.role === 'Staff' || user?.role === 'Admin';
+  const isStaff = user?.role === "Staff" || user?.role === "Admin";
 
   // Check for refresh parameter in URL query
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.has('refresh')) {
+    if (params.has("refresh")) {
       setRefreshList(true);
     }
   }, [location.search]);
@@ -26,13 +26,13 @@ const NeedRequestPage = ({ user }) => {
   // Set default active tab to list for staff users
   useEffect(() => {
     if (isStaff) {
-      setActiveTab('list');
+      setActiveTab("list");
     }
   }, [isStaff]);
 
   // Handle successful request creation to refresh the list
   const handleRequestCreated = () => {
-    setActiveTab('list');
+    setActiveTab("list");
     setRefreshList(true);
   };
 
@@ -49,46 +49,50 @@ const NeedRequestPage = ({ user }) => {
         <div className="blood-icon">
           <div className="blood-drop"></div>
         </div>
-        <h1>{t('needRequest.title')}</h1>
-        <p>{t('needRequest.description')}</p>
+        <h1>{t("needRequest.title")}</h1>
+        <p>{t("needRequest.description")}</p>
       </div>
 
       <div className="need-request-tabs">
         {!isStaff && (
           <>
             <button
-              className={`need-request-tab ${activeTab === 'form' ? 'active' : ''}`}
-              onClick={() => setActiveTab('form')}
+              className={`need-request-tab ${
+                activeTab === "form" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("form")}
             >
-              {t('needRequest.nav.createRequest')}
+              {t("needRequest.nav.createRequest")}
             </button>
             <button
-              className={`need-request-tab ${activeTab === 'search' ? 'active' : ''}`}
-              onClick={() => setActiveTab('search')}
+              className={`need-request-tab ${
+                activeTab === "search" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("search")}
             >
-              {t('needRequest.nav.searchBlood')}
+              {t("needRequest.nav.searchBlood")}
             </button>
           </>
         )}
         <button
-          className={`need-request-tab ${activeTab === 'list' ? 'active' : ''}`}
-          onClick={() => setActiveTab('list')}
+          className={`need-request-tab ${activeTab === "list" ? "active" : ""}`}
+          onClick={() => setActiveTab("list")}
         >
-          {isStaff ? t('needRequest.nav.viewAllRequests') : t('needRequest.nav.viewMyRequests')}
+          {isStaff
+            ? t("needRequest.nav.viewAllRequests")
+            : t("needRequest.nav.viewMyRequests")}
         </button>
       </div>
 
-      {activeTab === 'form' && !isStaff && (
+      {activeTab === "form" && !isStaff && (
         <NeedRequestForm onRequestCreated={handleRequestCreated} />
       )}
 
-      {activeTab === 'search' && !isStaff && (
-        <SearchBlood />
-      )}
+      {activeTab === "search" && !isStaff && <SearchBlood />}
 
-      {activeTab === 'list' && (
+      {activeTab === "list" && (
         <NeedRequestList
-          userRole={user?.role || 'Member'}
+          userRole={user?.role || "Member"}
           refresh={refreshList}
         />
       )}

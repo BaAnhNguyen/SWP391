@@ -77,33 +77,33 @@ function getAppointmentMail(memberName, appointmentDate, units) {
 }
 
 //gui xac nhan hien mau
-function getInviteDonorMail(
-  donorName,
-  patientName,
-  bloodGroup,
-  appointmentDate,
-  confirmUrl
-) {
+function getInviteDonorMail(donorName, patientName, bloodGroup, component) {
+  //URL
+  let registerURL = `${process.env.CLIENT_BASE_URL}/donate`;
+
+  //prefill
+  if (bloodGroup || component) {
+    const params = [];
+    if (bloodGroup) params.push(`bloodGroup=${encodeURIComponent(bloodGroup)}`);
+    if (component) params.push(`component=${encodeURIComponent(component)}`);
+    registerURL += "?" + params.join("&");
+  }
   return {
-    subject: "Lời mời hiến máu từ hệ thống",
+    subject: "Lời mời đăng ký hiến máu từ hệ thống",
     html: `
       <div style="font-family: Arial,sans-serif;max-width:600px">
-        <h2>Lời mời hiến máu từ hệ thống</h2>
+        <h2>Lời mời đăng ký hiến máu từ hệ thống</h2>
         <p>Chào <b>${donorName}</b>,</p>
         <p>
-          Có người cần máu nhóm <b>${bloodGroup}</b> - (<b>${patientName}</b>) tại trung tâm.
-          <br>
-          Bạn có thể hiến máu vào <b>${
-            appointmentDate
-              ? new Date(appointmentDate).toLocaleString("vi-VN")
-              : "thời gian phù hợp"
-          }</b> không?
+          Trung tâm phát hiện có người cần máu nhóm <b>${bloodGroup || ""}</b>
+          ${component ? `(${component})` : ""}${
+      patientName ? ` – <b>${patientName}</b>` : ""
+    }.
         </p>
         <p>
-          Vui lòng xác nhận bằng cách bấm vào:<br>
-          <a href="${confirmUrl}" style="display:inline-block;padding:12px 24px;background:#2ecc40;color:white;text-decoration:none;font-weight:bold;border-radius:8px;">Tôi đồng ý hiến máu</a>
-          <br><br>
-          Hoặc liên hệ lại với staff để báo lại.
+          Nếu bạn sẵn sàng giúp đỡ, vui lòng đăng ký hiến máu tại:
+          <br>
+          <a href="${registerURL}" style="display:inline-block;padding:12px 24px;background:#2ecc40;color:white;text-decoration:none;font-weight:bold;border-radius:8px;">Đăng ký hiến máu ngay</a>
         </p>
         <p style="color:#888;font-size:13px">
           Nếu không phải bạn, vui lòng bỏ qua email này.

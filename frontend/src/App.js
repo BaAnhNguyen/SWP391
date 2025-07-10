@@ -32,7 +32,6 @@ import BlogMine from "./components/Blog/BlogMine";
 import BlogPending from "./components/Blog/BlogPending";
 import BlogEdit from "./components/Blog/BlogEdit";
 import PermissionDenied from "./components/PermissionDenied/PermissionDenied";
-import DonationConfirmPage from "./components/NeedRequest/DonationConfirmPage";
 
 // import AddressForm from "./components/AddressForm/AddressForm"; // Unused import removed
 import AddressFormPage from "./components/AddressForm/AddressFormPage";
@@ -197,10 +196,6 @@ function App() {
             }
           />
           <Route path="/blogs/:id/edit" element={<BlogEdit />} />
-          <Route
-            path="/donationMatch/confirm/:matchId"
-            element={<DonationConfirmPage />}
-          />
         </Routes>
         <Footer />
       </div>

@@ -11,7 +11,7 @@ const needRequestSchema = new Schema(
     createdBy: {
       type: Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
     },
     bloodGroup: {
       type: String,
@@ -25,12 +25,11 @@ const needRequestSchema = new Schema(
     },
     units: {
       type: Number,
-      require: true,
+      required: true,
       min: 1,
     },
     reason: {
       type: String,
-      require: true,
     },
     status: {
       type: String,
@@ -40,7 +39,6 @@ const needRequestSchema = new Schema(
         "Fulfilled",
         "Rejected",
         "Expired",
-        "Matched",
         "Canceled",
         "Completed",
       ],

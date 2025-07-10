@@ -5,6 +5,7 @@ const {
   sendMail,
   getAppointmentMail,
   buildAssignedUnitsTable,
+  getInviteDonorMail,
 } = require("../service/emailNeedRequest");
 const User = require("../models/User");
 
@@ -42,7 +43,8 @@ exports.listAll = async (req, res) => {
   try {
     const list = await NeedRequest.find()
       .populate("createdBy", "name email")
-      .sort("-createdAt");
+      .sort("-createdAt")
+      .lean();
     return res.json(list);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -55,7 +57,8 @@ exports.listUserRequests = async (req, res) => {
     const userId = req.user._id;
     const list = await NeedRequest.find({ createdBy: userId })
       .populate("createdBy", "name email")
-      .sort("-createdAt");
+      .sort("-createdAt")
+      .lean();
     return res.json(list);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -311,17 +314,22 @@ exports.assignSpecificBloodUnits = async (req, res) => {
 exports.fulfillBloodRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
-    const request = await NeedRequest.findByIdAndUpdate(
-      requestId,
-      { status: "Fulfilled", fulfilledAt: new Date() },
-      { new: true }
-    );
-
+    //check status
+    const request = await NeedRequest.findById(requestId);
     if (!request) {
       return res.status(404).json({ message: "Blood request not found" });
     }
+    if (!["Assigned", "Matched"].includes(request.status)) {
+      return res
+        .status(400)
+        .json({ message: "Request must be assigned or matched to fulfill" });
+    }
 
-    // Remove all blood units assigned to this request
+    request.status = "Fulfilled";
+    request.fulfilledAt = new Date();
+    await request.save();
+
+    //delete blood unit
     const deleteResult = await BloodUnit.deleteMany({
       assignedToRequestId: requestId,
     });
@@ -365,13 +373,9 @@ exports.rejectBloodRequest = async (req, res) => {
 exports.confirm = async (req, res) => {
   try {
     const { requestId } = req.params;
-    console.log(`Received complete request for ID: ${requestId}`);
-    console.log(`Request params:`, req.params);
-
     const userId = req.user._id;
     const request = await NeedRequest.findById(requestId);
     if (!request) {
-      console.log(`Request with ID ${requestId} not found`);
       return res.status(404).json({ message: "Need request not found" });
     }
 
@@ -418,5 +422,29 @@ exports.getNeedRequestById = async (req, res) => {
     return res
       .status(500)
       .json({ message: err.message || "Failed to fetch need request." });
+  }
+};
+
+//send mail incase dont have enough blood unit
+exports.inviteDonor = async (req, res) => {
+  try {
+    const { donorId, needRequestId } = req.body;
+    const donor = await User.findById(donorId);
+    const needRequest = await NeedRequest.findById(needRequestId).populate(
+      "createdBy",
+      "name"
+    );
+    if (!donor || !needRequest)
+      return res.status(404).json({ message: "Not found" });
+
+    const { subject, html } = getInviteDonorMail(
+      donor.name,
+      needRequest.createdBy.name,
+      needRequest.bloodGroup,
+      needRequest.component
+    );
+    await sendMail(donor.email, subject, html);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

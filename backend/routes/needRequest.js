@@ -29,8 +29,8 @@ router.post(
   ctrl.create
 );
 
-//update need request status (staff and admin)
-router.patch("/:id/status", restrictTo("Staff", "Admin"), ctrl.updateStatus);
+//update need request status (staff )
+router.patch("/:id/status", restrictTo("Staff"), ctrl.updateStatus);
 
 //update need request details (staff, admin and member)
 router.patch("/:id", restrictTo("Staff", "Member"), ctrl.update);
@@ -60,5 +60,8 @@ router.post("/complete/:requestId", restrictTo("Member"), ctrl.confirm);
 
 //take one request
 router.get("/:id", ctrl.getNeedRequestById);
+
+//invite
+router.post("/invite", restrictTo("Staff"), ctrl.inviteDonor);
 
 module.exports = router;
