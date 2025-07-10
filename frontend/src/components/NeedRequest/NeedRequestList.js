@@ -43,7 +43,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
       const data = await response.json();
       setRequests(data);
     } catch (err) {
-      setError(err.message); console.error("Error fetching requests:", err);
+      setError(err.message);
+      console.error("Error fetching requests:", err);
     } finally {
       setLoading(false);
     }
@@ -124,13 +125,16 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(t("common.notAuthenticated"));
       }
 
-      const response = await fetch(`${API_BASE_URL}/needrequest/fulfill/${id}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/needrequest/fulfill/${id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -224,9 +228,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
               ? t("needRequest.listTitleAll")
               : t("needRequest.listTitleMy")}
             <span className={`role-indicator ${isStaff ? "staff" : "member"}`}>
-              {isStaff
-                ? t("common.role.staff")
-                : t("common.role.member")}
+              {isStaff ? t("common.role.staff") : t("common.role.member")}
             </span>
           </h2>
           {!isStaff && (
@@ -243,8 +245,12 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <option value="all">{t("needRequest.allStatuses")}</option>
             <option value="Open">{t("needRequest.status.open")}</option>
             <option value="Assigned">{t("needRequest.status.assigned")}</option>
-            <option value="Fulfilled">{t("needRequest.status.fulfilled")}</option>
-            <option value="Completed">{t("needRequest.status.completed")}</option>
+            <option value="Fulfilled">
+              {t("needRequest.status.fulfilled")}
+            </option>
+            <option value="Completed">
+              {t("needRequest.status.completed")}
+            </option>
             <option value="Expired">{t("needRequest.status.expired")}</option>
           </select>
           <button
@@ -264,8 +270,9 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
-                }`}
+              className={`request-card ${
+                expandedRequestId === request._id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -310,23 +317,23 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   <div className="attachment-container">
                     <strong>{t("needRequest.attachment")}:</strong>
                     <div className="image-preview">
-                      {request.attachment.toLowerCase().endsWith('.jpg') ||
-                        request.attachment.toLowerCase().endsWith('.jpeg') ||
-                        request.attachment.toLowerCase().endsWith('.png') ? (
+                      {request.attachment.toLowerCase().endsWith(".jpg") ||
+                      request.attachment.toLowerCase().endsWith(".jpeg") ||
+                      request.attachment.toLowerCase().endsWith(".png") ? (
                         <>
                           <img
                             src={request.attachment}
                             alt="Request attachment"
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open(request.attachment, '_blank');
+                              window.open(request.attachment, "_blank");
                             }}
                           />
                           <button
                             className="view-full-image"
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open(request.attachment, '_blank');
+                              window.open(request.attachment, "_blank");
                             }}
                           >
                             {t("needRequest.fullImage")}
@@ -371,29 +378,31 @@ const NeedRequestList = ({ userRole, refresh }) => {
 
                 <div className="request-action-buttons">
                   {/* Staff actions for Open/Pending requests */}
-                  {isStaff && (request.status === "Open" || request.status === "Pending") && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAssign(request._id);
-                        }}
-                        className="assign-button"
-                      >
-                        {t("needRequest.assign")}
-                      </button>
+                  {isStaff &&
+                    (request.status === "Open" ||
+                      request.status === "Pending") && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAssign(request._id);
+                          }}
+                          className="assign-button"
+                        >
+                          {t("needRequest.assign")}
+                        </button>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(request._id);
-                        }}
-                        className="delete-button"
-                      >
-                        {t("common.delete")}
-                      </button>
-                    </>
-                  )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(request._id);
+                          }}
+                          className="delete-button"
+                        >
+                          {t("common.delete")}
+                        </button>
+                      </>
+                    )}
 
                   {/* Staff action for Assigned requests */}
                   {isStaff && request.status === "Assigned" && (

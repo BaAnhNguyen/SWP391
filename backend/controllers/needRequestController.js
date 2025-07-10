@@ -402,3 +402,21 @@ exports.confirm = async (req, res) => {
       .json({ message: err.message || "Failed to complete request" });
   }
 };
+
+exports.getNeedRequestById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const request = await NeedRequest.findById(id).populate(
+      "createdBy",
+      "name"
+    );
+    if (!request) {
+      return res.status(404).json({ message: "Need request not found" });
+    }
+    return res.json(request);
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: err.message || "Failed to fetch need request." });
+  }
+};

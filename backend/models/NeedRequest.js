@@ -40,6 +40,7 @@ const needRequestSchema = new Schema(
         "Fulfilled",
         "Rejected",
         "Expired",
+        "Matched",
         "Canceled",
         "Completed",
       ],

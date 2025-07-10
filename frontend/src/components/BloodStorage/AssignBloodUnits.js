@@ -6,6 +6,7 @@ import "./AssignBloodUnits.css";
 import "../../styles/colors.css";
 import "../../styles/tables.css";
 import "../../styles/blood-badges.css";
+import FindNear from "../Search/FindNear";
 
 const AssignBloodUnits = () => {
   const { t } = useTranslation();
@@ -751,6 +752,9 @@ const AssignBloodUnits = () => {
         {filteredUnits.length === 0 ? (
           <div className="no-units-message">
             {t("needRequest.noCompatibleBloodUnits")}
+            <div style={{ marginTop: 24 }}>
+              <FindNear needRequestId={requestId} />
+            </div>
           </div>
         ) : (
           <div className="table-container">

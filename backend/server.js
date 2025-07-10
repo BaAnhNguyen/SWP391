@@ -18,6 +18,7 @@ const bloodUnitRoutes = require("./routes/bloodUnit");
 const blogRoutes = require("./routes/blog");
 const commentRoutes = require("./routes/comment");
 const app = express();
+const donationMatchRoutes = require("./routes/donationMatch");
 
 // Middleware
 app.use(
@@ -46,6 +47,8 @@ app.use("/api/bloodUnit", bloodUnitRoutes);
 app.use("/api/donationHistory", donationHistoryRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/comments", commentRoutes);
+
+app.use("/api/donationMatch", donationMatchRoutes);
 
 //cron
 cron.schedule("0 2 * * *", async () => {
