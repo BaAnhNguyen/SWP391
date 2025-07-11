@@ -14,14 +14,33 @@ const userSchema = new Schema(
       enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-", "unknown"],
       default: "unknown",
     },
-    identityCard: { type: String },
-    phoneNumber: { type: String },
+    identityCard: {
+      type: String,
+      required: [true, "Vui lòng nhập số CMND/CCCD"],
+      validate: {
+        validator: function (v) {
+          return /^(?:\d{9}|\d{12}|\d{13})$/.test(v);
+        },
+        message: "Số CMND/CCCD phải gồm 9, 12 hoặc 13 chữ số",
+      },
+    },
+    phoneNumber: {
+      type: String,
+      required: [true, "Vui lòng nhập số điện thoại"],
+      validate: {
+        validator: function (v) {
+          return /^(0\d{9}|(\+84)\d{9})$/.test(v);
+        },
+        message:
+          "Số điện thoại phải đúng định dạng Việt Nam, gồm 10 số bắt đầu bằng 0 hoặc +84",
+      },
+    },
     dateOfBirth: { type: Date },
     gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
     },
-    address: { type: String }, // <-- string địa chỉ đầy đủ (dễ dùng với Mapbox/Google)
+    address: { type: String },
     location: {
       type: {
         type: String,

@@ -112,19 +112,6 @@ exports.listMine = async (req, res) => {
     // Đảm bảo trả về tất cả trường dữ liệu khi gọi API
     const regs = await DonationRegistration.find({ userId }).sort("-readyDate");
 
-    console.log(`Đã tìm thấy ${regs.length} đơn đăng ký của user ${userId}`);
-
-    // Log dữ liệu screening để kiểm tra
-    regs.forEach((reg, idx) => {
-      console.log(
-        `Registration #${idx + 1} - ID: ${reg._id}, Status: ${
-          reg.status
-        }, Has screening: ${
-          reg.screening ? reg.screening.length + " items" : "No screening"
-        }`
-      );
-    });
-
     return res.json(regs);
   } catch (err) {
     console.error("Error in listMine:", err);
@@ -139,19 +126,6 @@ exports.listAll = async (req, res) => {
     const regs = await DonationRegistration.find()
       .populate("userId", "name email dateOfBirth gender phoneNumber")
       .sort("-createdAt");
-
-    console.log(`Đã tìm thấy ${regs.length} đơn đăng ký tổng cộng`);
-
-    // Log dữ liệu screening để kiểm tra
-    regs.forEach((reg, idx) => {
-      console.log(
-        `Registration #${idx + 1} - ID: ${reg._id}, Status: ${
-          reg.status
-        }, User: ${reg.userId?.name || "Unknown"}, Has screening: ${
-          reg.screening ? reg.screening.length + " items" : "No screening"
-        }`
-      );
-    });
 
     return res.json(regs);
   } catch (err) {

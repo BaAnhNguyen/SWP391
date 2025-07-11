@@ -10,6 +10,7 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [resetKey, setResetKey] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Lưu mọi trường, trong đó address (string hoặc object tuỳ bạn) và location (toạ độ)
   const [form, setForm] = useState({
@@ -84,8 +85,30 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     setError(null);
+
+    setFieldErrors({});
+    let errors = {};
+    if (!form.name.trim() || form.name.length < 2) {
+      errors.name = "Vui lòng nhập họ tên hợp lệ (tối thiểu 2 ký tự).";
+    }
+    if (
+      form.identityCard &&
+      !/^(\d{9}|\d{12})$/.test(form.identityCard.trim())
+    ) {
+      errors.identityCard = "Số CMND/CCCD phải có 9 hoặc 12 chữ số.";
+    }
+    if (form.phoneNumber && !/^0\d{9,10}$/.test(form.phoneNumber.trim())) {
+      errors.phoneNumber =
+        "Số điện thoại phải bắt đầu bằng 0 và có 10 hoặc 11 số.";
+    }
+    // Nếu có lỗi
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setLoading(true);
 
     try {
       const token = localStorage.getItem("token");
@@ -161,6 +184,9 @@ function Profile() {
             onChange={handleChange}
             required
           />
+          {fieldErrors.name && (
+            <div className="field-error">{fieldErrors.name}</div>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="email">{t("profile.email")}</label>
@@ -170,7 +196,7 @@ function Profile() {
             name="email"
             value={form.email}
             onChange={handleChange}
-            required
+            readOnly
           />
         </div>
         <div className="form-group">
@@ -202,6 +228,9 @@ function Profile() {
             value={form.identityCard}
             onChange={handleChange}
           />
+          {fieldErrors.identityCard && (
+            <div className="field-error">{fieldErrors.identityCard}</div>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="phoneNumber">{t("profile.phoneNumber")}</label>
@@ -212,6 +241,9 @@ function Profile() {
             value={form.phoneNumber}
             onChange={handleChange}
           />
+          {fieldErrors.phoneNumber && (
+            <div className="field-error">{fieldErrors.phoneNumber}</div>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="dateOfBirth">{t("profile.dateOfBirth")}</label>
@@ -232,9 +264,9 @@ function Profile() {
             onChange={handleChange}
           >
             <option value="">{t("profile.selectGender")}</option>
-            <option value="Male">{t("profile.gender.male")}</option>
-            <option value="Female">{t("profile.gender.female")}</option>
-            <option value="Other">{t("profile.gender.other")}</option>
+            <option value="Male">{t("profile.genderMale")}</option>
+            <option value="Female">{t("profile.genderFemale")}</option>
+            <option value="Other">{t("profile.genderOther")}</option>
           </select>
         </div>
         <div className="form-section-header">
@@ -254,6 +286,7 @@ function Profile() {
           }}
         />
 
+        {error && <div className="profile-error">{error}</div>}
         <button type="submit" className="update-button" disabled={loading}>
           {loading ? t("profile.updating") : t("profile.update")}
         </button>

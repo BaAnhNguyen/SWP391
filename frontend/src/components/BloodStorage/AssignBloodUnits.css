@@ -1717,3 +1717,26 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* Scrollable table: fix max-height & sticky header */
+.table-container.scrollable-table {
+  max-height: 380px;        /* hoặc 400px tùy bạn */
+  overflow-y: auto !important;
+  overflow-x: auto;
+  /* Đảm bảo không làm vỡ bo góc và shadow */
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  background: white;
+  position: relative;
+  margin-top: 20px;
+}
+
+/* Đảm bảo table luôn đủ rộng để xuất hiện scroll ngang nếu tràn */
+.blood-units-table {
+  min-width: 1000px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  font-size: 1rem;
+}

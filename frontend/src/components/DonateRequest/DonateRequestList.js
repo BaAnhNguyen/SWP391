@@ -14,6 +14,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [endDate, setEndDate] = useState("");
   const [expandedRequestId, setExpandedRequestId] = useState(null);
   const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
+  const [healthErrors, setHealthErrors] = useState({});
 
   // Health check state
   const [showHealthCheck, setShowHealthCheck] = useState(false);
@@ -39,7 +40,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
   });
   const [cancellationData, setCancellationData] = useState({
     reason: "",
-    followUpDate: "",
   });
   const [selectedId, setSelectedId] = useState(null);
 
@@ -82,7 +82,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
   useEffect(() => {
     fetchRequests();
   }, [refresh, fetchRequests]);
-  //approve/reject/cancel
+  //approve/reject
   const handleStatusUpdate = async (id, newStatus, rejectionReason = null) => {
     try {
       const token = localStorage.getItem("token");
@@ -136,7 +136,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
     });
     setCancellationData({
       reason: "",
-      followUpDate: "",
     });
     setActiveTab("complete");
     setShowHealthCheck(true);
@@ -191,10 +190,57 @@ const DonateRequestList = ({ userRole, refresh }) => {
       alert(t("donateRequest.updateError"));
     }
   };
+  function validateHealthCheck(data) {
+    const errors = {};
+    // Cân nặng: 40-150 kg
+    if (!data.weight || data.weight < 40 || data.weight > 150)
+      errors.weight = "Cân nặng phải từ 40 - 150kg";
+    // Chiều cao: 140-220 cm
+    if (!data.height || data.height < 140 || data.height > 220)
+      errors.height = "Chiều cao phải từ 140 - 220cm";
+    // Huyết áp: dạng số/số
+    if (!data.bloodPressure || !/^\d{2,3}\/\d{2,3}$/.test(data.bloodPressure))
+      errors.bloodPressure = "Huyết áp phải đúng định dạng (vd: 120/80)";
+    // Nhịp tim: 50-110 bpm
+    if (!data.heartRate || data.heartRate < 50 || data.heartRate > 110)
+      errors.heartRate = "Nhịp tim phải từ 50-110 bpm";
+    // Nồng độ cồn: phải >= 0 (bạn muốn bắt buộc hay ko?)
+    if (data.alcoholLevel && data.alcoholLevel < 0)
+      errors.alcoholLevel = "Nồng độ cồn không hợp lệ";
+    // Nhiệt độ: 36-38 °C
+    if (!data.temperature || data.temperature < 36 || data.temperature > 38)
+      errors.temperature = "Nhiệt độ phải từ 36-38°C";
+    // Hemoglobin: >= 12 (tùy giới tính), ví dụ lấy 12-18
+    if (!data.hemoglobin || data.hemoglobin < 12 || data.hemoglobin > 18)
+      errors.hemoglobin = "Hemoglobin phải từ 12-18 g/dL";
+
+    // Quantity và volume check như cũ
+    if (!data.quantity || data.quantity < 1)
+      errors.quantity = "Số lượng phải >= 1";
+    if (!data.volume || data.volume < 50)
+      errors.volume = "Thể tích tối thiểu 50ml";
+
+    if (!data.confirmedBloodGroup)
+      errors.confirmedBloodGroup = "Vui lòng chọn nhóm máu xác nhận";
+    if (!data.confirmedComponent)
+      errors.confirmedComponent = "Vui lòng chọn thành phần máu xác nhận";
+
+    return errors;
+  }
 
   const handleHealthCheckSubmit = async (e) => {
     e.preventDefault();
+
     if (!healthCheckRequest) return;
+    //validate
+    if (activeTab === "complete") {
+      const errors = validateHealthCheck(healthCheckData);
+      setHealthErrors(errors);
+      if (Object.keys(errors).length > 0) {
+        // Nếu có lỗi thì không gửi đi
+        return;
+      }
+    }
 
     try {
       // Get a fresh token from storage
@@ -311,18 +357,13 @@ const DonateRequestList = ({ userRole, refresh }) => {
           return alert(t("donateRequest.reasonRequired"));
         }
 
-        if (!cancellationData.followUpDate) {
-          return alert(t("donateRequest.followUpDateRequired"));
-        }
+        //reject
+        await handleStatusUpdate(
+          healthCheckRequest._id,
+          "Rejected",
+          cancellationData.reason.trim()
+        );
 
-        const requestData = {
-          healthCheckStatus: "canceled",
-          cancellationReason: cancellationData.reason,
-          followUpDate: cancellationData.followUpDate,
-        };
-
-        const data = await makeApiCall(requestData);
-        console.log("Cancel response data:", data);
         alert(t("donateRequest.canceledSuccessfully"));
       }
 
@@ -775,7 +816,13 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.weight}
                       onChange={handleHealthCheckChange}
                       step="0.1"
+                      className={
+                        healthErrors.weight ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.weight && (
+                      <div className="field-error">{healthErrors.weight}</div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.height")} (cm)</label>
@@ -785,7 +832,13 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.height}
                       onChange={handleHealthCheckChange}
                       step="0.1"
+                      className={
+                        healthErrors.height ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.height && (
+                      <div className="field-error">{healthErrors.height}</div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.bloodPressure")}</label>
@@ -795,7 +848,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.bloodPressure}
                       onChange={handleHealthCheckChange}
                       placeholder="120/80"
+                      className={
+                        healthErrors.bloodPressure ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.bloodPressure && (
+                      <div className="field-error">
+                        {healthErrors.bloodPressure}
+                      </div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.heartRate")} (bpm)</label>
@@ -804,7 +865,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       name="heartRate"
                       value={healthCheckData.heartRate}
                       onChange={handleHealthCheckChange}
+                      className={
+                        healthErrors.heartRate ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.heartRate && (
+                      <div className="field-error">
+                        {healthErrors.heartRate}
+                      </div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.alcoholLevel")}</label>
@@ -814,7 +883,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.alcoholLevel}
                       onChange={handleHealthCheckChange}
                       step="0.01"
+                      className={
+                        healthErrors.alcoholLevel ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.alcoholLevel && (
+                      <div className="field-error">
+                        {healthErrors.alcoholLevel}
+                      </div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.temperature")} (°C)</label>
@@ -824,7 +901,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.temperature}
                       onChange={handleHealthCheckChange}
                       step="0.1"
+                      className={
+                        healthErrors.temperature ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.temperature && (
+                      <div className="field-error">
+                        {healthErrors.temperature}
+                      </div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>{t("donateRequest.hemoglobin")} (g/dL)</label>
@@ -834,7 +919,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.hemoglobin}
                       onChange={handleHealthCheckChange}
                       step="0.1"
+                      className={
+                        healthErrors.hemoglobin ? "field-error-border" : ""
+                      }
                     />
+                    {healthErrors.hemoglobin && (
+                      <div className="field-error">
+                        {healthErrors.hemoglobin}
+                      </div>
+                    )}
                   </div>
                   <div className="form-field">
                     <label>Nhóm máu xác nhận</label>
@@ -843,6 +936,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.confirmedBloodGroup}
                       onChange={handleHealthCheckChange}
                       required
+                      className={
+                        healthErrors.confirmedBloodGroup
+                          ? "field-error-border"
+                          : ""
+                      }
                     >
                       <option value="">Chọn nhóm máu</option>
                       <option value="A+">A+</option>
@@ -854,8 +952,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       <option value="AB+">AB+</option>
                       <option value="AB-">AB-</option>
                     </select>
+                    {healthErrors.confirmedBloodGroup && (
+                      <div className="field-error">
+                        {healthErrors.confirmedBloodGroup}
+                      </div>
+                    )}
                   </div>
-                  {/* Thành phần máu xác nhận */}
                   <div className="form-field">
                     <label>Thành phần máu xác nhận</label>
                     <select
@@ -863,6 +965,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.confirmedComponent}
                       onChange={handleHealthCheckChange}
                       required
+                      className={
+                        healthErrors.confirmedComponent
+                          ? "field-error-border"
+                          : ""
+                      }
                     >
                       <option value="">Chọn thành phần</option>
                       <option value="WholeBlood">Toàn phần</option>
@@ -870,6 +977,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       <option value="Platelets">Tiểu cầu</option>
                       <option value="RedCells">Hồng cầu</option>
                     </select>
+                    {healthErrors.confirmedComponent && (
+                      <div className="field-error">
+                        {healthErrors.confirmedComponent}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -912,18 +1024,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       required
                       className="large-textarea"
                     ></textarea>
-                  </div>
-                  <div className="form-field full-width">
-                    <label>{t("donateRequest.followUpDate")}</label>
-                    <input
-                      type="date"
-                      name="followUpDate"
-                      value={cancellationData.followUpDate}
-                      onChange={handleCancellationChange}
-                      min={new Date().toISOString().split("T")[0]}
-                      required
-                      className="large-date-input"
-                    />
                   </div>
                 </div>
               )}

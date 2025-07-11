@@ -96,7 +96,6 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                   </div>
                 </div>
               </div>
-
             )}
 
             {/* Thông tin hiến máu */}
@@ -188,17 +187,6 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                   <span className="label">Lý do hủy</span>
                   <span className="value">{detail.cancellation.reason}</span>
                 </div>
-
-                <div className="info-row">
-                  <span className="label">Ngày hẹn lại</span>
-                  <span className="value">
-                    {detail.cancellation.followUpDate
-                      ? new Date(
-                          detail.cancellation.followUpDate
-                        ).toLocaleDateString()
-                      : "Chưa có"}
-                  </span>
-                </div>
               </div>
             )}
             <div className="modal-footer">
@@ -207,7 +195,6 @@ const DonateHistoryDetail = ({ id, onClose }) => {
               </button>
             </div>
           </div>
-
         )}
       </div>
 

@@ -333,6 +333,7 @@ const resources = {
       "donateRequest.nav.viewAllRequests": "View All Registration",
       "donateRequest.nav.viewMyRequests": "View Registraion",
       "donateRequest.nav.createRequest": "Register Donation",
+      "donateRequest.healthCheck": "HealthCheck",
 
       // Language Switcher
       "language.switch": "Language",
@@ -349,11 +350,12 @@ const resources = {
       "needRequest.title": "Blood Need Request",
       "needRequest.description":
         "Request blood donations for patients in need. Our community of donors is ready to help.",
+      "needRequest.nav.viewAllRequests": "View all request",
       "needRequest.bloodGroup": "Blood Group",
       "needRequest.selectBloodGroup": "Select blood group",
       "needRequest.component": "Blood Component",
       "needRequest.selectComponent": "Select component",
-      "needRequest.units": "Units Required",
+      "needRequest.unit": "Units Required",
       "needRequest.reason": "Reason for Request",
       "needRequest.reasonPlaceholder":
         "Please explain why this blood is needed (e.g., surgery, accident, ongoing treatment)",
@@ -367,7 +369,7 @@ const resources = {
       "needRequest.listTitleMy": "My Blood Need Requests",
       "needRequest.filterByStatus": "Filter by Status",
       "needRequest.allStatuses": "All Statuses",
-      "needRequest.status.open": "Pending",
+      "needRequest.status.pending": "Pending",
       "needRequest.status.fulfilled": "Fulfilled",
       "needRequest.status.completed": "Completed",
       "needRequest.status.expired": "Expired",
@@ -376,11 +378,12 @@ const resources = {
       "needRequest.assign": "Assign",
       "needRequest.assignError": "Error assigning blood units",
       "needRequest.status.assigned": "Assigned",
-      "needRequest.status.completed": "Đã hoàn tất",
       "needRequest.markCompleted": "Đánh dấu đã hoàn tất",
-      "needRequest.confirmComplete": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
+      "needRequest.confirmComplete":
+        "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
-      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
+      "needRequest.confirmDelete":
+        "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
       "needRequest.requestDetails": "Request Details",
       "needRequest.unitsRequired": "Units Required",
       "needRequest.requestedBy": "Requested By",
@@ -392,10 +395,21 @@ const resources = {
       "needRequest.appointmentDate": "Appointment Date",
       "needRequest.confirmAssignment": "Confirm Assignment",
       "needRequest.fetchBloodUnitsError": "Failed to fetch blood units",
-      "needRequest.bloodTypeNormalized": "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
-      "needRequest.confirmFulfill": "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
+      "needRequest.bloodTypeNormalized":
+        "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
+      "needRequest.confirmFulfill":
+        "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
       "needRequest.markFulfilled": "Mark as Fulfilled",
       "needRequest.fulfillError": "Error fulfilling blood request",
+      "needRequest.createdDate": "Created at",
+      "needRequest.bloodRequestType": "Blood group",
+      "needRequest.attachment": "Image",
+      "needRequest.nav.createRequest": "Register Request",
+      "needRequest.nav.searchBlood": "Search compatible blood group",
+      "needRequest.nav.viewMyRequests": "View Registration",
+      "needRequest.noCompatibleBloodUnits":
+        "Do not have enough blood unit from storage",
+      "needRequest.compatibleBloodUnits": "Compatible blood unit",
 
       // Common
       common: {
@@ -959,11 +973,12 @@ const resources = {
       "needRequest.title": "Yêu Cầu Máu",
       "needRequest.description":
         "Yêu cầu máu cho bệnh nhân cần giúp đỡ. Cộng đồng người hiến máu của chúng tôi sẵn sàng hỗ trợ.",
+      "needRequest.nav.viewAllRequests": "Đơn yêu cầu máu",
       "needRequest.bloodGroup": "Nhóm Máu",
       "needRequest.selectBloodGroup": "Chọn nhóm máu",
       "needRequest.component": "Thành Phần Máu",
       "needRequest.selectComponent": "Chọn thành phần máu",
-      "needRequest.units": "Đơn Vị",
+      "needRequest.unit": "Đơn Vị",
       "needRequest.reason": "Lý Do Yêu Cầu",
       "needRequest.reasonPlaceholder":
         "Vui lòng giải thích lý do cần máu (ví dụ: phẫu thuật, tai nạn, điều trị liên tục)",
@@ -976,35 +991,46 @@ const resources = {
       "needRequest.listTitleMy": "Yêu Cầu Máu Của Tôi",
       "needRequest.filterByStatus": "Lọc theo Trạng Thái",
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
-      "needRequest.status.open": "Chưa giải quyết",
+      "needRequest.status.pending": "Chưa giải quyết",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
       "needRequest.status.completed": "Đã Hoàn Thành",
       "needRequest.status.expired": "Đã Hết Hạn",
-      "needRequest.status.matched": "Đã Khớp",
       "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.assign": "Phân bổ",
       "needRequest.assignError": "Lỗi khi phân bổ đơn vị máu",
       "needRequest.status.assigned": "Đã phân bổ",
       "needRequest.status.completed": "Đã hoàn tất",
       "needRequest.markCompleted": "Đánh dấu đã hoàn tất",
-      "needRequest.confirmComplete": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
+      "needRequest.confirmComplete":
+        "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
-      "needRequest.confirmDelete": "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
-      "needRequest.requestDetails": "Request Details",
-      "needRequest.unitsRequired": "Units Required",
-      "needRequest.requestedBy": "Requested By",
-      "needRequest.reason": "Reason",
-      "needRequest.urgency": "Urgency",
+      "needRequest.confirmDelete":
+        "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
+      "needRequest.requestDetails": "Chi tiết đơn",
+      "needRequest.unitsRequired": "Đơn vị máu",
+      "needRequest.requestedBy": "Yêu cầu bởi",
+      "needRequest.urgency": "Mức độ nguy cấp",
       "needRequest.selectedUnits": "Selected Units",
       "needRequest.requiredUnits": "Required Units",
       "needRequest.remainingUnits": "Remaining Units",
-      "needRequest.appointmentDate": "Appointment Date",
+      "needRequest.appointmentDate": "Ngày hẹn",
       "needRequest.confirmAssignment": "Confirm Assignment",
       "needRequest.fetchBloodUnitsError": "Failed to fetch blood units",
-      "needRequest.bloodTypeNormalized": "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
-      "needRequest.confirmFulfill": "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
+      "needRequest.bloodTypeNormalized":
+        "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
+      "needRequest.confirmFulfill":
+        "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
       "needRequest.markFulfilled": "Mark as Fulfilled",
       "needRequest.fulfillError": "Error fulfilling blood request",
+      "needRequest.createdDate": "Ngày tạo đơn",
+      "needRequest.bloodRequestType": "Nhóm máu",
+      "needRequest.attachment": "Hình ảnh",
+      "needRequest.nav.createRequest": "Đăng ký nhận máu",
+      "needRequest.nav.searchBlood": "Tìm nhóm máu phù hợp",
+      "needRequest.nav.viewMyRequests": "Đơn nhận máu",
+      "needRequest.noCompatibleBloodUnits":
+        "Không còn đơn vị máu thích hợp trong kho",
+      "needRequest.compatibleBloodUnits": "Đơn vị máu thích hợp",
 
       // Common
       common: {

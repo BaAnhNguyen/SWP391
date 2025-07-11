@@ -11,7 +11,6 @@
   --status-fulfilled: #2ecc71;
   --status-completed: #17a2b8;
   --status-expired: #e67e22;
-  --status-matched: #f39c12;
 }
 
 .list-header {
@@ -144,15 +143,6 @@
   text-transform: uppercase;
 }
 
-/* Smaller badge for Matched status */
-.status-badge-matched {
-  padding: 0.1rem 0.4rem;
-  font-size: 0.6rem;
-  border-radius: 10px;
-  letter-spacing: -0.02em;
-  font-weight: 400;
-  transform: scale(0.9);
-}
 
 :root {
   --status-open: #3498db;

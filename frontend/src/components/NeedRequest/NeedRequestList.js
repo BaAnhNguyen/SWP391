@@ -175,7 +175,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      }).catch(error => {
+      }).catch((error) => {
         console.error("Network error during complete request:", error);
         throw new Error("Network error: " + error.message);
       });
@@ -219,7 +219,6 @@ const NeedRequestList = ({ userRole, refresh }) => {
     Open: "var(--status-open)",
     Pending: "var(--status-open)",
     Assigned: "var(--status-assigned)",
-    Matched: "var(--status-matched)",
     Fulfilled: "var(--status-fulfilled)",
     Completed: "var(--status-completed)",
     Expired: "var(--status-expired)",
@@ -251,9 +250,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
             className="status-filter"
           >
             <option value="all">{t("needRequest.allStatuses")}</option>
-            <option value="Open">{t("needRequest.status.open")}</option>
+            <option value="Pending">{t("needRequest.status.pending")}</option>
             <option value="Assigned">{t("needRequest.status.assigned")}</option>
-            <option value="Matched">{t("needRequest.status.matched")}</option>
             <option value="Fulfilled">
               {t("needRequest.status.fulfilled")}
             </option>
@@ -279,8 +277,9 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
-                }`}
+              className={`request-card ${
+                expandedRequestId === request._id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -305,7 +304,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   </div>
                 </div>
                 <div
-                  className={`status-badge ${request.status === "Matched" ? "status-badge-matched" : ""}`}
+                  className={`status-badge`}
                   style={{ backgroundColor: statusColors[request.status] }}
                 >
                   {t(`needRequest.status.${request.status.toLowerCase()}`)}
@@ -321,13 +320,34 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   <strong>{t("needRequest.reason")}:</strong> {request.reason}
                 </div>
 
+                {/* Ngày tạo đơn */}
+                <div className="request-created">
+                  <strong>
+                    {t("needRequest.createdDate") || "Ngày tạo đơn"}:
+                  </strong>{" "}
+                  {new Date(request.createdAt).toLocaleString()}
+                </div>
+
+                {/* Ngày hẹn nếu đã có */}
+                {request.appointmentDate &&
+                  ["Assigned", "Fulfilled", "Completed"].includes(
+                    request.status
+                  ) && (
+                    <div className="request-appointment">
+                      <strong>
+                        {t("needRequest.appointmentDate") || "Ngày hẹn"}:
+                      </strong>{" "}
+                      {new Date(request.appointmentDate).toLocaleString()}
+                    </div>
+                  )}
+
                 {request.attachment && (
                   <div className="attachment-container">
                     <strong>{t("needRequest.attachment")}:</strong>
                     <div className="image-preview">
                       {request.attachment.toLowerCase().endsWith(".jpg") ||
-                        request.attachment.toLowerCase().endsWith(".jpeg") ||
-                        request.attachment.toLowerCase().endsWith(".png") ? (
+                      request.attachment.toLowerCase().endsWith(".jpeg") ||
+                      request.attachment.toLowerCase().endsWith(".png") ? (
                         <>
                           <img
                             src={request.attachment}
@@ -337,15 +357,6 @@ const NeedRequestList = ({ userRole, refresh }) => {
                               window.open(request.attachment, "_blank");
                             }}
                           />
-                          <button
-                            className="view-full-image"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(request.attachment, "_blank");
-                            }}
-                          >
-                            {t("needRequest.fullImage")}
-                          </button>
                         </>
                       ) : (
                         <a

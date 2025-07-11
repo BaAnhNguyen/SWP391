@@ -105,3 +105,9 @@
     margin: 0;
     font-size: 1.2rem;
 }
+
+.field-error {
+  color: #e53935;
+  margin-top: 2px;
+  font-size: 0.97em;
+}

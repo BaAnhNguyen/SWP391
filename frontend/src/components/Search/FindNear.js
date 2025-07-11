@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { API_BASE_URL } from "../../config";
 
-function FindNear({ needRequestId }) {
+function FindNear({ needRequestId, excludedUserId }) {
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState({});
@@ -31,8 +31,9 @@ function FindNear({ needRequestId }) {
             const errText = await response.text();
             throw new Error(errText || `HTTP ${response.status}`);
           }
-          const data = await response.json();
-          setResult(data);
+
+          const result = await response.json();
+          setResult(result);
         } catch (err) {
           alert("Lỗi API: " + (err.message || "Không rõ nguyên nhân"));
           setResult([]);
@@ -74,16 +75,21 @@ function FindNear({ needRequestId }) {
     setSending((prev) => ({ ...prev, [user._id]: false }));
   };
 
+  //filter
+  const filteredResult = excludedUserId
+    ? result.filter((user) => user._id !== excludedUserId)
+    : result;
+
   return (
     <div>
       <button onClick={handleFindNearby} disabled={loading}>
         {loading ? "Đang tìm..." : "Tìm người hiến máu quanh tôi"}
       </button>
-      {result.length > 0 ? (
+      {filteredResult.length > 0 ? (
         <div style={{ marginTop: 16 }}>
           <h4>Kết quả gần bạn:</h4>
           <ul>
-            {result.map((user) => (
+            {filteredResult.map((user) => (
               <li key={user._id} style={{ marginBottom: 20 }}>
                 <strong>{user.name}</strong> - Nhóm máu: {user.bloodGroup}
                 <br />

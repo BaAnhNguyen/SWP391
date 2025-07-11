@@ -643,7 +643,7 @@ const AssignBloodUnits = () => {
             </div>
             <div className="info-item">
               <label>{t("needRequest.requestedBy")}:</label>
-              <span>{requestDetails.requesterName || "N/A"}</span>
+              <span>{requestDetails.createdBy.name || "N/A"}</span>
             </div>
             <div className="info-item">
               <label>{t("needRequest.reason")}:</label>
@@ -661,7 +661,7 @@ const AssignBloodUnits = () => {
         </div>
       )}
 
-      {/* Selection Summary */}
+      {/* Selection Summary
       <div className="selection-summary">
         <div className="summary-item">
           <span className="summary-label">
@@ -686,7 +686,7 @@ const AssignBloodUnits = () => {
             )}
           </span>
         </div>
-      </div>
+      </div> */}
 
       {/* Filters and Controls */}
       <div className="filters-section">
@@ -753,11 +753,14 @@ const AssignBloodUnits = () => {
           <div className="no-units-message">
             {t("needRequest.noCompatibleBloodUnits")}
             <div style={{ marginTop: 24 }}>
-              <FindNear needRequestId={requestId} />
+              <FindNear
+                needRequestId={requestId}
+                excludedUserId={requestDetails?.createdBy?._id}
+              />
             </div>
           </div>
         ) : (
-          <div className="table-container">
+          <div className="table-container scrollable-table">
             <table className="blood-units-table">
               <thead>
                 <tr>
