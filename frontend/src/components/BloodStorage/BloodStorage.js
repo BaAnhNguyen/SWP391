@@ -92,6 +92,10 @@ const BloodStorage = () => {
   const [filterEndDate, setFilterEndDate] = useState("");
   const [filterSourceType, setFilterSourceType] = useState("all");
 
+  // Pagination for inventory history
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
     BloodType: "A+",
@@ -148,6 +152,25 @@ const BloodStorage = () => {
       return false;
     return true;
   });
+
+  // Calculate pagination values
+  const totalItems = filteredBloodInventory.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterSourceType, filterStartDate, filterEndDate]);
+
+  // Get current page items
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredBloodInventory.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
   // Total bags and volume for current filter
   const totalQuantity = filteredBloodInventory.reduce(
@@ -476,7 +499,7 @@ const BloodStorage = () => {
               </thead>
               <tbody>
                 {filteredBloodInventory.length > 0 ? (
-                  filteredBloodInventory.map((unit) => {
+                  currentItems.map((unit) => {
                     const days = getDaysUntilExpiration(unit.DateExpired);
                     const isExpired = days <= 0;
                     return (
@@ -551,6 +574,112 @@ const BloodStorage = () => {
                 </tr>
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            {filteredBloodInventory.length > 0 && (
+              <div className="pagination-controls">
+                <div className="pagination-info">
+                  {t("bloodStorage.showing")} {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} {t("bloodStorage.of")} {totalItems} {t("bloodStorage.entries")}
+                </div>
+                <div className="pagination-buttons">
+                  <button
+                    onClick={prevPage}
+                    disabled={currentPage === 1}
+                    className="pagination-button"
+                  >
+                    &laquo; {t("bloodStorage.prev")}
+                  </button>
+
+                  {totalPages <= 5 ? (
+                    // Show all pages if 5 or fewer
+                    [...Array(totalPages)].map((_, i) => (
+                      <button
+                        key={i + 1}
+                        onClick={() => paginate(i + 1)}
+                        className={`pagination-button ${currentPage === i + 1 ? 'active' : ''}`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))
+                  ) : (
+                    // Show limited pages with ellipsis for many pages
+                    <>
+                      {currentPage > 2 && (
+                        <button
+                          onClick={() => paginate(1)}
+                          className="pagination-button"
+                        >
+                          1
+                        </button>
+                      )}
+
+                      {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
+
+                      {currentPage > 1 && (
+                        <button
+                          onClick={() => paginate(currentPage - 1)}
+                          className="pagination-button"
+                        >
+                          {currentPage - 1}
+                        </button>
+                      )}
+
+                      <button
+                        className="pagination-button active"
+                      >
+                        {currentPage}
+                      </button>
+
+                      {currentPage < totalPages && (
+                        <button
+                          onClick={() => paginate(currentPage + 1)}
+                          className="pagination-button"
+                        >
+                          {currentPage + 1}
+                        </button>
+                      )}
+
+                      {currentPage < totalPages - 2 && <span className="pagination-ellipsis">...</span>}
+
+                      {currentPage < totalPages - 1 && (
+                        <button
+                          onClick={() => paginate(totalPages)}
+                          className="pagination-button"
+                        >
+                          {totalPages}
+                        </button>
+                      )}
+                    </>
+                  )}
+
+                  <button
+                    onClick={nextPage}
+                    disabled={currentPage === totalPages}
+                    className="pagination-button"
+                  >
+                    {t("bloodStorage.next")} &raquo;
+                  </button>
+                </div>
+
+                <div className="items-per-page">
+                  <label>
+                    {t("bloodStorage.rowsPerPage")}:
+                    <select
+                      value={itemsPerPage}
+                      onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}

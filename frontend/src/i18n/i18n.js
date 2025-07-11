@@ -513,6 +513,13 @@ const resources = {
       "bloodStorage.daysLeft": "Days Left",
       "bloodStorage.delete": "Delete",
       "bloodStorage.noRecords": "No matching records found.",
+      "bloodStorage.showing": "Showing",
+      "bloodStorage.of": "of",
+      "bloodStorage.entries": "entries",
+      "bloodStorage.prev": "Previous",
+      "bloodStorage.next": "Next",
+      "bloodStorage.rowsPerPage": "Rows per page",
+      "bloodStorage.total": "Total",
       "bloodStorage.total": "TOTAL",
       "bloodStorage.deleteTitle": "Delete this record",
       "bloodStorage.confirmDelete":
@@ -1102,6 +1109,23 @@ const resources = {
       "bloodStorage.confirmDelete":
         "Are you sure you want to delete this blood unit?",
       "bloodStorage.noUnits": "No blood units available",
+      "bloodStorage.inventoryHistory": "Lịch Sử Kho Máu",
+      "bloodStorage.fromDate": "Từ Ngày",
+      "bloodStorage.toDate": "Đến Ngày",
+      "bloodStorage.sourceType": "Nguồn Gốc",
+      "bloodStorage.all": "Tất Cả",
+      "bloodStorage.donation": "Hiến Máu",
+      "bloodStorage.import": "Nhập Thủ Công",
+      "bloodStorage.daysLeft": "Ngày Còn Lại",
+      "bloodStorage.delete": "Xóa",
+      "bloodStorage.noRecords": "Không có kết quả phù hợp.",
+      "bloodStorage.showing": "Hiển thị",
+      "bloodStorage.of": "trong",
+      "bloodStorage.entries": "mục",
+      "bloodStorage.prev": "Trước",
+      "bloodStorage.next": "Sau",
+      "bloodStorage.rowsPerPage": "Số dòng mỗi trang",
+      "bloodStorage.total": "Tổng cộng",
 
       // Donate Request
       donateRequest: {
