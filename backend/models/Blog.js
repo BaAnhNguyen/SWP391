@@ -16,7 +16,6 @@ const blogSchema = new Schema(
       enum: ["Pending", "Approved", "Rejected"],
       default: "Pending",
     },
-    adminNote: { type: String },
   },
   { timestamps: true }
 );

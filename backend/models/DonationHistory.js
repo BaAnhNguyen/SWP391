@@ -82,10 +82,6 @@ const donationHistorySchema = new Schema(
         required: [true, "Vui lòng nhập chỉ số Hemoglobin"],
       },
     },
-    cancellation: {
-      reason: String,
-      followUpDate: Date,
-    },
     nextEligibleDate: {
       type: Date,
       required: true,
