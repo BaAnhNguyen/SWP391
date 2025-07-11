@@ -162,7 +162,7 @@
 
 .request-card.expanded .request-content {
   max-height: 500px;
-  padding: 1rem;
+  padding: 0.75rem;
   border-top: 1px solid #eee;
   display: flex;
   flex-direction: column;
@@ -176,22 +176,25 @@
 .admin-actions {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 5px;
+  clear: both;
 }
 
 .fulfill-button,
 .expire-button,
 .delete-button,
 .assign-button,
-.complete-button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+.complete-button,
+.reject-button,
+.edit-appointment-button {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  margin-right: 8px;
-  transition: all 0.2s ease;
+  margin-right: 6px;
+  margin-bottom: 5px;
 }
 
 .fulfill-button {
@@ -307,14 +310,15 @@
 .request-action-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #eee;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+  padding-top: 0.2rem;
+  border-top: 1px solid #f5f5f5;
+  clear: both;
 }
 
 .request-action-buttons button {
-  padding: 0.6rem 1.2rem;
+  padding: 0.4rem 0.9rem;
   border: none;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -517,30 +521,30 @@
 
 /* Attachment display styles */
 .attachment-container {
-  margin-top: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-top: 1px dashed #ddd;
+  margin-top: 3px;
+  padding-top: 3px;
+  padding-bottom: 0;
+  border-top: 1px dashed #eee;
   display: flex;
   flex-direction: column;
 }
 
 .image-preview {
-  margin-top: 10px;
+  margin-top: 2px;
   text-align: center;
   position: relative;
-  display: flex;
-  justify-content: center;
+  display: inline-block;
+  margin-bottom: 2px;
 }
 
 .image-preview img {
-  max-width: 150px;
-  max-height: 120px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 60px;
+  max-height: 40px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s ease;
   object-fit: contain;
+  margin-bottom: 2px;
 }
 
 .image-preview img:hover {
@@ -549,13 +553,13 @@
 
 .image-preview a {
   display: inline-block;
-  padding: 8px 15px;
+  padding: 5px 10px;
   background-color: #3498db;
   color: white;
   border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  font-size: 0.8rem;
 }
 
 .image-preview a:hover {
@@ -563,17 +567,16 @@
 }
 
 .view-full-image {
-  position: absolute;
-  right: 10px;
-  top: 10px;
+  position: relative;
   background-color: rgba(52, 152, 219, 0.8);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
+  border-radius: 2px;
+  padding: 1px 3px;
+  font-size: 0.6rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  display: inline-block;
+  margin-top: 1px;
 }
 
 .view-full-image:hover {
@@ -851,6 +854,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -897,14 +901,14 @@
 }
 
 /* Modal button container - Match blood donation style */
-.modal-content form > div:last-child {
+.modal-content form>div:last-child {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1rem;
 }
 
-.modal-content form > div:last-child button {
+.modal-content form>div:last-child button {
   padding: 0.8rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -915,22 +919,22 @@
   min-width: 100px;
 }
 
-.modal-content form > div:last-child button[type="button"] {
+.modal-content form>div:last-child button[type="button"] {
   background: #95a5a6;
   color: white;
 }
 
-.modal-content form > div:last-child button[type="button"]:hover {
+.modal-content form>div:last-child button[type="button"]:hover {
   background: #7f8c8d;
   transform: translateY(-2px);
 }
 
-.modal-content form > div:last-child button[type="submit"] {
+.modal-content form>div:last-child button[type="submit"] {
   background: #e74c3c;
   color: white;
 }
 
-.modal-content form > div:last-child button[type="submit"]:hover {
+.modal-content form>div:last-child button[type="submit"]:hover {
   background: #c0392b;
   transform: translateY(-2px);
 }
@@ -955,6 +959,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

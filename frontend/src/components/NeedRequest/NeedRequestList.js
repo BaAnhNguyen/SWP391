@@ -334,9 +334,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -415,16 +414,27 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <strong>{t("needRequest.attachment")}:</strong>
                     <div className="image-preview">
                       {request.attachment.toLowerCase().endsWith(".jpg") ||
-                      request.attachment.toLowerCase().endsWith(".jpeg") ||
-                      request.attachment.toLowerCase().endsWith(".png") ? (
-                        <img
-                          src={request.attachment}
-                          alt="Request attachment"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(request.attachment, "_blank");
-                          }}
-                        />
+                        request.attachment.toLowerCase().endsWith(".jpeg") ||
+                        request.attachment.toLowerCase().endsWith(".png") ? (
+                        <>
+                          <img
+                            src={request.attachment}
+                            alt="Request attachment"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(request.attachment, "_blank");
+                            }}
+                          />
+                          <button
+                            className="view-full-image"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(request.attachment, "_blank");
+                            }}
+                          >
+                            {t("needRequest.fullImage") || "View Image"}
+                          </button>
+                        </>
                       ) : (
                         <a
                           href={request.attachment}
@@ -480,8 +490,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
                                 request._id,
                                 request.appointmentDate
                                   ? new Date(request.appointmentDate)
-                                      .toISOString()
-                                      .slice(0, 16)
+                                    .toISOString()
+                                    .slice(0, 16)
                                   : ""
                               );
                             }}
