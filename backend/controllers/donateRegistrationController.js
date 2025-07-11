@@ -7,10 +7,6 @@ const BloodUnit = require("../models/BloodUnit");
 //member create donation
 exports.create = async (req, res) => {
   try {
-    console.log(
-      "Nhận request tạo đơn hiến máu:",
-      JSON.stringify(req.body, null, 2)
-    );
     const { bloodGroup, component, readyDate, screening, confirmation } =
       req.body;
     const userId = req.user._id;
@@ -20,6 +16,23 @@ exports.create = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    // // Kiểm tra ngày đủ điều kiện hiến máu tiếp theo
+    // const lastHistory = await DonationHistory.findOne({ userId: userId }).sort({
+    //   donationDate: -1,
+    // });
+    // if (lastHistory && lastHistory.nextEligibleDate) {
+    //   const today = setToStartOfDay(new Date());
+    //   const eligible = setToStartOfDay(new Date(lastHistory.nextEligibleDate));
+    //   if (today < eligible) {
+    //     return res.status(400).json({
+    //       message: `Bạn chỉ có thể đăng ký hiến máu sau ngày ${eligible.toLocaleDateString(
+    //         "vi-VN"
+    //       )}`,
+    //       nextEligibleDate: eligible,
+    //     });
+    //   }
+    // }
 
     //valide update profile
     if (
@@ -203,15 +216,12 @@ exports.complete = async (req, res) => {
       quantity,
       volume,
       healthCheck,
-      cancellationReason,
-      followUpDate,
       confirmedBloodGroup,
       confirmedComponent,
     } = req.body;
 
     // Lấy đơn đăng ký & user song song
-    const regPromise = DonationRegistration.findById(id);
-    let reg = await regPromise;
+    const reg = await DonationRegistration.findById(id);
     if (!reg) {
       return res.status(404).json({ message: "Registration not found" });
     }
@@ -219,10 +229,10 @@ exports.complete = async (req, res) => {
     if (reg.status !== "Approved") {
       return res.status(400).json({ message: "Must be approved first" });
     }
-    if (!healthCheckStatus) {
-      return res
-        .status(400)
-        .json({ message: "Health check status is required" });
+    if (!healthCheckStatus || healthCheckStatus !== "completed") {
+      return res.status(400).json({
+        message: "Health check status is required and must be 'completed'",
+      });
     }
 
     // Lấy user (dùng nhiều lần phía dưới)
@@ -238,189 +248,136 @@ exports.complete = async (req, res) => {
     const donationDate = new Date();
     const nextEligibleDate = calNextEligible(reg.component, donationDate);
 
-    if (healthCheckStatus === "completed") {
-      // Validate input
-      const qty = parseInt(quantity);
-      if (isNaN(qty) || qty < 1)
-        return res.status(400).json({ message: "Valid quantity is required" });
+    // Validate input
+    const qty = parseInt(quantity);
+    if (isNaN(qty) || qty < 1)
+      return res.status(400).json({ message: "Valid quantity is required" });
 
-      let vol = parseInt(volume);
-      if (isNaN(vol) || vol < 50) vol = qty * 350;
+    let vol = parseInt(volume);
+    if (isNaN(vol) || vol < 50) vol = qty * 350;
 
-      if (
-        !confirmedBloodGroup ||
-        confirmedBloodGroup === "unknown" ||
-        !confirmedComponent ||
-        confirmedComponent === "unknown"
-      ) {
-        return res.status(400).json({
-          message: "Must enter blood group and component in case unknown",
-        });
-      }
-
-      // Gom các thay đổi để chỉ gọi reg.save() 1 lần
-      let regChanged = false;
-      if (confirmedBloodGroup && confirmedBloodGroup !== reg.bloodGroup) {
-        reg.bloodGroup = confirmedBloodGroup;
-        regChanged = true;
-        if (user && user.bloodGroup !== confirmedBloodGroup) {
-          user.bloodGroup = confirmedBloodGroup;
-          await user.save(); // update user ngay, vì có thể còn dùng user phía sau
-        }
-      }
-      if (confirmedComponent && confirmedComponent !== reg.component) {
-        reg.component = confirmedComponent;
-        regChanged = true;
-      }
-
-      const donationHistoryData = {
-        userId: reg.userId,
-        donationDate,
-        bloodGroup: confirmedBloodGroup || reg.bloodGroup,
-        component: confirmedComponent || reg.component,
-        status: "Completed",
-        quantity: qty,
-        volume: vol,
-        healthCheck: healthCheck || {},
-        nextEligibleDate,
-      };
-
-      // Tạo lịch sử hiến máu
-      let donationHistory;
-      try {
-        donationHistory = await DonationHistory.create(donationHistoryData);
-      } catch (err) {
-        return res.status(500).json({
-          message: "Error creating donation history",
-          error: err.message,
-        });
-      }
-
-      // Update registration status và các trường liên quan trong 1 lần save duy nhất
-      reg.status = "Completed";
-      reg.historyId = donationHistory._id;
-      reg.completedAt = donationDate;
-      if (req.user && req.user._id) reg.completedBy = req.user._id;
-      regChanged = true;
-
-      if (regChanged) {
-        try {
-          await reg.save();
-        } catch (err) {
-          return res.status(500).json({
-            message: "Error updating registration",
-            error: err.message,
-          });
-        }
-      }
-
-      // Tạo BloodUnit, mỗi đơn vị 1 record riêng
-      try {
-        const dateAdded = new Date();
-        let dateExpired = new Date(dateAdded);
-        switch (donationHistoryData.component) {
-          case "WholeBlood":
-          case "RedCells":
-            dateExpired.setDate(dateExpired.getDate() + 35);
-            break;
-          case "Plasma":
-            dateExpired.setDate(dateExpired.getDate() + 365);
-            break;
-          case "Platelets":
-            dateExpired.setDate(dateExpired.getDate() + 5);
-            break;
-        }
-        const bloodUnits = [];
-        for (let i = 0; i < qty; i++) {
-          bloodUnits.push({
-            BloodType: donationHistoryData.bloodGroup,
-            ComponentType: donationHistoryData.component,
-            Quantity: 1,
-            Volume: vol, // hoặc vol / qty nếu volume là tổng
-            DateAdded: dateAdded,
-            DateExpired: dateExpired,
-            SourceType: "donation",
-            SourceRef: donationHistory._id,
-            donorName: user?.name,
-            donorId: user?._id,
-          });
-        }
-        await BloodUnit.insertMany(bloodUnits);
-      } catch (err) {
-        // Không cản trở flow, chỉ log
-        console.error("Error when add blood to inventory", err);
-      }
-
-      // Gửi mail như cũ (có await, client sẽ đợi gửi mail xong)
-      let emailSent = false;
-      try {
-        if (reg.userId && reg.userId.email) {
-          await sendMail(reg.userId.email, reg.userId.name, nextEligibleDate);
-          emailSent = true;
-        }
-      } catch (emailError) {
-        // Không chặn flow, chỉ log
-      }
-
-      return res.json({
-        message: emailSent
-          ? "Donation completed. An email has been sent to member"
-          : "Donation completed. However, the email could not be sent",
-        nextEligibleDate,
-        donationHistoryId: donationHistory._id,
-      });
-    } else if (healthCheckStatus === "canceled") {
-      // Validate input
-      if (!cancellationReason || !cancellationReason.trim()) {
-        return res
-          .status(400)
-          .json({ message: "Cancellation reason is required" });
-      }
-      const followUpDateObj = new Date(followUpDate);
-      if (isNaN(followUpDateObj.getTime())) {
-        return res
-          .status(400)
-          .json({ message: "Invalid follow-up date format" });
-      }
-
-      // Update trạng thái hủy trong 1 lần save
-      reg.status = "Cancelled";
-      reg.rejectionReason = cancellationReason;
-      reg.nextReadyDate = followUpDateObj;
-      await reg.save();
-
-      //create don moi in case cancel
-      let newRegistration = null;
-      let newRegData = {
-        userId: reg.userId,
-        bloodGroup: reg.bloodGroup,
-        component: reg.component,
-        readyDate: new Date(reg.nextReadyDate),
-        screening: reg.screening,
-        confirmation: reg.confirmation,
-        status: "Approved",
-      };
-      console.log(newRegData);
-
-      try {
-        newRegistration = await DonationRegistration.create(newRegData);
-      } catch (err) {
-        return res.statsu(500).json({
-          message: "Faild to create new registration",
-          error: err.message,
-          data: newRegData,
-        });
-      }
-      return res.json({
-        message: "Donation canceled and follow-up appointment scheduled",
-        followUpDate: followUpDateObj,
-      });
-    } else {
+    if (
+      !confirmedBloodGroup ||
+      confirmedBloodGroup === "unknown" ||
+      !confirmedComponent ||
+      confirmedComponent === "unknown"
+    ) {
       return res.status(400).json({
-        message:
-          "Invalid health check status. Must be 'completed' or 'canceled'.",
+        message: "Must enter blood group and component in case unknown",
       });
     }
+
+    // Gom các thay đổi để chỉ gọi reg.save() 1 lần
+    let regChanged = false;
+    if (confirmedBloodGroup && confirmedBloodGroup !== reg.bloodGroup) {
+      reg.bloodGroup = confirmedBloodGroup;
+      regChanged = true;
+      if (user && user.bloodGroup !== confirmedBloodGroup) {
+        user.bloodGroup = confirmedBloodGroup;
+        await user.save();
+      }
+    }
+    if (confirmedComponent && confirmedComponent !== reg.component) {
+      reg.component = confirmedComponent;
+      regChanged = true;
+    }
+
+    const donationHistoryData = {
+      userId: reg.userId,
+      donationDate,
+      bloodGroup: confirmedBloodGroup || reg.bloodGroup,
+      component: confirmedComponent || reg.component,
+      status: "Completed",
+      quantity: qty,
+      volume: vol,
+      healthCheck: healthCheck || {},
+      nextEligibleDate,
+    };
+
+    // Tạo lịch sử hiến máu
+    let donationHistory;
+    try {
+      donationHistory = await DonationHistory.create(donationHistoryData);
+    } catch (err) {
+      return res.status(500).json({
+        message: "Error creating donation history",
+        error: err.message,
+      });
+    }
+
+    // Update registration status và các trường liên quan trong 1 lần save duy nhất
+    reg.status = "Completed";
+    reg.historyId = donationHistory._id;
+    reg.completedAt = donationDate;
+    if (req.user && req.user._id) reg.completedBy = req.user._id;
+    regChanged = true;
+
+    if (regChanged) {
+      try {
+        await reg.save();
+      } catch (err) {
+        return res.status(500).json({
+          message: "Error updating registration",
+          error: err.message,
+        });
+      }
+    }
+
+    // Tạo BloodUnit, mỗi đơn vị 1 record riêng
+    try {
+      const dateAdded = new Date();
+      let dateExpired = new Date(dateAdded);
+      switch (donationHistoryData.component) {
+        case "WholeBlood":
+        case "RedCells":
+          dateExpired.setDate(dateExpired.getDate() + 35);
+          break;
+        case "Plasma":
+          dateExpired.setDate(dateExpired.getDate() + 365);
+          break;
+        case "Platelets":
+          dateExpired.setDate(dateExpired.getDate() + 5);
+          break;
+      }
+      const bloodUnits = [];
+      for (let i = 0; i < qty; i++) {
+        bloodUnits.push({
+          BloodType: donationHistoryData.bloodGroup,
+          ComponentType: donationHistoryData.component,
+          Quantity: 1,
+          Volume: vol,
+          DateAdded: dateAdded,
+          DateExpired: dateExpired,
+          SourceType: "donation",
+          SourceRef: donationHistory._id,
+          donorName: user?.name,
+          donorId: user?._id,
+        });
+      }
+      await BloodUnit.insertMany(bloodUnits);
+    } catch (err) {
+      // Không cản trở flow, chỉ log
+      console.error("Error when add blood to inventory", err);
+    }
+
+    // Gửi mail như cũ (có await, client sẽ đợi gửi mail xong)
+    let emailSent = false;
+    try {
+      if (reg.userId && reg.userId.email) {
+        await sendMail(reg.userId.email, reg.userId.name, nextEligibleDate);
+        emailSent = true;
+      }
+    } catch (emailError) {
+      // Không chặn flow, chỉ log
+    }
+
+    return res.json({
+      message: emailSent
+        ? "Donation completed. An email has been sent to member"
+        : "Donation completed. However, the email could not be sent",
+      nextEligibleDate,
+      donationHistoryId: donationHistory._id,
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

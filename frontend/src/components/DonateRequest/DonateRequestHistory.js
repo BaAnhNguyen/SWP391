@@ -77,7 +77,7 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                     )}
                     {detail.userId.dateOfBirth && (
                       <div>
-                        Ngày sinh{" "}
+                        Ngày sinh:{" "}
                         {new Date(
                           detail.userId.dateOfBirth
                         ).toLocaleDateString()}
@@ -85,10 +85,10 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                     )}
                     {detail.userId.gender && (
                       <div>
-                        Giới tính{" "}
-                        {detail.userId.gender === "male"
+                        Giới tính:{" "}
+                        {detail.userId.gender === "Male"
                           ? "Nam"
-                          : detail.userId.gender === "female"
+                          : detail.userId.gender === "Female"
                           ? "Nữ"
                           : detail.userId.gender}
                       </div>

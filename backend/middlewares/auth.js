@@ -28,6 +28,12 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    if (user.isBanned) {
+      return res
+        .status(403)
+        .json({ message: "Tài khoản của bạn đã bị khóa bởi quản trị viên." });
+    }
+
     req.user = user;
     console.log(
       "Authentication successful for user:",

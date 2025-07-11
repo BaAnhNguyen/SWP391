@@ -14,32 +14,35 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [expandedRequestId, setExpandedRequestId] = useState(null);
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
+  // Reject modal state
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectRequestId, setRejectRequestId] = useState(null);
+  const [rejectError, setRejectError] = useState("");
+
+  // Appointment modal state
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentRequestId, setAppointmentRequestId] = useState(null);
+  const [appointmentError, setAppointmentError] = useState("");
+
+  // Fetch requests
   const fetchRequests = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
-      // Use different endpoints based on user role
+      if (!token) throw new Error(t("common.notAuthenticated"));
       const endpoint = isStaff
         ? `${API_BASE_URL}/needrequest/all`
         : `${API_BASE_URL}/needrequest/my`;
-
       const response = await fetch(endpoint, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.fetchError"));
       }
-
       const data = await response.json();
       setRequests(data);
     } catch (err) {
@@ -54,13 +57,11 @@ const NeedRequestList = ({ userRole, refresh }) => {
     fetchRequests();
   }, [refresh, fetchRequests]);
 
+  // ----------- Handler functions -----------
   const handleStatusUpdate = async (id, newStatus) => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
+      if (!token) throw new Error(t("common.notAuthenticated"));
       const response = await fetch(`${API_BASE_URL}/needrequest/${id}/status`, {
         method: "PATCH",
         headers: {
@@ -69,62 +70,137 @@ const NeedRequestList = ({ userRole, refresh }) => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.updateError"));
       }
-
-      // Refresh the requests list
       fetchRequests();
     } catch (err) {
       setError(err.message);
-      console.error("Error updating request status:", err);
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm(t("needRequest.confirmDelete"))) return;
-
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
+      if (!token) throw new Error(t("common.notAuthenticated"));
       const response = await fetch(`${API_BASE_URL}/needrequest/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.deleteError"));
       }
-
-      // Refresh the requests list
       fetchRequests();
     } catch (err) {
       setError(err.message);
-      console.error("Error deleting request:", err);
     }
   };
 
-  const handleAssign = (id) => {
-    // Navigate to the dedicated assign blood units page
-    navigate(`/staff/assign-blood-units/${id}`);
+  // ----- Reject modal handlers -----
+  const openRejectModal = (requestId) => {
+    setRejectRequestId(requestId);
+    setRejectReason("");
+    setRejectError("");
+    setShowRejectModal(true);
+  };
+  const closeRejectModal = () => {
+    setShowRejectModal(false);
+    setRejectRequestId(null);
+    setRejectReason("");
+    setRejectError("");
+  };
+  const handleRejectSubmit = async (e) => {
+    e.preventDefault();
+    if (!rejectReason.trim()) {
+      setRejectError("Vui lòng nhập lý do từ chối!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error(t("common.notAuthenticated"));
+      const response = await fetch(
+        `${API_BASE_URL}/needrequest/reject/${rejectRequestId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ reason: rejectReason.trim() }),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.message || t("needRequest.rejectError"));
+      alert(result.message || "Đã từ chối đơn!");
+      fetchRequests();
+      closeRejectModal();
+    } catch (err) {
+      setRejectError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // ----- Appointment modal handlers -----
+  const openAppointmentModal = (requestId, currentDate) => {
+    setAppointmentRequestId(requestId);
+    setAppointmentDate(currentDate ? currentDate.substring(0, 16) : "");
+    setAppointmentError("");
+    setShowAppointmentModal(true);
+  };
+  const closeAppointmentModal = () => {
+    setShowAppointmentModal(false);
+    setAppointmentRequestId(null);
+    setAppointmentDate("");
+    setAppointmentError("");
+  };
+  const handleAppointmentSubmit = async (e) => {
+    e.preventDefault();
+    if (!appointmentDate) {
+      setAppointmentError("Vui lòng chọn ngày giờ hẹn!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error(t("common.notAuthenticated"));
+      const response = await fetch(
+        `${API_BASE_URL}/needrequest/${appointmentRequestId}/appointment`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ appointmentDate }),
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Đổi ngày thất bại!");
+      alert(result.message || "Đã đổi ngày hẹn thành công!");
+      fetchRequests();
+      closeAppointmentModal();
+    } catch (err) {
+      setAppointmentError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ----- Other handlers -----
+  const handleAssign = (id) => {
+    navigate(`/staff/assign-blood-units/${id}`);
+  };
   const handleFulfillRequest = async (id) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
+      if (!token) throw new Error(t("common.notAuthenticated"));
       const response = await fetch(
         `${API_BASE_URL}/needrequest/fulfill/${id}`,
         {
@@ -135,62 +211,41 @@ const NeedRequestList = ({ userRole, refresh }) => {
           },
         }
       );
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.fulfillError"));
       }
-
       const result = await response.json();
-      alert(result.message); // Show success message
-      fetchRequests(); // Refresh the list
+      alert(result.message);
+      fetchRequests();
     } catch (err) {
       setError(err.message);
-      console.error("Error fulfilling request:", err);
     } finally {
       setLoading(false);
     }
   };
-
   const handleCompleteRequest = async (id) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error(t("common.notAuthenticated"));
-      }
-
-      // Debug logging
-      console.log(`API_BASE_URL value: ${API_BASE_URL}`);
-      console.log(`Attempting to complete request with ID: ${id}`);
-
-      // Make sure we have the correct path format
+      if (!token) throw new Error(t("common.notAuthenticated"));
       const completeUrl = `${API_BASE_URL}/needrequest/complete/${id}`;
-      console.log(`Complete URL: ${completeUrl}`);
-
-      // Make the request with proper error handling
       const response = await fetch(completeUrl, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      }).catch((error) => {
-        console.error("Network error during complete request:", error);
-        throw new Error("Network error: " + error.message);
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.completeError"));
       }
-
       const result = await response.json();
-      alert(result.message); // Show success message
-      fetchRequests(); // Refresh the list
+      alert(result.message);
+      fetchRequests();
     } catch (err) {
       setError(err.message);
-      console.error("Error completing request:", err);
     } finally {
       setLoading(false);
     }
@@ -199,7 +254,6 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const toggleExpandRequest = (id) => {
     setExpandedRequestId(expandedRequestId === id ? null : id);
   };
-
   const getComponentTranslation = (component) => {
     const componentMap = {
       WholeBlood: t("bloodStorage.wholeBlood"),
@@ -221,11 +275,13 @@ const NeedRequestList = ({ userRole, refresh }) => {
     Assigned: "var(--status-assigned)",
     Fulfilled: "var(--status-fulfilled)",
     Completed: "var(--status-completed)",
+    Rejected: "var(--status-cancelled)",
     Expired: "var(--status-expired)",
   };
 
   if (loading) return <div className="loading">{t("common.loading")}</div>;
   if (error) return <div className="error">{error}</div>;
+
   return (
     <div className="need-request-list-container">
       <div className="list-header">
@@ -258,6 +314,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <option value="Completed">
               {t("needRequest.status.completed")}
             </option>
+            <option value="Rejected">{t("needRequest.status.rejected")}</option>
             <option value="Expired">{t("needRequest.status.expired")}</option>
           </select>
           <button
@@ -294,7 +351,6 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <span className="request-by">
                       {request.createdBy?.name || "Unknown"}
                     </span>
-
                     <span className="units">
                       {request.units}{" "}
                       {request.units === 1
@@ -319,6 +375,19 @@ const NeedRequestList = ({ userRole, refresh }) => {
                 <div className="request-reason">
                   <strong>{t("needRequest.reason")}:</strong> {request.reason}
                 </div>
+
+                {/* Hiển thị lý do từ chối nếu request bị rejected */}
+                {request.status === "Rejected" && (
+                  <div className="rejection-reason">
+                    <strong>
+                      {t("needRequest.rejectionReason") || "Lý do từ chối"}:
+                    </strong>{" "}
+                    {request.rejectionReason ||
+                      request.rejectReason ||
+                      request.reason ||
+                      "Không có lý do cụ thể"}
+                  </div>
+                )}
 
                 {/* Ngày tạo đơn */}
                 <div className="request-created">
@@ -348,16 +417,14 @@ const NeedRequestList = ({ userRole, refresh }) => {
                       {request.attachment.toLowerCase().endsWith(".jpg") ||
                       request.attachment.toLowerCase().endsWith(".jpeg") ||
                       request.attachment.toLowerCase().endsWith(".png") ? (
-                        <>
-                          <img
-                            src={request.attachment}
-                            alt="Request attachment"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(request.attachment, "_blank");
-                            }}
-                          />
-                        </>
+                        <img
+                          src={request.attachment}
+                          alt="Request attachment"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(request.attachment, "_blank");
+                          }}
+                        />
                       ) : (
                         <a
                           href={request.attachment}
@@ -372,101 +439,74 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   </div>
                 )}
 
-                {isStaff && request.status === "Open" && (
-                  <div className="admin-actions">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(request._id, "Fulfilled");
-                      }}
-                      className="fulfill-button"
-                    >
-                      {t("needRequest.markFulfilled")}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStatusUpdate(request._id, "Expired");
-                      }}
-                      className="expire-button"
-                    >
-                      {t("needRequest.markExpired")}
-                    </button>
-                  </div>
-                )}
-
+                {/* ACTION BUTTONS */}
                 <div className="request-action-buttons">
-                  {/* Staff actions for Open/Pending requests */}
+                  {/* Staff actions cho Pending hoặc Assigned */}
                   {isStaff &&
-                    (request.status === "Open" ||
-                      request.status === "Pending") && (
+                    (request.status === "Pending" ||
+                      request.status === "Assigned") && (
                       <>
+                        {/* Pending thì có nút giao túi máu */}
+                        {request.status === "Pending" && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAssign(request._id);
+                            }}
+                            className="assign-button"
+                          >
+                            {t("needRequest.assign")}
+                          </button>
+                        )}
+
+                        {/* Nút từ chối, luôn có cho Pending/Assigned */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleAssign(request._id);
+                            openRejectModal(request._id);
                           }}
-                          className="assign-button"
+                          className="reject-button"
+                          style={{ marginLeft: 8 }}
                         >
-                          {t("needRequest.assign")}
+                          {t("needRequest.reject")}
                         </button>
 
+                        {/* Assigned mới có nút đổi ngày hẹn */}
+                        {request.status === "Assigned" && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openAppointmentModal(
+                                request._id,
+                                request.appointmentDate
+                                  ? new Date(request.appointmentDate)
+                                      .toISOString()
+                                      .slice(0, 16)
+                                  : ""
+                              );
+                            }}
+                            className="edit-appointment-button"
+                            style={{ marginLeft: 8 }}
+                          >
+                            Đổi ngày hẹn
+                          </button>
+                        )}
+
+                        {/* Nút xóa */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(request._id);
                           }}
                           className="delete-button"
+                          style={{ marginLeft: 8 }}
                         >
                           {t("common.delete")}
                         </button>
                       </>
                     )}
 
-                  {/* Staff action for Assigned requests */}
-                  {isStaff && request.status === "Assigned" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (window.confirm(t("needRequest.confirmFulfill"))) {
-                          handleFulfillRequest(request._id);
-                        }
-                      }}
-                      className="fulfill-button"
-                    >
-                      {t("needRequest.markFulfilled")}
-                    </button>
-                  )}
-
-                  {/* Member action for Fulfilled requests */}
-                  {!isStaff && request.status === "Fulfilled" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (window.confirm(t("needRequest.confirmComplete"))) {
-                          handleCompleteRequest(request._id);
-                        }
-                      }}
-                      className="complete-button"
-                    >
-                      {t("needRequest.markCompleted")}
-                    </button>
-                  )}
-
-                  {/* Delete button for completed requests - available to both staff and members */}
-                  {request.status === "Completed" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(request._id);
-                      }}
-                      className="delete-button"
-                    >
-                      {t("common.delete")}
-                    </button>
-                  )}
-
-                  {/* Staff delete button for Fulfilled, Assigned, Expired requests */}
+                  {/* Staff action cho Fulfilled, Expired, Rejected */}
                   {isStaff &&
                     (request.status === "Fulfilled" ||
                       request.status === "Expired" ||
@@ -484,8 +524,36 @@ const NeedRequestList = ({ userRole, refresh }) => {
                       </button>
                     )}
 
-                  {/* Member action for Open requests */}
+                  {/* Member action cho Open */}
                   {!isStaff && request.status === "Open" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(request._id);
+                      }}
+                      className="delete-button"
+                    >
+                      {t("common.delete")}
+                    </button>
+                  )}
+
+                  {/* Member action cho Fulfilled */}
+                  {!isStaff && request.status === "Fulfilled" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(t("needRequest.confirmComplete"))) {
+                          handleCompleteRequest(request._id);
+                        }
+                      }}
+                      className="complete-button"
+                    >
+                      {t("needRequest.markCompleted")}
+                    </button>
+                  )}
+
+                  {/* Delete button for completed requests */}
+                  {request.status === "Completed" && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -500,6 +568,69 @@ const NeedRequestList = ({ userRole, refresh }) => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal từ chối */}
+      {showRejectModal && (
+        <div className="modal-overlay" onClick={closeRejectModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Lý do từ chối</h3>
+            <form onSubmit={handleRejectSubmit}>
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                rows={3}
+                placeholder="Nhập lý do từ chối"
+                autoFocus
+              />
+              {rejectError && <div className="field-error">{rejectError}</div>}
+              <div style={{ marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={closeRejectModal}
+                  style={{ marginRight: 8 }}
+                >
+                  Hủy
+                </button>
+                <button type="submit" className="reject-button">
+                  Xác nhận từ chối
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal đổi ngày hẹn */}
+      {showAppointmentModal && (
+        <div className="modal-overlay" onClick={closeAppointmentModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Đổi ngày hẹn</h3>
+            <form onSubmit={handleAppointmentSubmit}>
+              <input
+                type="datetime-local"
+                value={appointmentDate}
+                onChange={(e) => setAppointmentDate(e.target.value)}
+                required
+              />
+              {appointmentError && (
+                <div className="field-error">{appointmentError}</div>
+              )}
+              <div style={{ marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={closeAppointmentModal}
+                  style={{ marginRight: 8 }}
+                >
+                  Hủy
+                </button>
+                <button type="submit" className="assign-button">
+                  Xác nhận đổi ngày
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

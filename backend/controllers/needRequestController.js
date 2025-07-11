@@ -349,19 +349,29 @@ exports.rejectBloodRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
     const { reason } = req.body;
+
     if (!reason) {
       return res.status(400).json({ message: "Rejection reason is required." });
     }
 
-    const request = await NeedRequest.findByIdAndUpdate(
-      requestId,
-      { status: "Rejected", rejectionReason: reason },
-      { new: true }
-    );
-
+    // Lấy thông tin request hiện tại
+    const request = await NeedRequest.findById(requestId);
     if (!request) {
       return res.status(404).json({ message: "Need request not found" });
     }
+
+    // Nếu đã assign máu, phải giải phóng các túi máu
+    if (request.status === "Assigned") {
+      await BloodUnit.updateMany(
+        { assignedToRequestId: request._id },
+        { $unset: { assignedToRequestId: "" } }
+      );
+    }
+
+    // Đánh dấu từ chối + lưu lý do
+    request.status = "Rejected";
+    request.rejectionReason = reason;
+    await request.save();
 
     res.status(200).json({ message: "Request rejected.", request });
   } catch (error) {
@@ -446,5 +456,31 @@ exports.inviteDonor = async (req, res) => {
     await sendMail(donor.email, subject, html);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+//update date
+exports.updateAppointmentDate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { appointmentDate } = req.body;
+
+    const request = await NeedRequest.findById(id);
+    if (!request)
+      return res.status(404).json({ message: "Need request not found" });
+
+    // Chỉ cho đổi ngày khi trạng thái là Assigned (hoặc tùy ý bạn thêm Fulfilled)
+    if (request.status !== "Assigned") {
+      return res.status(400).json({
+        message: "Only assigned requests can update appointment date",
+      });
+    }
+
+    request.appointmentDate = appointmentDate;
+    await request.save();
+
+    return res.json({ message: "Appointment date updated", request });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 };

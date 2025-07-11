@@ -10,6 +10,7 @@
   --status-assigned: #9b59b6;
   --status-fulfilled: #2ecc71;
   --status-completed: #17a2b8;
+  --status-cancelled: #e74c3c;
   --status-expired: #e67e22;
 }
 
@@ -149,6 +150,7 @@
   --status-assigned: #9b59b6;
   --status-fulfilled: #2ecc71;
   --status-completed: #17a2b8;
+  --status-cancelled: #e74c3c;
   --status-expired: #e67e22;
 }
 
@@ -182,23 +184,25 @@
 .delete-button,
 .assign-button,
 .complete-button {
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
   margin-right: 8px;
-  display: inline-flex;
-  align-items: center;
+  transition: all 0.2s ease;
 }
 
 .fulfill-button {
   background-color: #2ecc71;
   color: white;
-  font-size: 1rem;
-  padding: 10px 20px;
-  font-weight: bold;
+}
+
+.fulfill-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
 }
 
 
@@ -213,23 +217,56 @@
 .delete-button {
   background-color: #e74c3c;
   color: white;
-  font-size: 0.9rem;
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 4px;
-  border: none;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .assign-button {
   background-color: #2ecc71;
   color: white;
-  font-size: 0.9rem;
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 30px;
-  border: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+}
+
+.assign-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+}
+
+.reject-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.reject-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.edit-appointment-button {
+  background-color: #f39c12;
+  color: white;
+}
+
+.edit-appointment-button:hover {
+  background-color: #e67e22;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .complete-button {
@@ -237,23 +274,56 @@
   color: white;
 }
 
+.complete-button:hover {
+  background-color: #138496;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+}
+
+.fulfill-button {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.fulfill-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+}
+
+.expire-button {
+  background-color: #f39c12;
+  color: white;
+}
+
+.expire-button:hover {
+  background-color: #e67e22;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
 
 
 .request-action-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
 }
 
-.request-action-buttons .assign-button,
-.request-action-buttons .delete-button,
-.request-action-buttons .complete-button,
-.request-action-buttons .fulfill-button {
-  flex: 1;
-  min-width: 120px;
-  max-width: 200px;
-  margin: 0;
+.request-action-buttons button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .loading {
@@ -270,21 +340,24 @@
   margin-bottom: 1.5rem;
 }
 
-/* Modal styles */
+/* Modal styles - Updated for better compatibility */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.3s ease;
 }
 
-.modal-content {
+/* Base modal content for large modals (blood units assignment) */
+.modal-content.large-modal {
   background-color: white;
   border-radius: 10px;
   padding: 2rem;
@@ -296,7 +369,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.modal-content h3 {
+.modal-content.large-modal h3 {
   color: #e74c3c;
   margin-top: 0;
   margin-bottom: 1.5rem;
@@ -367,27 +440,25 @@
 
 .confirm-button,
 .cancel-button {
-  padding: 0.75rem 2rem;
-  border-radius: 6px;
-  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 18px;
-  min-width: 140px;
-  text-transform: uppercase;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  min-width: 100px;
+  border: none;
 }
 
 .confirm-button {
   background-color: #2ecc71;
   color: white;
-  border: none;
 }
 
 .confirm-button:hover {
   background-color: #27ae60;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
 }
 
 .confirm-button:disabled {
@@ -401,13 +472,12 @@
 .cancel-button {
   background-color: #e74c3c;
   color: white;
-  border: none;
 }
 
 .cancel-button:hover {
   background-color: #c0392b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .no-blood-units {
@@ -691,5 +761,201 @@
   .enhanced-table td:nth-child(10),
   .enhanced-table td:nth-child(11) {
     display: none;
+  }
+}
+
+/* Rejection reason styling */
+.rejection-reason {
+  color: #e74c3c;
+  font-style: italic;
+  padding: 0.5rem;
+  background-color: #fdf2f2;
+  border-radius: 4px;
+  border-left: 4px solid #e74c3c;
+  margin-bottom: 0.5rem;
+}
+
+/* Beautiful datetime input styling - Match blood donation style */
+.modal-content input[type="datetime-local"] {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.modal-content input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  background: white;
+}
+
+.modal-content input[type="datetime-local"]:hover {
+  border-color: #c0392b;
+}
+
+/* Style for textarea in modal - Match blood donation style */
+.modal-content textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  background: #f8f9fa;
+  color: #333;
+  transition: all 0.3s ease;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+}
+
+.modal-content textarea:focus {
+  outline: none;
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  background: white;
+}
+
+.modal-content textarea:hover {
+  border-color: #c0392b;
+}
+
+.modal-content textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Enhanced modal styling - Match blood donation style */
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content h3 {
+  color: #e74c3c;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+  position: relative;
+}
+
+.modal-content h3::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: #e74c3c;
+}
+
+/* Modal form styling - Match blood donation style */
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-content .field-error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #fef5f5;
+  border-radius: 6px;
+  border-left: 4px solid #e74c3c;
+}
+
+/* Modal button container - Match blood donation style */
+.modal-content form > div:last-child {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.modal-content form > div:last-child button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.modal-content form > div:last-child button[type="button"] {
+  background: #95a5a6;
+  color: white;
+}
+
+.modal-content form > div:last-child button[type="button"]:hover {
+  background: #7f8c8d;
+  transform: translateY(-2px);
+}
+
+.modal-content form > div:last-child button[type="submit"] {
+  background: #e74c3c;
+  color: white;
+}
+
+.modal-content form > div:last-child button[type="submit"]:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Modal overlay enhancement - Match blood donation style */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

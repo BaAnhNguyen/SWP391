@@ -36,13 +36,13 @@ const donationHistorySchema = new Schema(
     healthCheck: {
       weight: {
         type: Number,
-        min: [30, "Cân nặng phải tối thiểu 30 kg"],
+        min: [45, "Cân nặng phải tối thiểu 45 kg"],
         max: [200, "Cân nặng tối đa 200 kg"],
         required: [true, "Vui lòng nhập cân nặng"],
       },
       height: {
         type: Number,
-        min: [120, "Chiều cao tối thiểu 120 cm"],
+        min: [145, "Chiều cao tối thiểu 145 cm"],
         max: [220, "Chiều cao tối đa 220 cm"],
         required: [true, "Vui lòng nhập chiều cao"],
       },
@@ -59,8 +59,8 @@ const donationHistorySchema = new Schema(
       },
       heartRate: {
         type: Number,
-        min: [40, "Mạch đập/phút tối thiểu là 40"],
-        max: [180, "Mạch đập/phút tối đa là 180"],
+        min: [60, "Mạch đập/phút tối thiểu là 40"],
+        max: [100, "Mạch đập/phút tối đa là 180"],
         required: [true, "Vui lòng nhập mạch đập"],
       },
       alcoholLevel: {
@@ -71,18 +71,17 @@ const donationHistorySchema = new Schema(
       },
       temperature: {
         type: Number,
-        min: [34, "Nhiệt độ tối thiểu là 34°C"],
-        max: [42, "Nhiệt độ tối đa là 42°C"],
+        min: [36, "Nhiệt độ tối thiểu là 36°C"],
+        max: [38, "Nhiệt độ tối đa là 38°C"],
         required: [true, "Vui lòng nhập nhiệt độ cơ thể"],
       },
       hemoglobin: {
         type: Number,
-        min: [90, "Chỉ số Hemoglobin tối thiểu là 90 g/L"],
+        min: [120, "Chỉ số Hemoglobin tối thiểu là 90 g/L"],
         max: [180, "Chỉ số Hemoglobin tối đa là 180 g/L"],
         required: [true, "Vui lòng nhập chỉ số Hemoglobin"],
       },
     },
-
     cancellation: {
       reason: String,
       followUpDate: Date,

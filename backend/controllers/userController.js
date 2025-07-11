@@ -127,3 +127,42 @@ exports.delete = async (req, res) => {
   const { id } = req.params;
   if (await User.findByIdAndDelete(id)) res.json({ message: "User deleted" });
 };
+
+//admin ban
+exports.banUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    // Chỉ Admin mới được ban
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "Only admin can ban users" });
+    }
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isBanned: true },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User banned successfully", user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//admin unban
+exports.unbanUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "Only admin can unban users" });
+    }
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { isBanned: false },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User unbanned successfully", user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

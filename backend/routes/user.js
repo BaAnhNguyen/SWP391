@@ -17,5 +17,7 @@ router.use(restrictTo("Admin"));
 router.get("/", ctrl.getAll);
 router.patch("/:id/role", ctrl.updateRole);
 router.delete("/:id", ctrl.delete);
+router.patch("/ban/:userId", restrictTo("Admin"), ctrl.banUser);
+router.patch("/unban/:userId", restrictTo("Admin"), ctrl.unbanUser);
 
 module.exports = router;

@@ -51,7 +51,9 @@ const userSchema = new Schema(
         type: [Number], // [lng, lat]
       },
     },
+    isBanned: { type: Boolean, default: false },
   },
+
   { timestamps: true }
 );
 //geo querry

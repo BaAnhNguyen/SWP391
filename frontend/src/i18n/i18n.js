@@ -127,6 +127,8 @@ const resources = {
           sortBy: "Sort",
           noUsers: "No users found",
           delete: "Delete",
+          ban: "Ban",
+          unban: "Unban",
           roleAdmin: "Admin",
           roleStaff: "Staff",
           roleMember: "Member",
@@ -410,6 +412,8 @@ const resources = {
       "needRequest.noCompatibleBloodUnits":
         "Do not have enough blood unit from storage",
       "needRequest.compatibleBloodUnits": "Compatible blood unit",
+      "needRequest.status.rejected": "Rejected",
+      "needRequest.reject": "Rejected",
 
       // Common
       common: {
@@ -752,6 +756,8 @@ const resources = {
           sortBy: "Sắp xếp",
           noUsers: "Không tìm thấy người dùng nào",
           delete: "Xóa",
+          ban: "Cấm",
+          unban: "Bỏ cấm",
           roleAdmin: "Quản trị viên",
           roleStaff: "Nhân viên",
           roleMember: "Thành viên",
@@ -1031,6 +1037,8 @@ const resources = {
       "needRequest.noCompatibleBloodUnits":
         "Không còn đơn vị máu thích hợp trong kho",
       "needRequest.compatibleBloodUnits": "Đơn vị máu thích hợp",
+      "needRequest.status.rejected": "Đã từ chối",
+      "needRequest.reject": "Từ chối",
 
       // Common
       common: {

@@ -15,6 +15,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [expandedRequestId, setExpandedRequestId] = useState(null);
   const [showMedicalQuestions, setShowMedicalQuestions] = useState(null); // State để hiển thị câu hỏi y tế
   const [healthErrors, setHealthErrors] = useState({});
+  const [showEditDateModal, setShowEditDateModal] = useState(false);
+  const [editDateRequest, setEditDateRequest] = useState(null);
+  const [editReadyDate, setEditReadyDate] = useState("");
+  const [editDateError, setEditDateError] = useState("");
 
   // Health check state
   const [showHealthCheck, setShowHealthCheck] = useState(false);
@@ -169,6 +173,66 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }));
   };
 
+  //change readyDate
+  const handleOpenEditDateModal = (request) => {
+    setEditDateRequest(request);
+    setEditReadyDate(
+      request.readyDate ? request.readyDate.substring(0, 10) : ""
+    );
+    setEditDateError("");
+    setShowEditDateModal(true);
+  };
+
+  const handleCloseEditDateModal = () => {
+    setShowEditDateModal(false);
+    setEditDateRequest(null);
+    setEditReadyDate("");
+    setEditDateError("");
+  };
+
+  const handleSubmitEditDate = async (e) => {
+    e.preventDefault();
+    if (!editReadyDate) {
+      setEditDateError("Vui lòng chọn ngày hẹn mới");
+      return;
+    }
+    // Validate ngày >= hôm nay
+    const today = new Date();
+    const picked = new Date(editReadyDate);
+    today.setHours(0, 0, 0, 0);
+    picked.setHours(0, 0, 0, 0);
+    if (picked < today) {
+      setEditDateError("Ngày hẹn phải từ hôm nay trở đi");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Not authenticated");
+
+      const res = await fetch(
+        `${API_BASE_URL}/donateregistration/${editDateRequest._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ readyDate: editReadyDate }),
+        }
+      );
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Lỗi cập nhật ngày hẹn");
+      }
+      handleCloseEditDateModal();
+      fetchRequests();
+      alert("Cập nhật ngày hẹn thành công!");
+    } catch (err) {
+      setEditDateError(err.message);
+    }
+  };
+
   const handleRejectionSubmit = (e) => {
     e.preventDefault();
     console.log("Handling rejection submit with data:", rejectionData);
@@ -193,17 +257,17 @@ const DonateRequestList = ({ userRole, refresh }) => {
   function validateHealthCheck(data) {
     const errors = {};
     // Cân nặng: 40-150 kg
-    if (!data.weight || data.weight < 40 || data.weight > 150)
-      errors.weight = "Cân nặng phải từ 40 - 150kg";
+    if (!data.weight || data.weight < 45 || data.weight > 150)
+      errors.weight = "Cân nặng phải từ 45 - 150kg";
     // Chiều cao: 140-220 cm
-    if (!data.height || data.height < 140 || data.height > 220)
-      errors.height = "Chiều cao phải từ 140 - 220cm";
+    if (!data.height || data.height < 145 || data.height > 220)
+      errors.height = "Chiều cao phải từ 145 - 220cm";
     // Huyết áp: dạng số/số
     if (!data.bloodPressure || !/^\d{2,3}\/\d{2,3}$/.test(data.bloodPressure))
       errors.bloodPressure = "Huyết áp phải đúng định dạng (vd: 120/80)";
     // Nhịp tim: 50-110 bpm
-    if (!data.heartRate || data.heartRate < 50 || data.heartRate > 110)
-      errors.heartRate = "Nhịp tim phải từ 50-110 bpm";
+    if (!data.heartRate || data.heartRate < 60 || data.heartRate > 100)
+      errors.heartRate = "Nhịp tim phải từ 60-100 bpm";
     // Nồng độ cồn: phải >= 0 (bạn muốn bắt buộc hay ko?)
     if (data.alcoholLevel && data.alcoholLevel < 0)
       errors.alcoholLevel = "Nồng độ cồn không hợp lệ";
@@ -211,8 +275,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
     if (!data.temperature || data.temperature < 36 || data.temperature > 38)
       errors.temperature = "Nhiệt độ phải từ 36-38°C";
     // Hemoglobin: >= 12 (tùy giới tính), ví dụ lấy 12-18
-    if (!data.hemoglobin || data.hemoglobin < 12 || data.hemoglobin > 18)
-      errors.hemoglobin = "Hemoglobin phải từ 12-18 g/dL";
+    if (!data.hemoglobin || data.hemoglobin < 120 || data.hemoglobin > 180)
+      errors.hemoglobin = "Hemoglobin phải từ 120-180 g/dL";
 
     // Quantity và volume check như cũ
     if (!data.quantity || data.quantity < 1)
@@ -603,11 +667,50 @@ const DonateRequestList = ({ userRole, refresh }) => {
                           "Unknown"}
                       </span>
                     )}
+
                     <span className="donation-date">
                       {new Date(request.readyDate).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
+
+                {isStaff &&
+                  expandedRequestId === request._id &&
+                  request.userId && (
+                    <div
+                      className="donor-info"
+                      style={{
+                        marginTop: 8,
+                        background: "#f8f8f8",
+                        padding: 8,
+                        borderRadius: 6,
+                      }}
+                    >
+                      <div>
+                        <strong>Email:</strong> {request.userId.email}
+                      </div>
+                      <div>
+                        <strong>SDT:</strong> {request.userId.phoneNumber}
+                      </div>
+                      <div>
+                        <strong>Ngày sinh:</strong>{" "}
+                        {request.userId.dateOfBirth
+                          ? new Date(
+                              request.userId.dateOfBirth
+                            ).toLocaleDateString()
+                          : ""}
+                      </div>
+                      <div>
+                        <strong>Giới tính:</strong>{" "}
+                        {request.userId.gender === "male"
+                          ? "Nam"
+                          : request.userId.gender === "female"
+                          ? "Nữ"
+                          : request.userId.gender}
+                      </div>
+                    </div>
+                  )}
+
                 <div
                   className="status-badge"
                   style={{ backgroundColor: statusColors[request.status] }}
@@ -619,6 +722,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   )}
                 </div>
               </div>
+
               <div className="request-content">
                 {(request.status === "Rejected" ||
                   request.status === "Cancelled") &&
@@ -652,7 +756,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       className="approve-button"
                     >
                       {t("donateRequest.markApproved")}
-                    </button>{" "}
+                    </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -675,38 +779,50 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     >
                       {t("donateRequest.healthCheck")}
                     </button>
+                    <button
+                      className="edit-date-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEditDateModal(request);
+                      }}
+                    >
+                      Đổi ngày hẹn
+                    </button>
                   </div>
-                )}{" "}
-                {(isStaff || request.status === "Pending") && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(request._id);
-                    }}
-                    className="delete-button"
-                  >
-                    {t("common.delete")}
-                  </button>
-                )}{" "}
-                <button
-                  onClick={(e) => {
-                    handleViewMedicalHistory(request, e);
-                  }}
-                  className="history-button"
-                >
-                  {t("donateRequest.medicalHistory")}
-                </button>
-                {request.status === "Completed" && (
-                  <button
-                    className="detail-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedId(request.historyId);
-                    }}
-                  >
-                    {t("donateRequest.detailInfo")}
-                  </button>
                 )}
+
+                <div className="user-actions">
+                  {(isStaff || request.status === "Pending") && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(request._id);
+                      }}
+                      className="delete-button"
+                    >
+                      {t("common.delete")}
+                    </button>
+                  )}
+                  <button
+                    onClick={(e) => {
+                      handleViewMedicalHistory(request, e);
+                    }}
+                    className="history-button"
+                  >
+                    {t("donateRequest.medicalHistory")}
+                  </button>
+                  {request.status === "Completed" && (
+                    <button
+                      className="detail-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedId(request.historyId);
+                      }}
+                    >
+                      {t("donateRequest.detailInfo")}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -1092,6 +1208,40 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   className="submit-button reject-submit-button"
                 >
                   {t("donateRequest.confirmReject")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {showEditDateModal && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.className === "modal-overlay")
+              handleCloseEditDateModal();
+          }}
+        >
+          <div className="modal-content">
+            <h3>Đổi ngày hẹn hiến máu</h3>
+            <form onSubmit={handleSubmitEditDate}>
+              <label>Ngày hẹn mới:</label>
+              <input
+                type="date"
+                value={editReadyDate}
+                onChange={(e) => setEditReadyDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                required
+              />
+              {editDateError && (
+                <div className="field-error">{editDateError}</div>
+              )}
+              <div style={{ marginTop: 12 }}>
+                <button type="button" onClick={handleCloseEditDateModal}>
+                  Hủy
+                </button>
+                <button type="submit" style={{ marginLeft: 8 }}>
+                  Cập nhật
                 </button>
               </div>
             </form>
