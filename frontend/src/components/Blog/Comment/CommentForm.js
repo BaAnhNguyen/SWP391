@@ -78,9 +78,24 @@ export default function CommentForm({ postId, parent, onDone }) {
                 parent ? "Viết phản hồi..." : "Viết bình luận của bạn..."
               }
               toolbar={{
-                options: ["inline", "colorPicker", "link", "emoji"],
+                options: ["inline", "list", "textAlign", "history"],
                 inline: {
-                  options: ["bold", "italic", "underline"],
+                  options: ["bold", "italic", "underline", "strikethrough"],
+                  inDropdown: false,
+                  className: "toolbarInline",
+                },
+                list: {
+                  options: ["unordered", "ordered"],
+                  inDropdown: false,
+                  className: "toolbarList",
+                },
+                textAlign: {
+                  inDropdown: false,
+                  className: "toolbarAlign",
+                },
+                history: {
+                  inDropdown: false,
+                  className: "toolbarHistory",
                 },
               }}
               readOnly={loading}
@@ -158,6 +173,60 @@ export default function CommentForm({ postId, parent, onDone }) {
 
         .comment-editor-toolbar {
           border: none !important;
+          border-bottom: 1px solid #ced4da !important;
+          background-color: #f8f9fa !important;
+          padding: 8px 4px !important;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          position: relative !important;
+          justify-content: space-between;
+        }
+
+        .comment-editor-toolbar button {
+          border-radius: 4px !important;
+          margin: 0 1px !important;
+          padding: 5px !important;
+          border: 1px solid #e9ecef !important;
+        }
+
+        .comment-editor-toolbar button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-editor-toolbar button.rdw-option-active {
+          background-color: #e74c3c !important;
+          color: white !important;
+        }
+
+        .comment-editor-toolbar .toolbarInline,
+        .comment-editor-toolbar .toolbarList,
+        .comment-editor-toolbar .toolbarAlign {
+          margin-right: 8px !important;
+          padding-right: 8px !important;
+          border-right: 1px solid #e9ecef !important;
+        }
+
+        .comment-editor-toolbar .toolbarHistory {
+          position: static !important;
+          right: auto !important;
+          top: auto !important;
+          border-left: 1px solid #e9ecef !important;
+          padding-left: 8px !important;
+          background-color: #f8f9fa !important;
+          margin-left: auto !important;
+        }
+
+        .comment-editor-toolbar .toolbarHistory button {
+          background-color: #f8f9fa !important;
+          border-color: #e9ecef !important;
+        }
+
+        .comment-editor-toolbar .toolbarHistory button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
           border-bottom: 1px solid #ced4da !important;
           background-color: #f8f9fa !important;
         }

@@ -1,0 +1,195 @@
+/* Biến màu độc đáo */
+:root {
+    --flame-orange-special: #ff7b25;
+    --crimson-blood: #d32f2f;
+    --emerald-life: #2e7d32;
+    --pale-rose-bg: #fff5f5;
+    --deep-ocean: #1a237e;
+}
+
+/* Container chính */
+.find-near-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+/* Tiêu đề */
+.find-near-container h2 {
+    color: #000000;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Kết quả tìm kiếm */
+.search-results {
+    background-color: var(--pale-rose-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.no-results-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.no-results-message img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.no-results-message p {
+    color: #000000;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Nút tìm kiếm người hiến máu */
+.find-donor-btn {
+    background-color: var(--flame-orange-special);
+    color: white;
+    font-weight: 600;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    margin: 10px auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.find-donor-btn:hover {
+    background-color: #e06000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Nút mời hiến máu */
+.invite-donor-btn {
+    background-color: var(--emerald-life);
+    color: white;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+}
+
+.invite-donor-btn:hover {
+    background-color: #1b5e20;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Nút hủy */
+.cancel-btn {
+    background-color: var(--crimson-blood);
+    color: white;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+}
+
+.cancel-btn:hover {
+    background-color: #b71c1c;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Nút gửi tin nhắn */
+.message-btn {
+    background-color: var(--flame-orange-special);
+    color: white;
+    font-weight: 600;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 5px;
+}
+
+.message-btn:hover {
+    background-color: #e06000;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Kết quả người hiến máu */
+.donor-result {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.donor-result:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.donor-info {
+    margin-bottom: 10px;
+}
+
+.donor-name {
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.donor-address,
+.donor-phone,
+.donor-distance,
+.donor-next-date {
+    margin: 5px 0;
+    color: #000000;
+}
+
+.blood-badge {
+    background-color: var(--crimson-blood);
+    color: white;
+    padding: 4px 12px;
+    font-weight: 700;
+    margin-left: 10px;
+    text-align: center;
+    min-width: 40px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .donor-result {
+        padding: 12px;
+    }
+
+    .find-donor-btn,
+    .invite-donor-btn,
+    .cancel-btn,
+    .message-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { API_BASE_URL } from "../../config";
+import "./FindNear.css";
 
 function FindNear({ needRequestId, excludedUserId }) {
   const [result, setResult] = useState([]);
@@ -81,31 +82,45 @@ function FindNear({ needRequestId, excludedUserId }) {
     : result;
 
   return (
-    <div>
-      <button onClick={handleFindNearby} disabled={loading}>
+    <div className="find-near-container">
+      <button
+        className="find-donor-btn"
+        onClick={handleFindNearby}
+        disabled={loading}
+      >
         {loading ? "Đang tìm..." : "Tìm người hiến máu quanh tôi"}
       </button>
       {filteredResult.length > 0 ? (
-        <div style={{ marginTop: 16 }}>
-          <h4>Kết quả gần bạn:</h4>
-          <ul>
+        <div className="search-results">
+          <h2>Kết quả gần bạn:</h2>
+          <div>
             {filteredResult.map((user) => (
-              <li key={user._id} style={{ marginBottom: 20 }}>
-                <strong>{user.name}</strong> - Nhóm máu: {user.bloodGroup}
-                <br />
-                {user.nextEligibleDate && (
-                  <>
-                    Ngày có thể hiến tiếp:{" "}
-                    {new Date(user.nextEligibleDate).toLocaleDateString()}
-                    <br />
-                  </>
-                )}
-                Địa chỉ: {user.address || "(Chưa có)"} <br />
-                SĐT: {user.phoneNumber || "(Ẩn)"} <br />
-                Cách bạn: {user.distance && user.distance.toFixed(1)} m
-                <br />
+              <div key={user._id} className="donor-result">
+                <div className="donor-info">
+                  <div className="donor-name">
+                    {user.name}{" "}
+                    <span className="blood-badge">{user.bloodGroup}</span>
+                  </div>
+                  {user.nextEligibleDate && (
+                    <div className="donor-next-date">
+                      Ngày có thể hiến tiếp:{" "}
+                      {new Date(user.nextEligibleDate).toLocaleDateString()}
+                    </div>
+                  )}
+                  <div className="donor-address">
+                    Địa chỉ: {user.address || "(Chưa có)"}
+                  </div>
+                  <div className="donor-phone">
+                    SĐT: {user.phoneNumber || "(Ẩn)"}
+                  </div>
+                  <div className="donor-distance">
+                    Cách bạn: {user.distance && user.distance.toFixed(1)} m
+                  </div>
+                </div>
+
                 {!showInvite[user._id] ? (
                   <button
+                    className="invite-donor-btn"
                     onClick={() =>
                       setShowInvite((prev) => ({
                         ...prev,
@@ -116,15 +131,16 @@ function FindNear({ needRequestId, excludedUserId }) {
                     Mời hiến máu
                   </button>
                 ) : (
-                  <div style={{ marginTop: 8 }}>
+                  <div className="action-buttons">
                     <button
+                      className="message-btn"
                       onClick={() => handleSendInvite(user)}
                       disabled={sending[user._id]}
                     >
                       {sending[user._id] ? "Đang gửi..." : "Gửi lời mời"}
                     </button>
                     <button
-                      style={{ marginLeft: 8, color: "#b71c1c" }}
+                      className="cancel-btn"
                       onClick={() =>
                         setShowInvite((prev) => ({
                           ...prev,
@@ -137,14 +153,14 @@ function FindNear({ needRequestId, excludedUserId }) {
                     </button>
                   </div>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       ) : (
         !loading && (
-          <div style={{ marginTop: 16, color: "#888" }}>
-            Không tìm thấy người hiến máu nào gần bạn.
+          <div className="no-results-message">
+            <p>Không tìm thấy người hiến máu nào gần bạn.</p>
           </div>
         )
       )}

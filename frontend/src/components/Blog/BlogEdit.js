@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
 import { useParams, useNavigate } from "react-router-dom";
+import { EditorState, convertToRaw, ContentState } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const BlogEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState({ title: "", content: "" });
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState("");
   const [user, setUser] = useState(null);
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -27,6 +34,16 @@ const BlogEdit = () => {
         });
         setForm({ title: res.data.title, content: res.data.content });
         setStatus(res.data.status);
+
+        // Convert HTML content to draft.js editor state
+        const contentBlock = htmlToDraft(res.data.content);
+        if (contentBlock) {
+          const contentState = ContentState.createFromBlockArray(
+            contentBlock.contentBlocks
+          );
+          const editorState = EditorState.createWithContent(contentState);
+          setEditorState(editorState);
+        }
       } catch (err) {
         setError("Không tìm thấy bài viết hoặc bạn không có quyền chỉnh sửa!");
       } finally {
@@ -35,6 +52,13 @@ const BlogEdit = () => {
     };
     fetchBlog();
   }, [id]);
+
+  useEffect(() => {
+    // Calculate text-only character count from editor state
+    const contentState = editorState.getCurrentContent();
+    const plainText = contentState.getPlainText("");
+    setWordCount(plainText.length);
+  }, [editorState]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -47,11 +71,20 @@ const BlogEdit = () => {
       setError("Bạn chỉ có thể chỉnh sửa bài khi đang chờ duyệt.");
       return;
     }
+
+    const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+
+    if (!form.title.trim() || !content.trim() || content === "<p></p>") {
+      setError("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+
     setSaving(true);
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${API_BASE_URL}/blogs/${id}`, form, {
+      const updatedForm = { ...form, content };
+      await axios.put(`${API_BASE_URL}/blogs/${id}`, updatedForm, {
         headers: { Authorization: `Bearer ${token}` },
       });
       navigate("/blogs/mine");
@@ -195,18 +228,49 @@ const BlogEdit = () => {
               <span className="label-text">Nội dung</span>
               <span className="required">*</span>
             </label>
-            <textarea
-              name="content"
-              value={form.content}
-              onChange={handleChange}
-              required
-              className="form-textarea"
-              placeholder="Viết nội dung bài viết của bạn ở đây..."
-              rows="12"
-              disabled={
-                saving || (status !== "Pending" && user?.role !== "Admin")
-              }
-            />
+            <div className="content-input-container">
+              <Editor
+                editorState={editorState}
+                onEditorStateChange={setEditorState}
+                wrapperClassName="rich-editor-wrapper"
+                editorClassName="rich-editor-body"
+                toolbarClassName="rich-editor-toolbar"
+                placeholder="Viết nội dung bài viết của bạn ở đây..."
+                toolbar={{
+                  options: ["inline", "list", "textAlign", "history"],
+                  inline: {
+                    options: ["bold", "italic", "underline", "strikethrough"],
+                    inDropdown: false,
+                    className: "toolbarInline",
+                  },
+                  list: {
+                    options: ["unordered", "ordered"],
+                    inDropdown: false,
+                    className: "toolbarList",
+                  },
+                  textAlign: {
+                    inDropdown: false,
+                    className: "toolbarAlign",
+                  },
+                  history: {
+                    inDropdown: false,
+                    className: "toolbarHistory",
+                  },
+                }}
+                readOnly={
+                  saving || (status !== "Pending" && user?.role !== "Admin")
+                }
+              />
+              <div className="word-counter">
+                <span
+                  className={
+                    wordCount > 5000 ? "count-warning" : "count-normal"
+                  }
+                >
+                  {wordCount} / 5000 ký tự
+                </span>
+              </div>
+            </div>
           </div>
           <div className="form-actions">
             <button
@@ -393,14 +457,15 @@ const BlogEdit = () => {
         }
 
         .submit-btn {
-          background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+          background: #e74c3c;
           color: white;
+          width: auto;
         }
 
         .submit-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+          background: #c0392b;
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
 
         .cancel-btn:disabled,
@@ -408,6 +473,102 @@ const BlogEdit = () => {
           opacity: 0.6;
           cursor: not-allowed;
           transform: none !important;
+        }
+
+        .content-input-container {
+          position: relative;
+        }
+
+        .rich-editor-wrapper {
+          border: 1px solid #ced4da;
+          border-radius: 8px;
+          overflow: hidden;
+          min-height: 400px;
+        }
+
+        .rich-editor-toolbar {
+          border: none !important;
+          border-bottom: 1px solid #ced4da !important;
+          background-color: #f8f9fa !important;
+          padding: 8px 4px !important;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          position: relative !important;
+          justify-content: space-between;
+        }
+
+        .rich-editor-toolbar button {
+          border-radius: 4px !important;
+          margin: 0 1px !important;
+          padding: 5px !important;
+          border: 1px solid #e9ecef !important;
+        }
+
+        .rich-editor-toolbar button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .rich-editor-toolbar button.rdw-option-active {
+          background-color: #e74c3c !important;
+          color: white !important;
+        }
+
+        .rich-editor-toolbar .toolbarInline,
+        .rich-editor-toolbar .toolbarList,
+        .rich-editor-toolbar .toolbarAlign {
+          margin-right: 8px !important;
+          padding-right: 8px !important;
+          border-right: 1px solid #e9ecef !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory {
+          position: static !important;
+          right: auto !important;
+          top: auto !important;
+          border-left: 1px solid #e9ecef !important;
+          padding-left: 8px !important;
+          background-color: #f8f9fa !important;
+          margin-left: auto !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory button {
+          background-color: #f8f9fa !important;
+          border-color: #e9ecef !important;
+        }
+
+        .rich-editor-toolbar .toolbarHistory button:hover {
+          background-color: #e9ecef !important;
+          box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .rich-editor-body {
+          min-height: 350px !important;
+          padding: 15px 20px !important;
+          font-family: inherit !important;
+          font-size: 16px !important;
+          line-height: 1.6 !important;
+        }
+
+        .word-counter {
+          position: absolute;
+          bottom: 10px;
+          right: 15px;
+          font-size: 0.85rem;
+          color: #6c757d;
+          background: rgba(255, 255, 255, 0.9);
+          padding: 4px 8px;
+          border-radius: 6px;
+        }
+
+        .count-warning {
+          color: #e74c3c !important;
+          font-weight: 600;
+        }
+
+        .count-normal {
+          color: #6c757d;
         }
 
         @media (max-width: 768px) {

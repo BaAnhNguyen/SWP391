@@ -111,11 +111,6 @@ function Header() {
               <Link to="/" className="nav-link">
                 {t("nav.home")}
               </Link>
-            </li>
-            <li>
-              <Link to="/about" className="nav-link">
-                {t("nav.about")}
-              </Link>
             </li>{" "}
             {user && user.role !== "Admin" && (
               <li>

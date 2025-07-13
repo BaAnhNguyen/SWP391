@@ -116,15 +116,7 @@ const BlogCreate = () => {
                   toolbarClassName="rich-editor-toolbar"
                   placeholder="Viết nội dung bài viết của bạn ở đây... Hãy chia sẻ những thông tin hữu ích về hiến máu!"
                   toolbar={{
-                    options: [
-                      "inline",
-                      "blockType",
-                      "fontSize",
-                      "fontFamily",
-                      "list",
-                      "textAlign",
-                      "history",
-                    ],
+                    options: ["inline", "list", "textAlign", "history"],
                     inline: {
                       options: ["bold", "italic", "underline", "strikethrough"],
                       inDropdown: false,
@@ -142,19 +134,6 @@ const BlogCreate = () => {
                     history: {
                       inDropdown: false,
                       className: "toolbarHistory",
-                    },
-                    blockType: {
-                      inDropdown: true,
-                      dropdownClassName: "blockTypeDropdown",
-                      options: ["Normal", "H1", "H2", "H3", "H4"],
-                    },
-                    fontSize: {
-                      options: [10, 12, 14, 16, 18, 24, 30, 36],
-                      className: "fontSizeDropdown",
-                    },
-                    fontFamily: {
-                      options: ["Arial", "Times New Roman", "Verdana"],
-                      className: "fontFamilyDropdown",
                     },
                   }}
                 />
@@ -355,6 +334,7 @@ const BlogCreate = () => {
           flex-wrap: wrap;
           gap: 6px;
           position: relative !important;
+          justify-content: space-between;
         }
 
         .rich-editor-toolbar button {
@@ -399,12 +379,13 @@ const BlogCreate = () => {
         }
 
         .rich-editor-toolbar .toolbarHistory {
-          position: absolute !important;
-          right: 10px !important;
-          top: 8px !important;
+          position: static !important;
+          right: auto !important;
+          top: auto !important;
           border-left: 1px solid #e9ecef !important;
           padding-left: 8px !important;
           background-color: #f8f9fa !important;
+          margin-left: auto !important;
         }
 
         .rich-editor-toolbar .toolbarHistory button {
