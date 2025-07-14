@@ -880,7 +880,7 @@ const AssignBloodUnits = () => {
           </button>
           <button
             onClick={() => navigate(-1)}
-            className="cancel-button"
+            className="cancel-button-nr"
             disabled={assigning}
           >
             {t("common.cancel")}

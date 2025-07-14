@@ -1,3 +1,32 @@
+/* Blood type color variables */
+:root {
+    /* Main blood type colors */
+    --blood-a-color: #F44336;
+    /* Red */
+    --blood-b-color: #2196F3;
+    /* Blue */
+    --blood-ab-color: #9C27B0;
+    /* Purple */
+    --blood-o-color: #4CAF50;
+    /* Green */
+    --blood-pos-border: none;
+    --blood-neg-border: 2px solid;
+    --blood-a-neg-border-color: #B71C1C;
+    --blood-b-neg-border-color: #0D47A1;
+    --blood-ab-neg-border-color: #4A148C;
+    --blood-o-neg-border-color: #1B5E20;
+
+    /* Button colors */
+    --primary-button-color-1: #1976d2;
+    --primary-button-color-2: #2196f3;
+    --primary-button-hover-1: #1565c0;
+    --primary-button-hover-2: #1976d2;
+    --cancel-button-border: #ddd;
+    --cancel-button-hover-border: #bbb;
+    --cancel-button-text: #555;
+    --cancel-button-hover-text: #333;
+}
+
 .assign-blood-units-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -194,43 +223,44 @@
 }
 
 .blood-Apos {
-    background-color: #F44336;
+    background-color: var(--blood-a-color);
     /* Red */
 }
 
 .blood-Aneg {
-    background-color: #F44336;
-    border: 2px solid #B71C1C;
+    background-color: var(--blood-a-color);
+    border: 2px solid var(--blood-a-neg-border-color);
 }
 
 .blood-Bpos {
-    background-color: #2196F3;
+    background-color: var(--blood-b-color);
     /* Blue */
 }
 
 .blood-Bneg {
-    background-color: #2196F3;
-    border: 2px solid #0D47A1;
+    background-color: var(--blood-b-color);
+    border: 2px solid var(--blood-b-neg-border-color);
 }
 
 .blood-ABpos {
-    background-color: #9C27B0;
+    background-color: var(--blood-ab-color);
     /* Purple */
 }
 
 .blood-ABneg {
-    background-color: #9C27B0;
-    border: 2px solid #4A148C;
+    background-color: var(--blood-ab-color);
+    border: 2px solid var(--blood-ab-neg-border-color);
 }
 
 .blood-Opos {
-    background-color: #4CAF50;
+    background-color: var(--blood-o-color);
     /* Green */
 }
 
 .blood-Oneg {
-    background-color: #4CAF50;
-    border: 2px solid #1B5E20;
+    background-color: var(--blood-o-color);
+    border: var(--blood-neg-border);
+    border-color: var(--blood-o-neg-border-color);
 }
 
 /* Urgency badges */
@@ -587,7 +617,7 @@
 }
 
 .assign-button {
-    background: linear-gradient(45deg, #1976d2, #2196f3);
+    background: linear-gradient(45deg, var(--primary-button-color-1), var(--primary-button-color-2));
     color: white;
     border: none;
     padding: 14px 32px;
@@ -618,7 +648,7 @@
 }
 
 .assign-button:hover:not(:disabled) {
-    background: linear-gradient(45deg, #1565c0, #1976d2);
+    background: linear-gradient(45deg, var(--primary-button-hover-1), var(--primary-button-hover-2));
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(25, 118, 210, 0.4);
 }
@@ -634,10 +664,10 @@
     opacity: 0.7;
 }
 
-.cancel-button {
+.cancel-button-nr {
     background-color: transparent;
-    color: #555;
-    border: 2px solid #ddd;
+    color: var(--cancel-button-text);
+    border: 2px solid var(--cancel-button-border);
     padding: 14px 32px;
     border-radius: 50px;
     font-weight: 600;
@@ -650,7 +680,7 @@
     z-index: 1;
 }
 
-.cancel-button:before {
+.cancel-button-nr:before {
     content: '';
     position: absolute;
     top: 0;
@@ -664,20 +694,27 @@
     border-radius: 50px;
 }
 
-.cancel-button:hover:not(:disabled):before {
+.cancel-button-nr:hover:not(:disabled):before {
     width: 100%;
 }
 
-.cancel-button:hover:not(:disabled) {
-    color: #333;
-    border-color: #bbb;
+.cancel-button-nr:hover:not(:disabled) {
+    color: var(--cancel-button-hover-text);
+    border-color: var(--cancel-button-hover-border);
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.cancel-button:disabled {
+.cancel-button-nr:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.cancel-button-nr:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    border-color: #eee;
+    color: #999;
 }
 
 /* Loading and error states */

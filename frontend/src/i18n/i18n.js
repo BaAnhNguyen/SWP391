@@ -58,6 +58,21 @@ const resources = {
         confirmDelete: "Are you sure you want to delete this question?",
         contentRequired: "Question content is required",
       },
+      donate: {
+        errors: {
+          weightRange: "Weight must be between 45 and 150 kg",
+          heightRange: "Height must be between 145 and 220 cm",
+          bloodPressureFormat: "Blood pressure must be in the format: number/number (e.g., 120/80)",
+          heartRateRange: "Heart rate must be between 60 and 100 bpm",
+          alcoholLevelInvalid: "Alcohol level must be greater than or equal to 0",
+          temperatureRange: "Temperature must be between 36°C and 38°C",
+          hemoglobinRange: "Hemoglobin level must be between 120 and 180 g/dL",
+          quantityMin: "Please enter a valid quantity (minimum is 1)",
+          volumeMin: "Please enter a valid volume (minimum is 50 mL)",
+          bloodGroupRequired: "Confirmed blood group is required",
+          componentRequired: "Confirmed component is required",
+        },
+      },
 
       // Profile Page
       profile: {
@@ -429,6 +444,7 @@ const resources = {
       "needRequest.remainingUnits": "Remaining Units",
       "needRequest.rejectionReason": "Reject reason",
       "needRequest.units": "units",
+      "needRequest.unitsRequired": "Units required",
 
       // Common
       common: {
@@ -1096,6 +1112,7 @@ const resources = {
       "needRequest.fetchError": "Không thể tải chi tiết yêu cầu",
       "needRequest.rejectionReason": "Lý do từ chối",
       "needRequest.units": "Đơn vị máu",
+      "needRequest.unitsRequired": "Đơn vị máu yêu cầu",
 
       // Common
       common: {
@@ -1263,6 +1280,23 @@ const resources = {
         bloodGroupError: "Nhóm máu không đúng",
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
+      },
+
+
+      donate: {
+        errors: {
+          weightRange: "Cân nặng phải từ 45 đến 150 kg",
+          heightRange: "Chiều cao phải từ 145 đến 220 cm",
+          bloodPressureFormat: "Huyết áp phải có định dạng: số/số (ví dụ: 120/80)",
+          heartRateRange: "Nhịp tim phải từ 60 đến 100 nhịp/phút",
+          alcoholLevelInvalid: "Nồng độ cồn phải lớn hơn hoặc bằng 0",
+          temperatureRange: "Nhiệt độ phải từ 36°C đến 38°C",
+          hemoglobinRange: "Mức hemoglobin phải từ 120 đến 180 g/dL",
+          quantityMin: "Vui lòng nhập số lượng hợp lệ (tối thiểu là 1)",
+          volumeMin: "Vui lòng nhập thể tích hợp lệ (tối thiểu là 50 mL)",
+          bloodGroupRequired: "Vui lòng xác nhận nhóm máu",
+          componentRequired: "Vui lòng xác nhận thành phần máu",
+        },
       },
 
       // Blood Components Compatibility
