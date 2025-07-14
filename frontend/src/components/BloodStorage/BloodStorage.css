@@ -447,6 +447,35 @@
     background-color: rgba(231, 76, 60, 0.1) !important;
 }
 
+/* Delete button styles */
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.delete-button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
 .loading-spinner {
     display: inline-block;
     width: 40px;
