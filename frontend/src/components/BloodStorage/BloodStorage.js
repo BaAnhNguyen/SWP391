@@ -5,6 +5,7 @@ import "./BloodStorage.css";
 import "../../styles/colors.css";
 import "../../styles/tables.css";
 import "../../styles/blood-badges.css";
+import EnglishBloodDeleteConfirmModal from "./EnglishBloodDeleteConfirmModal";
 
 const bloodTypes = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
@@ -98,13 +99,16 @@ const BloodStorage = () => {
 
   // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
-    BloodType: "A+",
-    ComponentType: "WholeBlood",
-    Quantity: 1,
-    Volume: 350,
-    note: "",
+    bloodType: "A+",
+    volume: 450,
+    sourceType: "Donation",
+    collectionDate: new Date().toISOString().split('T')[0],
   });
   const [adding, setAdding] = useState(false);
+
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
 
   // Load blood storage data
   const fetchInventory = () => {
@@ -209,11 +213,10 @@ const BloodStorage = () => {
       });
       if (!res.ok) throw new Error(t("bloodStorage.addError"));
       setNewUnit({
-        BloodType: "A+",
-        ComponentType: "WholeBlood",
-        Quantity: 1,
-        Volume: 350,
-        note: "",
+        bloodType: "A+",
+        volume: 450,
+        sourceType: "Donation",
+        collectionDate: new Date().toISOString().split('T')[0],
       });
       // Reload dashboard
       fetchInventory();
@@ -224,15 +227,31 @@ const BloodStorage = () => {
     setAdding(false);
   };
 
+  // Open delete confirmation modal
+  const openDeleteModal = (id) => {
+    setDeleteItemId(id);
+    setShowDeleteModal(true);
+  };
+
+  // Close delete confirmation modal
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteItemId(null);
+  };
+
   // Delete blood from storage
-  const handleDeleteBloodUnit = async (id) => {
-    if (!window.confirm(t("bloodStorage.deleteConfirm"))) return;
+  const handleDeleteBloodUnit = async () => {
+    if (!deleteItemId) return;
+
     try {
       const token = localStorage.getItem("token");
-      await fetch(`${API_BASE_URL}/bloodunit/${id}`, {
+      await fetch(`${API_BASE_URL}/bloodunit/${deleteItemId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      // Close the modal after successful deletion
+      closeDeleteModal();
       fetchInventory();
     } catch (err) {
       alert(t("bloodStorage.deleteError"));
@@ -562,7 +581,7 @@ const BloodStorage = () => {
                             <button
                               className="delete-button"
                               title={t("bloodStorage.deleteTitle")}
-                              onClick={() => handleDeleteBloodUnit(unit._id)}
+                              onClick={() => openDeleteModal(unit._id)}
                             >
                               {t("bloodStorage.delete")}
                             </button>
@@ -692,6 +711,13 @@ const BloodStorage = () => {
               </div>
             )}
           </div>
+
+          {/* Delete Confirmation Modal */}
+          <EnglishBloodDeleteConfirmModal
+            isOpen={showDeleteModal}
+            onClose={closeDeleteModal}
+            onConfirm={handleDeleteBloodUnit}
+          />
         </>
       )}
     </div>

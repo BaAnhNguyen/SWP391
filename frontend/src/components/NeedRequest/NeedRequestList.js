@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../config";
 import "./NeedRequestList.css";
+import EnglishDeleteConfirmModal from "../common/EnglishDeleteConfirmModal";
 
 const NeedRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -25,6 +26,10 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentRequestId, setAppointmentRequestId] = useState(null);
   const [appointmentError, setAppointmentError] = useState("");
+
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteRequestId, setDeleteRequestId] = useState(null);
 
   // Fetch requests
   const fetchRequests = useCallback(async () => {
@@ -80,12 +85,24 @@ const NeedRequestList = ({ userRole, refresh }) => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm(t("needRequest.confirmDelete"))) return;
+  // Open delete confirmation modal
+  const openDeleteModal = (id) => {
+    setDeleteRequestId(id);
+    setShowDeleteModal(true);
+  };
+
+  // Close delete confirmation modal
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteRequestId(null);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteRequestId) return;
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error(t("common.notAuthenticated"));
-      const response = await fetch(`${API_BASE_URL}/needrequest/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/needrequest/${deleteRequestId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -94,6 +111,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(data.message || t("needRequest.deleteError"));
       }
       fetchRequests();
+      closeDeleteModal();
     } catch (err) {
       setError(err.message);
     }
@@ -506,7 +524,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleDelete(request._id);
+                            setDeleteRequestId(request._id);
+                            setShowDeleteModal(true);
                           }}
                           className="delete-button"
                           style={{ marginLeft: 8 }}
@@ -524,9 +543,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (window.confirm(t("needRequest.confirmDelete"))) {
-                            handleDelete(request._id);
-                          }
+                          openDeleteModal(request._id);
                         }}
                         className="delete-button"
                       >
@@ -539,7 +556,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(request._id);
+                        openDeleteModal(request._id);
                       }}
                       className="delete-button"
                     >
@@ -567,7 +584,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(request._id);
+                        openDeleteModal(request._id);
                       }}
                       className="delete-button"
                     >
@@ -643,6 +660,13 @@ const NeedRequestList = ({ userRole, refresh }) => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <EnglishDeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={closeDeleteModal}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

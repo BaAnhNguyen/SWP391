@@ -11,6 +11,14 @@ const resources = {
       "donateRequest.bloodGroupMismatch":
         "The selected blood group does not match your profile",
 
+      // Common UI elements
+      common: {
+        cancel: "Cancel",
+        delete: "Delete",
+        confirm: "Confirm",
+        notAuthenticated: "You are not authenticated. Please log in.",
+      },
+
       // Header Navigation
       nav: {
         home: "Home",
@@ -400,6 +408,7 @@ const resources = {
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
+      "needRequest.deleteTitle": "Delete Blood Request",
       "needRequest.requestedBy": "Requested By",
       "needRequest.urgency": "Urgency",
       "needRequest.selectedUnits": "Selected Units",
@@ -703,6 +712,14 @@ const resources = {
       "donateRequest.bloodGroupError": "Sai nhóm máu",
       "donateRequest.bloodGroupMismatch":
         "Nhóm máu đã chọn không khớp với hồ sơ của bạn",
+
+      // Common UI elements
+      common: {
+        cancel: "Hủy",
+        delete: "Xóa",
+        confirm: "Xác nhận",
+        notAuthenticated: "Bạn chưa được xác thực. Vui lòng đăng nhập.",
+      },
 
       // Header Navigation
       nav: {
@@ -1072,8 +1089,13 @@ const resources = {
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
-      "needRequest.requiredUnits": "Đơn vị cần thiết",
-      "needRequest.appointmentDate": "Ngày hẹn",
+      "needRequest.deleteTitle": "Delete Blood Request",
+      "needRequest.requestedBy": "Requested By",
+      "needRequest.urgency": "Urgency",
+      "needRequest.selectedUnits": "Selected Units",
+      "needRequest.requiredUnits": "Required Units",
+      "needRequest.remainingUnits": "Remaining Units",
+      "needRequest.appointmentDate": "Appointment Date",
       "needRequest.confirmAssignment": "Xác nhận phân công",
       "needRequest.fetchBloodUnitsError": "Không thể lấy dữ liệu đơn vị máu",
       "needRequest.bloodTypeNormalized":
