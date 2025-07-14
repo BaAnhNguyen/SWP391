@@ -110,8 +110,8 @@ const AssignBloodUnits = () => {
         "Blood type charcode analysis:",
         bloodType
           ? Array.from(bloodType)
-              .map((c) => `${c}:${c.charCodeAt(0)}`)
-              .join(", ")
+            .map((c) => `${c}:${c.charCodeAt(0)}`)
+            .join(", ")
           : "none"
       );
 
@@ -215,7 +215,7 @@ const AssignBloodUnits = () => {
           (type) =>
             type.toLowerCase() === bloodType.trim().toLowerCase() ||
             type.toLowerCase().replace(/[+-]/, "") ===
-              bloodType.trim().toLowerCase()
+            bloodType.trim().toLowerCase()
         );
 
         if (exactMatch) {
@@ -287,9 +287,8 @@ const AssignBloodUnits = () => {
               errorData.message || t("needRequest.fetchBloodUnitsError");
           }
         } catch (err) {
-          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${
-            err.message
-          }`;
+          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${err.message
+            }`;
         }
 
         // FALLBACK: If API call fails, try to manually get all blood units and filter locally
@@ -649,14 +648,7 @@ const AssignBloodUnits = () => {
               <label>{t("needRequest.reason")}:</label>
               <span>{requestDetails.reason}</span>
             </div>
-            <div className="info-item">
-              <label>{t("needRequest.urgency")}:</label>
-              <span
-                className={`urgency-badge urgency-${requestDetails.urgency?.toLowerCase()}`}
-              >
-                {requestDetails.urgency}
-              </span>
-            </div>
+
           </div>
         </div>
       )}
@@ -750,15 +742,17 @@ const AssignBloodUnits = () => {
         </h3>
 
         {filteredUnits.length === 0 ? (
-          <div className="no-units-message">
-            {t("needRequest.noCompatibleBloodUnits")}
-            <div style={{ marginTop: 24 }}>
+          <>
+            <div className="no-units-message">
+              {t("needRequest.noCompatibleBloodUnits")}
+            </div>
+            <div className="find-near-wrapper">
               <FindNear
                 needRequestId={requestId}
                 excludedUserId={requestDetails?.createdBy?._id}
               />
             </div>
-          </div>
+          </>
         ) : (
           <div className="table-container scrollable-table">
             <table className="blood-units-table">
@@ -804,7 +798,7 @@ const AssignBloodUnits = () => {
                           type="checkbox"
                           checked={isSelected}
                           disabled={isDisabled}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           onClick={(e) => e.stopPropagation()}
                         />
                       </td>
@@ -830,9 +824,8 @@ const AssignBloodUnits = () => {
                       </td>
                       <td>
                         <span
-                          className={`source-badge source-${
-                            unit.SourceType || "unknown"
-                          }`}
+                          className={`source-badge source-${unit.SourceType || "unknown"
+                            }`}
                         >
                           {unit.SourceType || "Unknown"}
                         </span>
