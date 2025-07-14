@@ -557,6 +557,17 @@ const BloodStorage = () => {
                             )}
                           </div>
                         </td>
+                        <td>
+                          {!unit.assignedToRequestId && (
+                            <button
+                              className="delete-button"
+                              title={t("bloodStorage.deleteTitle")}
+                              onClick={() => handleDeleteBloodUnit(unit._id)}
+                            >
+                              {t("bloodStorage.delete")}
+                            </button>
+                          )}
+                        </td>
                       </tr>
                     );
                   })
