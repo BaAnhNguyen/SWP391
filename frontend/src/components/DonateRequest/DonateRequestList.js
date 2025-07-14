@@ -256,38 +256,38 @@ const DonateRequestList = ({ userRole, refresh }) => {
   };
   function validateHealthCheck(data) {
     const errors = {};
-    // Cân nặng: 40-150 kg
+    // Weight: 45-150 kg
     if (!data.weight || data.weight < 45 || data.weight > 150)
-      errors.weight = "Cân nặng phải từ 45 - 150kg";
-    // Chiều cao: 140-220 cm
+      errors.weight = t("donate.errors.weightRange");
+    // Height: 145-220 cm
     if (!data.height || data.height < 145 || data.height > 220)
-      errors.height = "Chiều cao phải từ 145 - 220cm";
-    // Huyết áp: dạng số/số
+      errors.height = t("donate.errors.heightRange");
+    // Blood pressure: format number/number
     if (!data.bloodPressure || !/^\d{2,3}\/\d{2,3}$/.test(data.bloodPressure))
-      errors.bloodPressure = "Huyết áp phải đúng định dạng (vd: 120/80)";
-    // Nhịp tim: 50-110 bpm
+      errors.bloodPressure = t("donate.errors.bloodPressureFormat");
+    // Heart rate: 60-100 bpm
     if (!data.heartRate || data.heartRate < 60 || data.heartRate > 100)
-      errors.heartRate = "Nhịp tim phải từ 60-100 bpm";
-    // Nồng độ cồn: phải >= 0 (bạn muốn bắt buộc hay ko?)
+      errors.heartRate = t("donate.errors.heartRateRange");
+    // Alcohol level: must be >= 0
     if (data.alcoholLevel && data.alcoholLevel < 0)
-      errors.alcoholLevel = "Nồng độ cồn không hợp lệ";
-    // Nhiệt độ: 36-38 °C
+      errors.alcoholLevel = t("donate.errors.alcoholLevelInvalid");
+    // Temperature: 36-38 °C
     if (!data.temperature || data.temperature < 36 || data.temperature > 38)
-      errors.temperature = "Nhiệt độ phải từ 36-38°C";
-    // Hemoglobin: >= 12 (tùy giới tính), ví dụ lấy 12-18
+      errors.temperature = t("donate.errors.temperatureRange");
+    // Hemoglobin: 120-180 g/dL
     if (!data.hemoglobin || data.hemoglobin < 120 || data.hemoglobin > 180)
-      errors.hemoglobin = "Hemoglobin phải từ 120-180 g/dL";
+      errors.hemoglobin = t("donate.errors.hemoglobinRange");
 
-    // Quantity và volume check như cũ
+    // Quantity and volume checks
     if (!data.quantity || data.quantity < 1)
-      errors.quantity = "Số lượng phải >= 1";
+      errors.quantity = t("donate.errors.quantityMin");
     if (!data.volume || data.volume < 50)
-      errors.volume = "Thể tích tối thiểu 50ml";
+      errors.volume = t("donate.errors.volumeMin");
 
     if (!data.confirmedBloodGroup)
-      errors.confirmedBloodGroup = "Vui lòng chọn nhóm máu xác nhận";
+      errors.confirmedBloodGroup = t("donate.errors.bloodGroupRequired");
     if (!data.confirmedComponent)
-      errors.confirmedComponent = "Vui lòng chọn thành phần máu xác nhận";
+      errors.confirmedComponent = t("donate.errors.componentRequired");
 
     return errors;
   }

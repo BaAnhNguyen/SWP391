@@ -428,6 +428,23 @@ const resources = {
       "needRequest.fetchError": "Failed to fetch request details",
       "needRequest.remainingUnits": "Remaining Units",
       "needRequest.rejectionReason": "Reject reason",
+      "needRequest.units": "units",
+      donate: {
+  errors: {
+    weightRange: "Weight must be between 45 and 150 kg",
+    heightRange: "Height must be between 145 and 220 cm",
+    bloodPressureFormat: "Blood pressure must be in the format: number/number (e.g., 120/80)",
+    heartRateRange: "Heart rate must be between 60 and 100 bpm",
+    alcoholLevelInvalid: "Alcohol level must be greater than or equal to 0",
+    temperatureRange: "Temperature must be between 36°C and 38°C",
+    hemoglobinRange: "Hemoglobin level must be between 120 and 180 g/dL",
+    quantityMin: "Please enter a valid quantity (minimum is 1)",
+    volumeMin: "Please enter a valid volume (minimum is 50 mL)",
+    bloodGroupRequired: "Confirmed blood group is required",
+    componentRequired: "Confirmed component is required",
+  },
+},
+
 
       // Common
       common: {
@@ -523,6 +540,8 @@ const resources = {
       "bloodStorage.import": "Manual Entry",
       "bloodStorage.daysLeft": "Days Left",
       "bloodStorage.delete": "Delete",
+      "bloodStorage.deleteConfirm": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.deleteTitle": "Delete this record",
       "bloodStorage.noRecords": "No matching records found.",
       "bloodStorage.showing": "Showing",
       "bloodStorage.of": "of",
@@ -571,19 +590,47 @@ const resources = {
         medicalHistory: "Medical History",
         noMedicalHistory: "No Blood Donation History",
         medicalHistoryTitle: "Blood Donation History",
-        markRejected: "Mark as Rejected",
-        noRequests: "No donation registrations found",
-        donationType: "Donation type",
+        historyTitleAll: "All Donation History",
+        historyTitleMy: "My Donation History",
+        createdAt: "Created At",
+        completedAt: "Completed At",
+        rejectionReason: "Rejection Reason",
+        donationType: "Donation Type",
+        quantity: "Quantity",
         markApproved: "Mark as Approved",
         markCompleted: "Mark as Completed",
         markCancelled: "Mark as Cancelled",
         rejectionModalTitle: "Reject Donation Request",
-        rejectionReason: "Rejection Reason",
         rejectionReasonPlaceholder:
           "Please explain why this donation request is being rejected...",
         reasonRequired: "Reason is required",
         confirmReject: "Confirm Rejection",
-        detailInfo: "Detail Infomation",
+        noRequests: "No donation registrations found",
+        healthCheck: "Health Check",
+        healthCheckTitle: "Health Check Form",
+        completeTab: "Complete Donation",
+        cancelTab: "Cancel Donation",
+        weight: "Weight",
+        height: "Height",
+        bloodPressure: "Blood Pressure",
+        heartRate: "Heart Rate",
+        alcoholLevel: "Alcohol Level",
+        temperature: "Temperature",
+        hemoglobin: "Hemoglobin",
+        invalidQuantity: "Please enter a valid quantity (minimum 1)",
+        cancellationReason: "Cancellation Reason",
+        cancellationReasonPlaceholder:
+          "Please explain why this donation is being canceled",
+        followUpDate: "Follow-up Date",
+        confirmComplete: "Confirm Completion",
+        confirmCancel: "Confirm Cancellation",
+        followUpDateRequired: "Please select a follow-up date",
+        completedSuccessfully: "Donation has been successfully completed!",
+        canceledSuccessfully: "Donation has been successfully canceled!",
+        bloodGroupError: "Invalid blood group",
+        bloodGroupMismatch:
+          "The selected blood group does not match your profile",
+        detailInfo: "Detail Information",
       },
 
       // Blood Components Compatibility
@@ -959,6 +1006,7 @@ const resources = {
       "contact.info.description":
         "Liên hệ với chúng tôi qua bất kỳ phương thức nào sau đây:",
 
+        
       // Donate Page
       "donate.title": "Đăng ký hiến máu",
       "donate.description":
@@ -1013,6 +1061,7 @@ const resources = {
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
       "needRequest.status.pending": "Chưa giải quyết",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
+      "needRequest.status.completed": "Hoàn tất",
       "needRequest.status.expired": "Đã Hết Hạn",
       "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.assign": "Phân bổ",
@@ -1062,6 +1111,24 @@ const resources = {
       "needRequest.requestNotFound": "Không tìm thấy yêu cầu",
       "needRequest.fetchError": "Không thể tải chi tiết yêu cầu",
       "needRequest.rejectionReason": "Lý do từ chối",
+      "needRequest.units": "Đơn vị máu",
+
+      donate: {
+  errors: {
+    weightRange: "Cân nặng phải từ 45 đến 150 kg",
+    heightRange: "Chiều cao phải từ 145 đến 220 cm",
+    bloodPressureFormat: "Huyết áp phải có định dạng: số/số (ví dụ: 120/80)",
+    heartRateRange: "Nhịp tim phải từ 60 đến 100 nhịp/phút",
+    alcoholLevelInvalid: "Nồng độ cồn phải lớn hơn hoặc bằng 0",
+    temperatureRange: "Nhiệt độ phải từ 36°C đến 38°C",
+    hemoglobinRange: "Mức hemoglobin phải từ 120 đến 180 g/dL",
+    quantityMin: "Vui lòng nhập số lượng hợp lệ (tối thiểu là 1)",
+    volumeMin: "Vui lòng nhập thể tích hợp lệ (tối thiểu là 50 mL)",
+    bloodGroupRequired: "Vui lòng xác nhận nhóm máu",
+    componentRequired: "Vui lòng xác nhận thành phần máu",
+  },
+},
+
 
       // Common
       common: {
@@ -1145,6 +1212,8 @@ const resources = {
       "bloodStorage.import": "Nhập Thủ Công",
       "bloodStorage.daysLeft": "Ngày Còn Lại",
       "bloodStorage.delete": "Xóa",
+      "bloodStorage.deleteConfirm": "Bạn có chắc chắn muốn xóa đơn vị máu này không?",
+      "bloodStorage.deleteTitle": "Xóa bản ghi này",
       "bloodStorage.noRecords": "Không có kết quả phù hợp.",
       "bloodStorage.showing": "Hiển thị",
       "bloodStorage.of": "trong",
