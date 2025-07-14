@@ -16,6 +16,8 @@ const resources = {
         cancel: "Cancel",
         delete: "Delete",
         confirm: "Confirm",
+        clear: "Clear",
+        refresh: "Refresh",
         notAuthenticated: "You are not authenticated. Please log in.",
       },
 
@@ -409,6 +411,8 @@ const resources = {
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
       "needRequest.deleteTitle": "Delete Blood Request",
+      "needRequest.searchByName": "Tìm theo tên",
+      "needRequest.searchNamePlaceholder": "Nhập tên người yêu cầu...",
       "needRequest.requestedBy": "Requested By",
       "needRequest.urgency": "Urgency",
       "needRequest.selectedUnits": "Selected Units",
@@ -718,6 +722,8 @@ const resources = {
         cancel: "Hủy",
         delete: "Xóa",
         confirm: "Xác nhận",
+        clear: "Xóa",
+        refresh: "Làm mới",
         notAuthenticated: "Bạn chưa được xác thực. Vui lòng đăng nhập.",
       },
 
@@ -1090,6 +1096,8 @@ const resources = {
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
       "needRequest.deleteTitle": "Delete Blood Request",
+      "needRequest.searchByName": "Tìm theo tên",
+      "needRequest.searchNamePlaceholder": "Nhập tên người yêu cầu...",
       "needRequest.requestedBy": "Requested By",
       "needRequest.urgency": "Urgency",
       "needRequest.selectedUnits": "Selected Units",

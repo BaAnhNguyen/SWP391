@@ -31,6 +31,9 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteRequestId, setDeleteRequestId] = useState(null);
 
+  // Search by name state
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Fetch requests
   const fetchRequests = useCallback(async () => {
     setLoading(true);
@@ -282,10 +285,19 @@ const NeedRequestList = ({ userRole, refresh }) => {
     return componentMap[component] || component;
   };
 
-  const filteredRequests =
-    filterStatus === "all"
-      ? requests
-      : requests.filter((request) => request.status === filterStatus);
+  // First filter by status
+  const statusFiltered = filterStatus === "all"
+    ? requests
+    : requests.filter((request) => request.status === filterStatus);
+
+  // Then filter by search term (createdBy's name)
+  const filteredRequests = searchTerm
+    ? statusFiltered.filter((request) =>
+      request.createdBy &&
+      request.createdBy.name &&
+      request.createdBy.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : statusFiltered;
 
   const statusColors = {
     Open: "var(--status-open)",
@@ -316,32 +328,54 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <p className="member-notice">{t("needRequest.memberNotice")}</p>
           )}
         </div>
-        <div className="filter-container">
-          <label>{t("needRequest.filterByStatus")}:</label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="status-filter"
-          >
-            <option value="all">{t("needRequest.allStatuses")}</option>
-            <option value="Pending">{t("needRequest.status.pending")}</option>
-            <option value="Assigned">{t("needRequest.status.assigned")}</option>
-            <option value="Fulfilled">
-              {t("needRequest.status.fulfilled")}
-            </option>
-            <option value="Completed">
-              {t("needRequest.status.completed")}
-            </option>
-            <option value="Rejected">{t("needRequest.status.rejected")}</option>
-            <option value="Expired">{t("needRequest.status.expired")}</option>
-          </select>
-          <button
-            onClick={fetchRequests}
-            className="refresh-button"
-            title={t("common.refresh")}
-          >
-            ↻
-          </button>
+        <div className="filters-row">
+          <div className="filter-container">
+            <label>{t("needRequest.filterByStatus")}:</label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="status-filter"
+            >
+              <option value="all">{t("needRequest.allStatuses")}</option>
+              <option value="Pending">{t("needRequest.status.pending")}</option>
+              <option value="Assigned">{t("needRequest.status.assigned")}</option>
+              <option value="Fulfilled">
+                {t("needRequest.status.fulfilled")}
+              </option>
+              <option value="Completed">
+                {t("needRequest.status.completed")}
+              </option>
+              <option value="Rejected">{t("needRequest.status.rejected")}</option>
+              <option value="Expired">{t("needRequest.status.expired")}</option>
+            </select>
+            <button
+              onClick={fetchRequests}
+              className="refresh-button"
+              title={t("common.refresh")}
+            >
+              ↻
+            </button>
+          </div>
+          <div className="search-container">
+            <label htmlFor="name-search">{t("needRequest.searchByName")}:</label>
+            <input
+              id="name-search"
+              type="text"
+              className="name-search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={t("needRequest.searchNamePlaceholder")}
+            />
+            {searchTerm && (
+              <button
+                className="clear-search-button"
+                onClick={() => setSearchTerm("")}
+                title={t("common.clear")}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
