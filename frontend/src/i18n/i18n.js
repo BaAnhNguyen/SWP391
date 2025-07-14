@@ -428,6 +428,7 @@ const resources = {
       "needRequest.fetchError": "Failed to fetch request details",
       "needRequest.remainingUnits": "Remaining Units",
       "needRequest.rejectionReason": "Reject reason",
+      "needRequest.units": "units",
 
       // Common
       common: {
@@ -1013,6 +1014,7 @@ const resources = {
       "needRequest.allStatuses": "Tất Cả Trạng Thái",
       "needRequest.status.pending": "Chưa giải quyết",
       "needRequest.status.fulfilled": "Đã Hoàn Thành",
+      "needRequest.status.completed": "Hoàn tất",
       "needRequest.status.expired": "Đã Hết Hạn",
       "needRequest.noRequests": "Không tìm thấy yêu cầu máu nào",
       "needRequest.assign": "Phân bổ",
@@ -1062,6 +1064,7 @@ const resources = {
       "needRequest.requestNotFound": "Không tìm thấy yêu cầu",
       "needRequest.fetchError": "Không thể tải chi tiết yêu cầu",
       "needRequest.rejectionReason": "Lý do từ chối",
+      "needRequest.units": "Đơn vị máu",
 
       // Common
       common: {
