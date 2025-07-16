@@ -632,6 +632,7 @@ const resources = {
         confirmDelete:"Are you sure you want to delete?",
         delete:"DELETE",
         cancel:"CANCEL",
+        success:"NOTIFICATION",
       },
 
       // Blood Components Compatibility
@@ -1221,6 +1222,7 @@ const resources = {
         deleteTitle: "Xóa Yêu Cầu Hiến Máu",
         delete: "XÓA",
         cancel: "HỦY",
+        success:"THÔNG BÁO",
         // Existing strings
         bloodGroup: "Nhóm Máu",
         selectBloodGroup: "Chọn nhóm máu",
