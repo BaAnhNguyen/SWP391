@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
-import DonateHistoryDetail from "./DonateRequestHistory";
 
 const DonateRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -25,6 +24,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [healthCheckRequest, setHealthCheckRequest] = useState(null);
   const [activeTab, setActiveTab] = useState("complete");
   const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteRequestId, setDeleteRequestId] = useState(null);
   const [rejectionData, setRejectionData] = useState({
     requestId: null,
     reason: "",
@@ -45,7 +46,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [cancellationData, setCancellationData] = useState({
     reason: "",
   });
-  const [selectedId, setSelectedId] = useState(null);
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -164,6 +164,22 @@ const DonateRequestList = ({ userRole, refresh }) => {
       requestId: null,
       reason: "",
     });
+  };
+
+  const handleOpenDeleteModal = (requestId) => {
+    if (!requestId) {
+      console.error("No request ID provided for deletion");
+      alert("Error: Cannot delete this request. Missing ID.");
+      return;
+    }
+    console.log("Opening delete modal for request ID:", requestId);
+    setDeleteRequestId(requestId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteRequestId(null);
+    setShowDeleteModal(false);
   };
 
   const handleRejectionReasonChange = (e) => {
@@ -414,7 +430,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
         const data = await makeApiCall(requestData);
         console.log("Complete response data:", data);
         alert(t("donateRequest.completedSuccessfully"));
-        if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
+        // History view has been removed, no need to set selected ID
       } else if (activeTab === "cancel") {
         // Validate reason and follow-up date
         if (!cancellationData.reason.trim()) {
@@ -457,32 +473,46 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }));
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm(t("donateRequest.confirmDelete"))) return;
-
+  const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error(t("common.notAuthenticated"));
       }
 
-      const response = await fetch(`${API_BASE_URL}/donateregistration/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (!deleteRequestId) {
+        console.error("No request ID selected for deletion");
+        return;
+      }
+
+      console.log("Deleting request with ID:", deleteRequestId);
+
+      const response = await fetch(
+        `${API_BASE_URL}/donateregistration/${deleteRequestId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("donateRequest.deleteError"));
       }
 
+      console.log("Delete successful");
+      // Close modal immediately without alerts
+      handleCloseDeleteModal();
+
       // Refresh the requests list
       fetchRequests();
     } catch (err) {
       setError(err.message);
       console.error("Error deleting request:", err);
+      // Silently close modal even on error
+      handleCloseDeleteModal();
     }
   }; // Hàm để xem lịch sử bệnh (câu hỏi y tế) của người dùng
   const handleViewMedicalHistory = (request, e) => {
@@ -796,11 +826,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(request._id);
+                        console.log(
+                          "Delete button clicked for request:",
+                          request
+                        );
+                        handleOpenDeleteModal(request._id);
                       }}
                       className="delete-button"
                     >
-                      {t("common.delete")}
+                      {t("donateRequest.delete")}
                     </button>
                   )}
                   <button
@@ -811,29 +845,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   >
                     {t("donateRequest.medicalHistory")}
                   </button>
-                  {request.status === "Completed" && (
-                    <button
-                      className="detail-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedId(request.historyId);
-                      }}
-                    >
-                      {t("donateRequest.detailInfo")}
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
           ))}
         </div>
-      )}
-      {/* Model history detail*/}
-      {selectedId && (
-        <DonateHistoryDetail
-          id={selectedId}
-          onClose={() => setSelectedId(null)}
-        />
       )}
       {/* Modal hiển thị câu hỏi y tế */}
       {showMedicalQuestions && (
@@ -1245,6 +1261,109 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="delete-modal"
+          onClick={(e) => {
+            if (e.target.className === "delete-modal") {
+              handleCloseDeleteModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="delete-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="delete-modal-header"
+              style={{
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>Delete</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="delete-modal-body" style={{ marginBottom: "20px" }}>
+              <p>Are you sure you want to delete?</p>
+            </div>
+            <div
+              className="modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+              }}
+            >
+              <button
+                className="cancel-button"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#ccc",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                className="delete-button"
+                onClick={handleDelete}
+                style={{
+                  padding: "8px 24px",
+                  background: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                DELETE
+              </button>
+            </div>
           </div>
         </div>
       )}
