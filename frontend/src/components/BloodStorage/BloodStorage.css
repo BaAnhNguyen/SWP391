@@ -431,22 +431,6 @@
     outline: none;
 }
 
-.delete-btn {
-    color: #e74c3c !important;
-    border: none !important;
-    background: none !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1.2rem !important;
-    padding: 5px 10px !important;
-    border-radius: 4px !important;
-    transition: all 0.2s !important;
-}
-
-.delete-btn:hover {
-    background-color: rgba(231, 76, 60, 0.1) !important;
-}
-
 /* Delete button styles */
 .delete-button {
     background-color: #e74c3c;

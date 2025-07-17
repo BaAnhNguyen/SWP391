@@ -470,7 +470,7 @@ exports.updateAppointmentDate = async (req, res) => {
     if (!request)
       return res.status(404).json({ message: "Need request not found" });
 
-    // Chỉ cho đổi ngày khi trạng thái là Assigned (hoặc tùy ý bạn thêm Fulfilled)
+    // Chỉ cho đổi ngày khi trạng thái là Assigned
     if (request.status !== "Assigned") {
       return res.status(400).json({
         message: "Only assigned requests can update appointment date",

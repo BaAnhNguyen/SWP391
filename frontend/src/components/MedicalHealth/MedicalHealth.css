@@ -42,14 +42,14 @@
 }
 
 .edit-btn,
-.delete-btn,
 .save-btn,
-.cancel-btn {
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+.cancel-btn,
+.delete-btn {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .edit-btn {
@@ -57,9 +57,17 @@
     color: white;
 }
 
+.edit-btn:hover {
+    background-color: #45a049;
+}
+
 .delete-btn {
-    background-color: rgb(111, 42, 42);
+    background-color: #dc3545;
     color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
 }
 
 .save-btn {

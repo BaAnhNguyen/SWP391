@@ -139,11 +139,6 @@ function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="nav-link">
-                {t("nav.contact")}
-              </Link>
-            </li>
-            <li>
               <LanguageSwitcher />
             </li>
           </ul>

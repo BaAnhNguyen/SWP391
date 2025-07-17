@@ -13,7 +13,6 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Login from "./components/Login/Login";
 import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler/OAuth2RedirectHandler";
-import Contact from "./components/Contact/Contact";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import TermsOfService from "./components/Legal/TermsOfService";
 import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
@@ -69,7 +68,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/permission-denied" element={<PermissionDenied />} />

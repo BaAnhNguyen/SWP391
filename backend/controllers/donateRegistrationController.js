@@ -17,22 +17,22 @@ exports.create = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // // Kiểm tra ngày đủ điều kiện hiến máu tiếp theo
-    // const lastHistory = await DonationHistory.findOne({ userId: userId }).sort({
-    //   donationDate: -1,
-    // });
-    // if (lastHistory && lastHistory.nextEligibleDate) {
-    //   const today = setToStartOfDay(new Date());
-    //   const eligible = setToStartOfDay(new Date(lastHistory.nextEligibleDate));
-    //   if (today < eligible) {
-    //     return res.status(400).json({
-    //       message: `Bạn chỉ có thể đăng ký hiến máu sau ngày ${eligible.toLocaleDateString(
-    //         "vi-VN"
-    //       )}`,
-    //       nextEligibleDate: eligible,
-    //     });
-    //   }
-    // }
+    // Kiểm tra ngày đủ điều kiện hiến máu tiếp theo
+    const lastHistory = await DonationHistory.findOne({ userId: userId }).sort({
+      donationDate: -1,
+    });
+    if (lastHistory && lastHistory.nextEligibleDate) {
+      const today = setToStartOfDay(new Date());
+      const eligible = setToStartOfDay(new Date(lastHistory.nextEligibleDate));
+      if (today < eligible) {
+        return res.status(400).json({
+          message: `Bạn chỉ có thể đăng ký hiến máu sau ngày ${eligible.toLocaleDateString(
+            "vi-VN"
+          )}`,
+          nextEligibleDate: eligible,
+        });
+      }
+    }
 
     //valide update profile
     if (

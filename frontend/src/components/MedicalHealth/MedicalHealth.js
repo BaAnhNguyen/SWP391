@@ -13,6 +13,8 @@ const MedicalHealth = () => {
   const [editedContent, setEditedContent] = useState("");
   const [editedOrder, setEditedOrder] = useState(0);
   const [newQuestion, setNewQuestion] = useState({ content: "", order: "" });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteQuestionId, setDeleteQuestionId] = useState(null);
 
   // Fetch questions from API
   const fetchQuestions = async () => {
@@ -102,9 +104,17 @@ const MedicalHealth = () => {
   };
 
   // Delete question
-  const handleDelete = async (id) => {
-    if (!window.confirm(t("medicalHealth.confirmDelete"))) return;
+  const handleOpenDeleteModal = (id) => {
+    setDeleteQuestionId(id);
+    setShowDeleteModal(true);
+  };
 
+  const handleCloseDeleteModal = () => {
+    setDeleteQuestionId(null);
+    setShowDeleteModal(false);
+  };
+
+  const handleDelete = async () => {
     try {
       setError(null);
       const token = localStorage.getItem("token");
@@ -112,12 +122,21 @@ const MedicalHealth = () => {
       if (!token) {
         throw new Error(t("medicalHealth.authError"));
       }
-      const response = await fetch(`${API_BASE_URL}/question/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      if (!deleteQuestionId) {
+        console.error("No question ID selected for deletion");
+        return;
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/question/${deleteQuestionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
@@ -126,8 +145,11 @@ const MedicalHealth = () => {
 
       setSuccess(t("medicalHealth.deleteSuccess"));
       setTimeout(() => setSuccess(null), 3000);
+      handleCloseDeleteModal();
       await fetchQuestions();
     } catch (error) {
+      console.error("Error deleting question:", error);
+      setError(error.message);
       console.error("Error deleting question:", error);
       setError(error.message);
     }
@@ -265,8 +287,8 @@ const MedicalHealth = () => {
                       {t("medicalHealth.edit")}
                     </button>
                     <button
-                      onClick={() => handleDelete(question._id)}
-                      className="delete-button"
+                      onClick={() => handleOpenDeleteModal(question._id)}
+                      className="delete-btn"
                     >
                       {t("medicalHealth.delete")}
                     </button>
@@ -319,6 +341,109 @@ const MedicalHealth = () => {
           </div>
         </form>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="delete-modal"
+          onClick={(e) => {
+            if (e.target.className === "delete-modal") {
+              handleCloseDeleteModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="delete-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="delete-modal-header"
+              style={{
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>Delete</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="delete-modal-body" style={{ marginBottom: "20px" }}>
+              <p>Are you sure you want to delete?</p>
+            </div>
+            <div
+              className="modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+              }}
+            >
+              <button
+                className="cancel-btn"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#ccc",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                className="delete-btn"
+                onClick={handleDelete}
+                style={{
+                  padding: "8px 24px",
+                  background: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

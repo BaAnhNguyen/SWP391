@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
-import DonateHistoryDetail from "./DonateRequestHistory";
 
 const DonateRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -25,6 +24,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [healthCheckRequest, setHealthCheckRequest] = useState(null);
   const [activeTab, setActiveTab] = useState("complete");
   const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteRequestId, setDeleteRequestId] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [rejectionData, setRejectionData] = useState({
     requestId: null,
     reason: "",
@@ -45,7 +48,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [cancellationData, setCancellationData] = useState({
     reason: "",
   });
-  const [selectedId, setSelectedId] = useState(null);
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -124,6 +126,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }
   };
   const handleOpenHealthCheck = (request) => {
+    // validate den ngay moi dc mo?
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const readyDate = new Date(request.readyDate);
+    readyDate.setHours(0, 0, 0, 0);
+
+    if (readyDate > today) {
+      alert(t("common.alertDate"));
+      return;
+    }
     setHealthCheckRequest(request);
     setHealthCheckData({
       weight: "",
@@ -164,6 +176,28 @@ const DonateRequestList = ({ userRole, refresh }) => {
       requestId: null,
       reason: "",
     });
+  };
+
+  const handleOpenDeleteModal = (requestId) => {
+    if (!requestId) {
+      console.error("No request ID provided for deletion");
+      alert("Error: Cannot delete this request. Missing ID.");
+      return;
+    }
+    console.log("Opening delete modal for request ID:", requestId);
+    setDeleteRequestId(requestId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteRequestId(null);
+    setShowDeleteModal(false);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    setSuccessMessage("");
+    fetchRequests();
   };
 
   const handleRejectionReasonChange = (e) => {
@@ -296,6 +330,18 @@ const DonateRequestList = ({ userRole, refresh }) => {
     e.preventDefault();
 
     if (!healthCheckRequest) return;
+
+    // Validate ngày hiện tại >= ngày hẹn
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const readyDate = new Date(healthCheckRequest.readyDate);
+    readyDate.setHours(0, 0, 0, 0);
+
+    if (readyDate > today) {
+      alert(t("common.alertDate"));
+      return;
+    }
+
     //validate
     if (activeTab === "complete") {
       const errors = validateHealthCheck(healthCheckData);
@@ -362,24 +408,34 @@ const DonateRequestList = ({ userRole, refresh }) => {
       if (activeTab === "complete") {
         // Validate quantity
         if (!healthCheckData.quantity || healthCheckData.quantity < 1) {
-          return alert(t("donateRequest.invalidQuantity"));
+          setSuccessMessage(t("donateRequest.invalidQuantity"));
+          setShowSuccessModal(true);
+          return;
         }
 
         // Đảm bảo số lượng là số hợp lệ
         const qty = Number(healthCheckData.quantity);
         if (isNaN(qty) || qty < 1) {
-          return alert(t("donateRequest.invalidQuantity"));
+          setSuccessMessage(t("donateRequest.invalidQuantity"));
+          setShowSuccessModal(true);
+          return;
         }
         const vol = Number(healthCheckData.volume);
         if (isNaN(vol) || vol < 50) {
-          return alert(t("Invalid volume(50ml)"));
+          setSuccessMessage(t("Invalid volume(50ml)"));
+          setShowSuccessModal(true);
+          return;
         }
         // Validate nhóm máu/thành phần
         if (!healthCheckData.confirmedBloodGroup) {
-          return alert("Vui lòng chọn nhóm máu xác nhận");
+          setSuccessMessage("Vui lòng chọn nhóm máu xác nhận");
+          setShowSuccessModal(true);
+          return;
         }
         if (!healthCheckData.confirmedComponent) {
-          return alert("Vui lòng chọn thành phần máu xác nhận");
+          setSuccessMessage("Vui lòng chọn thành phần máu xác nhận");
+          setShowSuccessModal(true);
+          return;
         }
 
         const requestData = {
@@ -413,12 +469,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
         const data = await makeApiCall(requestData);
         console.log("Complete response data:", data);
-        alert(t("donateRequest.completedSuccessfully"));
-        if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
+        setSuccessMessage(t("donateRequest.completedSuccessfully"));
+        setShowSuccessModal(true);
+        // History view has been removed, no need to set selected ID
       } else if (activeTab === "cancel") {
         // Validate reason and follow-up date
         if (!cancellationData.reason.trim()) {
-          return alert(t("donateRequest.reasonRequired"));
+          setSuccessMessage(t("donateRequest.reasonRequired"));
+          setShowSuccessModal(true);
+          return;
         }
 
         //reject
@@ -428,12 +487,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
           cancellationData.reason.trim()
         );
 
-        alert(t("donateRequest.canceledSuccessfully"));
+        setSuccessMessage(t("donateRequest.canceledSuccessfully"));
+        setShowSuccessModal(true);
       }
 
-      // Close modal and refresh data
+      // Close health check modal but keep success modal open
       handleCloseHealthCheck();
-      fetchRequests();
     } catch (err) {
       setError(err.message);
       alert(t("donateRequest.updateError") + ": " + err.message);
@@ -457,32 +516,46 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }));
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm(t("donateRequest.confirmDelete"))) return;
-
+  const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error(t("common.notAuthenticated"));
       }
 
-      const response = await fetch(`${API_BASE_URL}/donateregistration/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (!deleteRequestId) {
+        console.error("No request ID selected for deletion");
+        return;
+      }
+
+      console.log("Deleting request with ID:", deleteRequestId);
+
+      const response = await fetch(
+        `${API_BASE_URL}/donateregistration/${deleteRequestId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("donateRequest.deleteError"));
       }
 
+      console.log("Delete successful");
+      // Close modal immediately without alerts
+      handleCloseDeleteModal();
+
       // Refresh the requests list
       fetchRequests();
     } catch (err) {
       setError(err.message);
       console.error("Error deleting request:", err);
+      // Silently close modal even on error
+      handleCloseDeleteModal();
     }
   }; // Hàm để xem lịch sử bệnh (câu hỏi y tế) của người dùng
   const handleViewMedicalHistory = (request, e) => {
@@ -796,11 +869,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(request._id);
+                        console.log(
+                          "Delete button clicked for request:",
+                          request
+                        );
+                        handleOpenDeleteModal(request._id);
                       }}
                       className="delete-button"
                     >
-                      {t("common.delete")}
+                      {t("donateRequest.delete")}
                     </button>
                   )}
                   <button
@@ -811,29 +888,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   >
                     {t("donateRequest.medicalHistory")}
                   </button>
-                  {request.status === "Completed" && (
-                    <button
-                      className="detail-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedId(request.historyId);
-                      }}
-                    >
-                      {t("donateRequest.detailInfo")}
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
           ))}
         </div>
-      )}
-      {/* Model history detail*/}
-      {selectedId && (
-        <DonateHistoryDetail
-          id={selectedId}
-          onClose={() => setSelectedId(null)}
-        />
       )}
       {/* Modal hiển thị câu hỏi y tế */}
       {showMedicalQuestions && (
@@ -1245,6 +1304,202 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="delete-modal"
+          onClick={(e) => {
+            if (e.target.className === "delete-modal") {
+              handleCloseDeleteModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="delete-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="delete-modal-header"
+              style={{
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>Delete</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <div className="delete-modal-body" style={{ marginBottom: "20px" }}>
+              <p>{t("donateRequest.confirmDelete")}</p>
+            </div>
+            <div
+              className="modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "20px",
+              }}
+            >
+              <button
+                className="cancel-button"
+                onClick={handleCloseDeleteModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#ccc",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                className="delete-button"
+                onClick={handleDelete}
+                style={{
+                  padding: "8px 24px",
+                  background: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div
+          className="success-modal"
+          onClick={(e) => {
+            if (e.target.className === "success-modal") {
+              handleCloseSuccessModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="success-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="success-modal-header"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>{t("donateRequest.success")}</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseSuccessModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <div
+              className="success-modal-body"
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              <p>{successMessage}</p>
+            </div>
+            <div
+              className="success-modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={handleCloseSuccessModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}
