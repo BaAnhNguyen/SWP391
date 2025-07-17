@@ -625,9 +625,7 @@ const AssignBloodUnits = () => {
             <div className="info-item">
               <label>{t("common.bloodType")}:</label>
               <span
-                className={`blood-badge blood-${requestDetails.bloodGroup
-                  ?.replace("+", "pos")
-                  .replace("-", "neg")}`}
+
               >
                 {requestDetails.bloodGroup}
               </span>
