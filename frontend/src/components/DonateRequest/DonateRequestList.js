@@ -26,6 +26,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteRequestId, setDeleteRequestId] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [rejectionData, setRejectionData] = useState({
     requestId: null,
     reason: "",
@@ -190,6 +192,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const handleCloseDeleteModal = () => {
     setDeleteRequestId(null);
     setShowDeleteModal(false);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    setSuccessMessage("");
+    fetchRequests();
   };
 
   const handleRejectionReasonChange = (e) => {
@@ -400,24 +408,34 @@ const DonateRequestList = ({ userRole, refresh }) => {
       if (activeTab === "complete") {
         // Validate quantity
         if (!healthCheckData.quantity || healthCheckData.quantity < 1) {
-          return alert(t("donateRequest.invalidQuantity"));
+          setSuccessMessage(t("donateRequest.invalidQuantity"));
+          setShowSuccessModal(true);
+          return;
         }
 
         // Đảm bảo số lượng là số hợp lệ
         const qty = Number(healthCheckData.quantity);
         if (isNaN(qty) || qty < 1) {
-          return alert(t("donateRequest.invalidQuantity"));
+          setSuccessMessage(t("donateRequest.invalidQuantity"));
+          setShowSuccessModal(true);
+          return;
         }
         const vol = Number(healthCheckData.volume);
         if (isNaN(vol) || vol < 50) {
-          return alert(t("Invalid volume(50ml)"));
+          setSuccessMessage(t("Invalid volume(50ml)"));
+          setShowSuccessModal(true);
+          return;
         }
         // Validate nhóm máu/thành phần
         if (!healthCheckData.confirmedBloodGroup) {
-          return alert("Vui lòng chọn nhóm máu xác nhận");
+          setSuccessMessage("Vui lòng chọn nhóm máu xác nhận");
+          setShowSuccessModal(true);
+          return;
         }
         if (!healthCheckData.confirmedComponent) {
-          return alert("Vui lòng chọn thành phần máu xác nhận");
+          setSuccessMessage("Vui lòng chọn thành phần máu xác nhận");
+          setShowSuccessModal(true);
+          return;
         }
 
         const requestData = {
@@ -451,12 +469,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
         const data = await makeApiCall(requestData);
         console.log("Complete response data:", data);
-        alert(t("donateRequest.completedSuccessfully"));
+        setSuccessMessage(t("donateRequest.completedSuccessfully"));
+        setShowSuccessModal(true);
         // History view has been removed, no need to set selected ID
       } else if (activeTab === "cancel") {
         // Validate reason and follow-up date
         if (!cancellationData.reason.trim()) {
-          return alert(t("donateRequest.reasonRequired"));
+          setSuccessMessage(t("donateRequest.reasonRequired"));
+          setShowSuccessModal(true);
+          return;
         }
 
         //reject
@@ -466,12 +487,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
           cancellationData.reason.trim()
         );
 
-        alert(t("donateRequest.canceledSuccessfully"));
+        setSuccessMessage(t("donateRequest.canceledSuccessfully"));
+        setShowSuccessModal(true);
       }
 
-      // Close modal and refresh data
+      // Close health check modal but keep success modal open
       handleCloseHealthCheck();
-      fetchRequests();
     } catch (err) {
       setError(err.message);
       alert(t("donateRequest.updateError") + ": " + err.message);
@@ -1346,7 +1367,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
               </button>
             </div>
             <div className="delete-modal-body" style={{ marginBottom: "20px" }}>
-              <p>Are you sure you want to delete?</p>
+              <p>{t("donateRequest.confirmDelete")}</p>
             </div>
             <div
               className="modal-footer"
@@ -1384,6 +1405,99 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 }}
               >
                 DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div
+          className="success-modal"
+          onClick={(e) => {
+            if (e.target.className === "success-modal") {
+              handleCloseSuccessModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="success-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="success-modal-header"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>{t("donateRequest.success")}</h3>
+              <button
+                className="close-button"
+                onClick={handleCloseSuccessModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            <div
+              className="success-modal-body"
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              <p>{successMessage}</p>
+            </div>
+            <div
+              className="success-modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={handleCloseSuccessModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                OK
               </button>
             </div>
           </div>

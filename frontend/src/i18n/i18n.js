@@ -1224,6 +1224,7 @@ const resources = {
         deleteTitle: "Xóa Yêu Cầu Hiến Máu",
         delete: "XÓA",
         cancel: "HỦY",
+        success: "THÔNG BÁO",
         // Existing strings
         bloodGroup: "Nhóm Máu",
         selectBloodGroup: "Chọn nhóm máu",
