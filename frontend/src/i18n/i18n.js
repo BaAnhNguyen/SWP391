@@ -483,6 +483,8 @@ const resources = {
           redcells: "Red Cells",
           unknown: "Unknown",
         },
+        alertDate:
+          "You can only perform on or after the scheduled donation date",
       },
 
       // Blood Storage
@@ -593,7 +595,7 @@ const resources = {
         rejectionReason: "Rejection Reason",
         donationType: "Donation Type",
         quantity: "Quantity",
-        markRejected:"Mark as Rejected",
+        markRejected: "Mark as Rejected",
         markApproved: "Mark as Approved",
         markCompleted: "Mark as Completed",
         markCancelled: "Mark as Cancelled",
@@ -628,10 +630,10 @@ const resources = {
         bloodGroupMismatch:
           "The selected blood group does not match your profile",
         detailInfo: "Detail Information",
-        deleteTitle:"Delete",
-        confirmDelete:"Are you sure you want to delete?",
-        delete:"DELETE",
-        cancel:"CANCEL",
+        deleteTitle: "Delete",
+        confirmDelete: "Are you sure you want to delete?",
+        delete: "DELETE",
+        cancel: "CANCEL",
       },
 
       // Blood Components Compatibility
@@ -1154,6 +1156,7 @@ const resources = {
           redcells: "Hồng Cầu",
           unknown: "Chưa biết",
         },
+        alertDate: "Chưa đến ngày hẹn hiến máu. Không thể xác nhận.",
       },
 
       // Blood Storage
@@ -1290,9 +1293,8 @@ const resources = {
         bloodGroupError: "Nhóm máu không đúng",
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
-        deleteTitle:"Xóa",
-        confirmDelete:"Bạn có chắc chắn muốn xóa không?",
-        
+        deleteTitle: "Xóa",
+        confirmDelete: "Bạn có chắc chắn muốn xóa không?",
       },
 
       // Blood Components Compatibility

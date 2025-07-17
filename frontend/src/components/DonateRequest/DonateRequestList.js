@@ -124,6 +124,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }
   };
   const handleOpenHealthCheck = (request) => {
+    // validate den ngay moi dc mo?
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const readyDate = new Date(request.readyDate);
+    readyDate.setHours(0, 0, 0, 0);
+
+    if (readyDate > today) {
+      alert(t("common.alertDate"));
+      return;
+    }
     setHealthCheckRequest(request);
     setHealthCheckData({
       weight: "",
@@ -312,6 +322,18 @@ const DonateRequestList = ({ userRole, refresh }) => {
     e.preventDefault();
 
     if (!healthCheckRequest) return;
+
+    // Validate ngày hiện tại >= ngày hẹn
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const readyDate = new Date(healthCheckRequest.readyDate);
+    readyDate.setHours(0, 0, 0, 0);
+
+    if (readyDate > today) {
+      alert(t("common.alertDate"));
+      return;
+    }
+
     //validate
     if (activeTab === "complete") {
       const errors = validateHealthCheck(healthCheckData);
