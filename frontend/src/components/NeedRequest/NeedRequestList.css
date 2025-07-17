@@ -1009,18 +1009,216 @@
   color: #e74c3c;
 }
 
-@media (max-width: 768px) {
-  .filters-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.modal-content .modal-body {
+  padding: 1rem 0;
+  text-align: left;
+}
 
-  .search-container,
-  .filter-container {
-    width: 100%;
-  }
+.modal-content .fulfill-info {
+  margin-bottom: 1rem;
+}
 
-  .name-search-input {
-    width: 100%;
-  }
+.modal-content .status-update-info {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content .status-change {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.modal-content .status-badge-small {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.modal-content .status-badge-small.assigned {
+  background-color: var(--status-assigned);
+  color: white;
+}
+
+.modal-content .status-badge-small.fulfilled {
+  background-color: var(--status-fulfilled);
+  color: white;
+}
+
+.modal-content .arrow {
+  font-size: 1.5rem;
+  color: #6c757d;
+  font-weight: bold;
+}
+
+.modal-content .fulfill-details {
+  margin-top: 1rem;
+}
+
+.modal-content .fulfill-details h4 {
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.modal-content .fulfill-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-content .fulfill-details li {
+  padding: 0.5rem 0;
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.modal-content .modal-body p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.modal-content .simple-confirm-message {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.modal-content .simple-confirm-message p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.modal-content .modal-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+.modal-content .modal-warning strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.modal-content .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.modal-content .modal-actions button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+
+.modal-content .modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-content .modal-actions .cancel-button {
+  background: #6c757d;
+  color: white;
+}
+
+.modal-content .modal-actions .cancel-button:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.modal-content .modal-actions .fulfill-button {
+  background: #28a745;
+  color: white;
+}
+
+.modal-content .modal-actions .fulfill-button:hover:not(:disabled) {
+  background: #218838;
+}
+
+/* Success Modal Styles */
+.modal-content .success-info {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.modal-content .success-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.modal-content .success-message {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #28a745;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+}
+
+.modal-content .success-details {
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.modal-content .success-details p {
+  margin: 0 0 0.75rem 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.modal-content .success-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-content .success-details li {
+  padding: 0.5rem 0;
+  color: #28a745;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.modal-content .modal-actions .success-button {
+  background: #28a745;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 1rem;
+  min-width: 100px;
+}
+
+.modal-content .modal-actions .success-button:hover {
+  background: #218838;
+  transform: translateY(-2px);
 }
