@@ -1,20 +1,5 @@
 /* Blood type color variables */
 :root {
-    /* Main blood type colors */
-    --blood-a-color: #F44336;
-    /* Red */
-    --blood-b-color: #2196F3;
-    /* Blue */
-    --blood-ab-color: #9C27B0;
-    /* Purple */
-    --blood-o-color: #4CAF50;
-    /* Green */
-    --blood-pos-border: none;
-    --blood-neg-border: 2px solid;
-    --blood-a-neg-border-color: #B71C1C;
-    --blood-b-neg-border-color: #0D47A1;
-    --blood-ab-neg-border-color: #4A148C;
-    --blood-o-neg-border-color: #1B5E20;
 
     /* Button colors */
     --primary-button-color-1: #1976d2;
@@ -222,53 +207,6 @@
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-.blood-Apos {
-    background-color: transparent;
-    border: 1px solid var(--blood-a-color);
-    color: var(--blood-a-color);
-}
-
-.blood-Aneg {
-    background-color: transparent;
-    border: 2px solid var(--blood-a-neg-border-color);
-    color: var(--blood-a-neg-border-color);
-}
-
-.blood-Bpos {
-    background-color: transparent;
-    border: 1px solid var(--blood-b-color);
-    color: var(--blood-b-color);
-}
-
-.blood-Bneg {
-    background-color: transparent;
-    border: 2px solid var(--blood-b-neg-border-color);
-    color: var(--blood-b-neg-border-color);
-}
-
-.blood-ABpos {
-    background-color: transparent;
-    border: 1px solid var(--blood-ab-color);
-    color: var(--blood-ab-color);
-}
-
-.blood-ABneg {
-    background-color: transparent;
-    border: 2px solid var(--blood-ab-neg-border-color);
-    color: var(--blood-ab-neg-border-color);
-}
-
-.blood-Opos {
-    background-color: transparent;
-    border: 1px solid var(--blood-o-color);
-    color: var(--blood-o-color);
-}
-
-.blood-Oneg {
-    background-color: transparent;
-    border: 2px solid var(--blood-o-neg-border-color);
-    color: var(--blood-o-neg-border-color);
-}
 
 /* Urgency badges */
 .urgency-badge {
