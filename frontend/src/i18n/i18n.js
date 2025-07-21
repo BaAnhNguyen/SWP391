@@ -18,6 +18,7 @@ const resources = {
         confirm: "Confirm",
         clear: "Clear",
         refresh: "Refresh",
+        ok: "OK",
         notAuthenticated: "You are not authenticated. Please log in.",
       },
 
@@ -72,11 +73,9 @@ const resources = {
         errors: {
           weightRange: "Weight must be between 45 and 150 kg",
           heightRange: "Height must be between 145 and 220 cm",
-          bloodPressureFormat:
-            "Blood pressure must be in the format: number/number (e.g., 120/80)",
+          bloodPressureFormat: "Blood pressure must be in the format: number/number (e.g., 120/80)",
           heartRateRange: "Heart rate must be between 60 and 100 bpm",
-          alcoholLevelInvalid:
-            "Alcohol level must be greater than or equal to 0",
+          alcoholLevelInvalid: "Alcohol level must be greater than or equal to 0",
           temperatureRange: "Temperature must be between 36°C and 38°C",
           hemoglobinRange: "Hemoglobin level must be between 120 and 180 g/dL",
           quantityMin: "Please enter a valid quantity (minimum is 1)",
@@ -322,6 +321,26 @@ const resources = {
       "login.noAccount": "Don't have an account?",
       "login.signUp": "Sign up here",
 
+      // Contact Page
+      "contact.title": "Get in Touch",
+      "contact.subtitle":
+        "Have questions about blood donation? We're here to help.",
+      "contact.getInTouch": "Get in Touch with LifeSource",
+      "contact.phone": "Phone",
+      "contact.email": "Email",
+      "contact.location": "Location",
+      "contact.hours": "Monday - Friday: 8:00 AM - 6:00 PM",
+      "contact.sendMessage": "Send Us a Message",
+      "contact.responseTime": "We'll get back to you as soon as possible",
+      "contact.form.name": "Your Name",
+      "contact.form.email": "Email Address",
+      "contact.form.subject": "Subject",
+      "contact.form.message": "Message",
+      "contact.form.submit": "Send Message",
+      "contact.info.title": "Contact Information",
+      "contact.info.description":
+        "Reach out to us through any of the following methods:",
+
       // Donate Page
       "donate.title": "Blood Donation Registration",
       "donate.description":
@@ -407,7 +426,23 @@ const resources = {
         "Blood type was adjusted from '{{original}}' to '{{normalized}}' for compatibility matching",
       "needRequest.confirmFulfill":
         "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
+      "needRequest.confirmFulfillTitle": "Confirm Fulfill Request",
+      "needRequest.confirmUpdateToFulfilled": "Are you sure you want to update status to fulfilled?",
+      "needRequest.confirmFulfillButton": "Mark as Fulfilled",
+      "needRequest.fulfillWarning": "This action cannot be undone.",
+      "needRequest.currentStatus": "Current Status",
+      "needRequest.newStatus": "New Status",
+      "needRequest.fulfillDetails": "What will happen:",
+      "needRequest.fulfillAction1": "Request status will change to 'Fulfilled'",
+      "needRequest.fulfillAction2": "Assigned blood units will be removed from inventory",
+      "needRequest.fulfillAction3": "Member will be notified to complete the donation",
+      "needRequest.fulfillSuccessTitle": "Request Fulfilled Successfully",
+      "needRequest.fulfillSuccessDetails": "The following actions have been completed:",
+      "needRequest.statusUpdated": "Request status updated to 'Fulfilled'",
+      "needRequest.inventoryUpdated": "Blood units removed from inventory",
+      "needRequest.memberNotified": "Member has been notified",
       "needRequest.markFulfilled": "Mark as Fulfilled",
+      "needRequest.fulfill": "Fulfill",
       "needRequest.fulfillError": "Error fulfilling blood request",
       "needRequest.createdDate": "Created at",
       "needRequest.bloodRequestType": "Blood group",
@@ -483,8 +518,6 @@ const resources = {
           redcells: "Red Cells",
           unknown: "Unknown",
         },
-        alertDate:
-          "You can only perform on or after the scheduled donation date",
       },
 
       // Blood Storage
@@ -537,8 +570,7 @@ const resources = {
       "bloodStorage.import": "Manual Entry",
       "bloodStorage.daysLeft": "Days Left",
       "bloodStorage.delete": "Delete",
-      "bloodStorage.deleteConfirm":
-        "Are you sure you want to delete this blood unit?",
+      "bloodStorage.deleteConfirm": "Are you sure you want to delete this blood unit?",
       "bloodStorage.deleteTitle": "Delete this record",
       "bloodStorage.noRecords": "No matching records found.",
       "bloodStorage.showing": "Showing",
@@ -595,7 +627,6 @@ const resources = {
         rejectionReason: "Rejection Reason",
         donationType: "Donation Type",
         quantity: "Quantity",
-        markRejected: "Mark as Rejected",
         markApproved: "Mark as Approved",
         markCompleted: "Mark as Completed",
         markCancelled: "Mark as Cancelled",
@@ -603,7 +634,7 @@ const resources = {
         rejectionReasonPlaceholder:
           "Please explain why this donation request is being rejected...",
         reasonRequired: "Reason is required",
-        confirmReject: "CONFIRM REJECT",
+        confirmReject: "Confirm Rejection",
         noRequests: "No donation registrations found",
         healthCheck: "Health Check",
         healthCheckTitle: "Health Check Form",
@@ -630,10 +661,6 @@ const resources = {
         bloodGroupMismatch:
           "The selected blood group does not match your profile",
         detailInfo: "Detail Information",
-        deleteTitle: "Delete",
-        confirmDelete: "Are you sure you want to delete?",
-        delete: "DELETE",
-        cancel: "CANCEL",
       },
 
       // Blood Components Compatibility
@@ -714,6 +741,7 @@ const resources = {
         confirm: "Xác nhận",
         clear: "Xóa",
         refresh: "Làm mới",
+        ok: "OK",
         notAuthenticated: "Bạn chưa được xác thực. Vui lòng đăng nhập.",
       },
 
@@ -1000,6 +1028,26 @@ const resources = {
       "login.noAccount": "Chưa có tài khoản?",
       "login.signUp": "Đăng ký tại đây",
 
+      // Contact Page
+      "contact.title": "Liên Hệ",
+      "contact.subtitle": "Có câu hỏi về hiến máu? Chúng tôi sẵn sàng giúp đỡ.",
+      "contact.getInTouch": "Liên Hệ Với LifeSource",
+      "contact.phone": "Điện Thoại",
+      "contact.email": "Email",
+      "contact.location": "Địa Điểm",
+      "contact.hours": "Thứ Hai - Thứ Sáu: 8:00 AM - 6:00 PM",
+      "contact.sendMessage": "Gửi Tin Nhắn Cho Chúng Tôi",
+      "contact.responseTime": "Chúng tôi sẽ phản hồi bạn sớm nhất có thể",
+      "contact.form.name": "Tên Của Bạn",
+      "contact.form.email": "Địa Chỉ Email",
+      "contact.form.subject": "Chủ Đề",
+      "contact.form.message": "Tin Nhắn",
+      "contact.form.submit": "Gửi Tin Nhắn",
+      "contact.info.title": "Thông Tin Liên Hệ",
+      "contact.info.description":
+        "Liên hệ với chúng tôi qua bất kỳ phương thức nào sau đây:",
+
+
       // Donate Page
       "donate.title": "Đăng ký hiến máu",
       "donate.description":
@@ -1080,7 +1128,23 @@ const resources = {
         "Nhóm máu đã được điều chỉnh từ '{{original}}' thành '{{normalized}}' để phù hợp với tương thích",
       "needRequest.confirmFulfill":
         "Bạn có chắc chắn muốn đánh dấu yêu cầu này là đã hoàn thành? Điều này sẽ xóa các đơn vị máu được chỉ định khỏi kho.",
+      "needRequest.confirmFulfillTitle": "Xác nhận hoàn thành yêu cầu",
+      "needRequest.confirmUpdateToFulfilled": "Bạn có chắc chắn muốn cập nhật trạng thái thành đã hoàn thành?",
+      "needRequest.confirmFulfillButton": "Đánh dấu đã hoàn thành",
+      "needRequest.fulfillWarning": "Hành động này không thể hoàn tác.",
+      "needRequest.currentStatus": "Trạng thái hiện tại",
+      "needRequest.newStatus": "Trạng thái mới",
+      "needRequest.fulfillDetails": "Điều gì sẽ xảy ra:",
+      "needRequest.fulfillAction1": "Trạng thái yêu cầu sẽ thay đổi thành 'Đã hoàn thành'",
+      "needRequest.fulfillAction2": "Các đơn vị máu đã được chỉ định sẽ bị xóa khỏi kho",
+      "needRequest.fulfillAction3": "Thành viên sẽ được thông báo để hoàn tất việc hiến máu",
+      "needRequest.fulfillSuccessTitle": "Yêu cầu đã được hoàn thành thành công",
+      "needRequest.fulfillSuccessDetails": "Các hành động sau đã được hoàn thành:",
+      "needRequest.statusUpdated": "Trạng thái yêu cầu đã được cập nhật thành 'Đã hoàn thành'",
+      "needRequest.inventoryUpdated": "Các đơn vị máu đã được xóa khỏi kho",
+      "needRequest.memberNotified": "Thành viên đã được thông báo",
       "needRequest.markFulfilled": "Đánh dấu đã hoàn thành",
+      "needRequest.fulfill": "Hoàn thành",
       "needRequest.fulfillError": "Lỗi khi hoàn thành yêu cầu máu",
       "needRequest.createdDate": "Ngày tạo đơn",
       "needRequest.bloodRequestType": "Nhóm máu",
@@ -1156,7 +1220,6 @@ const resources = {
           redcells: "Hồng Cầu",
           unknown: "Chưa biết",
         },
-        alertDate: "Chưa đến ngày hẹn hiến máu. Không thể xác nhận.",
       },
 
       // Blood Storage
@@ -1197,8 +1260,7 @@ const resources = {
       "bloodStorage.import": "Nhập Thủ Công",
       "bloodStorage.daysLeft": "Ngày Còn Lại",
       "bloodStorage.delete": "Xóa",
-      "bloodStorage.deleteConfirm":
-        "Bạn có chắc chắn muốn xóa đơn vị máu này không?",
+      "bloodStorage.deleteConfirm": "Bạn có chắc chắn muốn xóa đơn vị máu này không?",
       "bloodStorage.deleteTitle": "Xóa bản ghi này",
       "bloodStorage.noRecords": "Không có kết quả phù hợp.",
       "bloodStorage.showing": "Hiển thị",
@@ -1211,21 +1273,9 @@ const resources = {
 
       // Donate Request
       donateRequest: {
-        title: "Hiến Máu",
-        createNew: "Đăng Ký Hiến Máu",
-        editRequest: "Chỉnh Sửa Đăng Ký Hiến Máu",
-        myRequests: "Đăng Ký Hiến Máu Của Tôi",
-        allRequests: "Tất Cả Đăng Ký Hiến Máu",
-        showHealthQuestions: "Trả Lời Câu Hỏi Sức Khỏe",
-        // New strings for rejection and delete
-        markRejected: "TỪ CHỐI",
-        markApproved: "PHÊ DUYỆT",
-        confirmDelete: "Bạn có chắc chắn muốn xóa yêu cầu hiến máu này?",
-        deleteTitle: "Xóa Yêu Cầu Hiến Máu",
-        delete: "XÓA",
-        cancel: "HỦY",
-        success: "THÔNG BÁO",
-        // Existing strings
+        title: "Đăng Ký Hiến Máu",
+        description:
+          "Đăng ký hiến máu và giúp cứu sống những người cần máu. Sự hiến tặng của bạn có thể tạo ra sự khác biệt.",
         bloodGroup: "Nhóm Máu",
         selectBloodGroup: "Chọn nhóm máu",
         component: "Thành Phần Máu",
@@ -1294,8 +1344,23 @@ const resources = {
         bloodGroupError: "Nhóm máu không đúng",
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
-        deleteTitle: "Xóa",
-        confirmDelete: "Bạn có chắc chắn muốn xóa không?",
+      },
+
+
+      donate: {
+        errors: {
+          weightRange: "Cân nặng phải từ 45 đến 150 kg",
+          heightRange: "Chiều cao phải từ 145 đến 220 cm",
+          bloodPressureFormat: "Huyết áp phải có định dạng: số/số (ví dụ: 120/80)",
+          heartRateRange: "Nhịp tim phải từ 60 đến 100 nhịp/phút",
+          alcoholLevelInvalid: "Nồng độ cồn phải lớn hơn hoặc bằng 0",
+          temperatureRange: "Nhiệt độ phải từ 36°C đến 38°C",
+          hemoglobinRange: "Mức hemoglobin phải từ 120 đến 180 g/dL",
+          quantityMin: "Vui lòng nhập số lượng hợp lệ (tối thiểu là 1)",
+          volumeMin: "Vui lòng nhập thể tích hợp lệ (tối thiểu là 50 mL)",
+          bloodGroupRequired: "Vui lòng xác nhận nhóm máu",
+          componentRequired: "Vui lòng xác nhận thành phần máu",
+        },
       },
 
       // Blood Components Compatibility

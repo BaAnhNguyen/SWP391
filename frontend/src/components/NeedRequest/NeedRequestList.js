@@ -31,6 +31,14 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteRequestId, setDeleteRequestId] = useState(null);
 
+  // Fulfill confirmation modal state
+  const [showFulfillModal, setShowFulfillModal] = useState(false);
+  const [fulfillRequestId, setFulfillRequestId] = useState(null);
+
+  // Fulfill success modal state
+  const [showFulfillSuccessModal, setShowFulfillSuccessModal] = useState(false);
+  const [fulfillSuccessMessage, setFulfillSuccessMessage] = useState("");
+
   // Search by name state
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -217,6 +225,23 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const handleAssign = (id) => {
     navigate(`/staff/assign-blood-units/${id}`);
   };
+
+  // ----- Fulfill modal handlers -----
+  const openFulfillModal = (requestId) => {
+    setFulfillRequestId(requestId);
+    setShowFulfillModal(true);
+  };
+
+  const closeFulfillModal = () => {
+    setShowFulfillModal(false);
+    setFulfillRequestId(null);
+  };
+
+  const closeFulfillSuccessModal = () => {
+    setShowFulfillSuccessModal(false);
+    setFulfillSuccessMessage("");
+  };
+
   const handleFulfillRequest = async (id) => {
     try {
       setLoading(true);
@@ -237,10 +262,16 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(data.message || t("needRequest.fulfillError"));
       }
       const result = await response.json();
-      alert(result.message);
+
+      // Close the confirmation modal and show success modal
+      closeFulfillModal();
+      setFulfillSuccessMessage(result.message);
+      setShowFulfillSuccessModal(true);
+
       fetchRequests();
     } catch (err) {
       setError(err.message);
+      closeFulfillModal();
     } finally {
       setLoading(false);
     }
@@ -533,46 +564,59 @@ const NeedRequestList = ({ userRole, refresh }) => {
                           {t("needRequest.reject")}
                         </button>
 
-                        {/* Assigned mới có nút đổi ngày hẹn */}
+                        {/* Assigned mới có nút đổi ngày hẹn và nút fulfill */}
                         {request.status === "Assigned" && (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openAppointmentModal(
+                                  request._id,
+                                  request.appointmentDate
+                                    ? new Date(request.appointmentDate)
+                                      .toISOString()
+                                      .slice(0, 16)
+                                    : ""
+                                );
+                              }}
+                              className="edit-appointment-button"
+                              style={{ marginLeft: 8 }}
+                            >
+                              Đổi ngày hẹn
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openFulfillModal(request._id);
+                              }}
+                              className="fulfill-button"
+                              style={{ marginLeft: 8 }}
+                            >
+                              {t("needRequest.fulfill")}
+                            </button>
+                          </>
+                        )}
+
+                        {/* Nút xóa - disabled for Assigned and Fulfilled */}
+                        {request.status !== "Assigned" && request.status !== "Fulfilled" && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              openAppointmentModal(
-                                request._id,
-                                request.appointmentDate
-                                  ? new Date(request.appointmentDate)
-                                    .toISOString()
-                                    .slice(0, 16)
-                                  : ""
-                              );
+                              setDeleteRequestId(request._id);
+                              setShowDeleteModal(true);
                             }}
-                            className="edit-appointment-button"
+                            className="delete-button"
                             style={{ marginLeft: 8 }}
                           >
-                            Đổi ngày hẹn
+                            {t("common.delete")}
                           </button>
                         )}
-
-                        {/* Nút xóa */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleteRequestId(request._id);
-                            setShowDeleteModal(true);
-                          }}
-                          className="delete-button"
-                          style={{ marginLeft: 8 }}
-                        >
-                          {t("common.delete")}
-                        </button>
                       </>
                     )}
 
-                  {/* Staff action cho Fulfilled, Expired, Rejected */}
+                  {/* Staff action cho Expired, Rejected (Fulfilled removed) */}
                   {isStaff &&
-                    (request.status === "Fulfilled" ||
-                      request.status === "Expired" ||
+                    (request.status === "Expired" ||
                       request.status === "Rejected") && (
                       <button
                         onClick={(e) => {
@@ -701,6 +745,74 @@ const NeedRequestList = ({ userRole, refresh }) => {
         onClose={closeDeleteModal}
         onConfirm={handleDelete}
       />
+
+      {/* Fulfill Confirmation Modal */}
+      {showFulfillModal && (
+        <div className="modal-overlay" onClick={closeFulfillModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("needRequest.confirmFulfillTitle")}</h3>
+            <div className="modal-body">
+              <div className="simple-confirm-message">
+                <p>{t("needRequest.confirmUpdateToFulfilled")}</p>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                onClick={closeFulfillModal}
+                className="cancel-button"
+                style={{ marginRight: 8 }}
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFulfillRequest(fulfillRequestId)}
+                className="fulfill-button"
+                disabled={loading}
+              >
+                {loading ? t("common.processing") : t("needRequest.confirmFulfillButton")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fulfill Success Modal */}
+      {showFulfillSuccessModal && (
+        <div className="modal-overlay" onClick={closeFulfillSuccessModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("needRequest.fulfillSuccessTitle")}</h3>
+            <div className="modal-body">
+              <div className="success-info">
+                <div className="success-icon">
+                  ✅
+                </div>
+                <div className="success-message">
+                  {fulfillSuccessMessage}
+                </div>
+                <div className="success-details">
+                  <p>{t("needRequest.fulfillSuccessDetails")}</p>
+                  <ul>
+                    <li>✓ {t("needRequest.statusUpdated")}</li>
+                    <li>✓ {t("needRequest.inventoryUpdated")}</li>
+                    <li>✓ {t("needRequest.memberNotified")}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                onClick={closeFulfillSuccessModal}
+                className="success-button"
+              >
+                {t("common.ok")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
