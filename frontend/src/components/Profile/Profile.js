@@ -11,6 +11,8 @@ function Profile() {
   const [error, setError] = useState(null);
   const [resetKey, setResetKey] = useState(0);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Lưu mọi trường, trong đó address (string hoặc object tuỳ bạn) và location (toạ độ)
   const [form, setForm] = useState({
@@ -29,6 +31,11 @@ function Profile() {
   function handleResetForm() {
     setForm({ address: "", location: null });
     setResetKey((prev) => prev + 1);
+  }
+
+  function handleCloseSuccessModal() {
+    setShowSuccessModal(false);
+    setSuccessMessage("");
   }
 
   useEffect(() => {
@@ -140,7 +147,10 @@ function Profile() {
         throw new Error(data.message || "Failed to update profile");
 
       setProfile(data.data);
-      alert("Profile updated successfully!");
+      setSuccessMessage(
+        t("profile.updateSuccess") || "Profile updated successfully!"
+      );
+      setShowSuccessModal(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -291,6 +301,84 @@ function Profile() {
           {loading ? t("profile.updating") : t("profile.update")}
         </button>
       </form>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div
+          className="success-modal"
+          onClick={(e) => {
+            if (e.target.className === "success-modal") {
+              handleCloseSuccessModal();
+            }
+          }}
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="success-modal-content"
+            style={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              padding: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              maxWidth: "400px",
+              width: "90%",
+            }}
+          >
+            <div
+              className="success-modal-header"
+              style={{
+                borderBottom: "1px solid #eee",
+                paddingBottom: "10px",
+                marginBottom: "15px",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>{t("profile.profile") || "Success"}</h3>
+            </div>
+            <div
+              className="success-modal-body"
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              <p>{successMessage}</p>
+            </div>
+            <div
+              className="success-modal-footer"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={handleCloseSuccessModal}
+                style={{
+                  padding: "8px 24px",
+                  background: "#3B82F6",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "20px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

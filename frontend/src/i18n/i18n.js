@@ -122,6 +122,7 @@ const resources = {
         cityHint:
           "Enter a city name. The location will be automatically geocoded.",
         update: "Update profile",
+        profile:"Profile",
       },
 
       // Address Form
@@ -829,6 +830,7 @@ const resources = {
           "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
         cityHint: "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
         update: "Cập nhật thông tin",
+        profile:"Thông tin cá nhân",
       },
 
       // Address Form
