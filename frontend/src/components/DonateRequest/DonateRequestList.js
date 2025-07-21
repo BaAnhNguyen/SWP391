@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./DonateRequestList.css";
+import DonateHistoryDetail from "./DonateRequestHistory";
 
 const DonateRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -48,6 +49,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [cancellationData, setCancellationData] = useState({
     reason: "",
   });
+  const [selectedId, setSelectedId] = useState(null);
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -471,7 +473,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
         console.log("Complete response data:", data);
         setSuccessMessage(t("donateRequest.completedSuccessfully"));
         setShowSuccessModal(true);
-        // History view has been removed, no need to set selected ID
+        if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
       } else if (activeTab === "cancel") {
         // Validate reason and follow-up date
         if (!cancellationData.reason.trim()) {
@@ -888,11 +890,29 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   >
                     {t("donateRequest.medicalHistory")}
                   </button>
+                   {request.status === "Completed" && (
+                    <button
+                      className="detail-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedId(request.historyId);
+                      }}
+                    >
+                      {t("donateRequest.detailInfo")}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+       {/* Model history detail*/}
+      {selectedId && (
+        <DonateHistoryDetail
+          id={selectedId}
+          onClose={() => setSelectedId(null)}
+        />
       )}
       {/* Modal hiển thị câu hỏi y tế */}
       {showMedicalQuestions && (
