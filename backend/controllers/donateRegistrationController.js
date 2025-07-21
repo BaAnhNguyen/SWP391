@@ -411,9 +411,23 @@ exports.update = async (req, res) => {
 
 //helper": calculate next eligible date
 function calNextEligible(component, fromDate) {
-  let day = 84;
-  if (component === "Plasma") day = 14;
-  else if (component === "Platelets") day = 14;
+  let day;
+  switch (component) {
+    case "Plasma":
+      day = 14; //2
+      break;
+    case "Platelets":
+      day = 14; //2
+      break;
+    case "RedCells":
+      day = 112; // 16 weeks for double red cells
+      break;
+    case "WholeBlood":
+      day = 56; // 8 weeks for whole blood
+      break;
+    default:
+      day = 56;
+  }
   const d = new Date(fromDate);
   d.setDate(d.getDate() + day);
   return d;
