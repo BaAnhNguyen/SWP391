@@ -7,12 +7,217 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
+// Hàm hiển thị thông báo bằng innerHTML
+const showNotification = (
+  message,
+  type = "info",
+  duration = 3000,
+  confirmCallback = null
+) => {
+  // Xóa thông báo cũ nếu có
+  const existingNotification = document.getElementById("custom-notification");
+  if (existingNotification) {
+    document.body.removeChild(existingNotification);
+  }
+
+  // Tạo element mới cho thông báo
+  const notification = document.createElement("div");
+  notification.id = "custom-notification";
+
+  // Xác định màu và icon dựa vào loại thông báo
+  let bgColor, icon, borderColor, textColor;
+  switch (type) {
+    case "success":
+      bgColor = "#e8f5e9";
+      borderColor = "#4caf50";
+      textColor = "#388e3c";
+      icon = "✓";
+      break;
+    case "error":
+      bgColor = "#ffebee";
+      borderColor = "#f44336";
+      textColor = "#d32f2f";
+      icon = "✕";
+      break;
+    case "warning":
+      bgColor = "#fff8e1";
+      borderColor = "#ff9800";
+      textColor = "#f57c00";
+      icon = "⚠️";
+      break;
+    default:
+      bgColor = "#e3f2fd";
+      borderColor = "#2196f3";
+      textColor = "#0288d1";
+      icon = "ℹ️";
+  }
+
+  // Tạo nội dung HTML cho thông báo
+  const buttons = confirmCallback
+    ? `<div class="notification-actions">
+      <button class="confirm-btn">Xác nhận</button>
+      <button class="cancel-btn">Hủy</button>
+    </div>`
+    : `<div class="notification-actions">
+      <button class="confirm-btn">OK</button>
+    </div>`;
+
+  notification.innerHTML = `
+    <div class="notification-content">
+      <div class="notification-icon">${icon}</div>
+      <div class="notification-message">${message}</div>
+      <div class="notification-close">&times;</div>
+    </div>
+    ${buttons}
+  `;
+
+  // CSS Inline cho thông báo
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    background-color: ${bgColor};
+    border-left: 4px solid ${borderColor};
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+  `;
+
+  // Thêm CSS cho các phần tử con
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    #custom-notification .notification-content {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+    }
+    
+    #custom-notification .notification-icon {
+      font-size: 24px;
+      margin-right: 12px;
+      color: ${textColor};
+    }
+    
+    #custom-notification .notification-message {
+      flex: 1;
+      color: ${textColor};
+      font-size: 16px;
+    }
+    
+    #custom-notification .notification-close {
+      cursor: pointer;
+      font-size: 20px;
+      color: ${textColor};
+      opacity: 0.7;
+    }
+    
+    #custom-notification .notification-close:hover {
+      opacity: 1;
+    }
+    
+    #custom-notification .notification-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 15px 15px;
+      gap: 8px;
+    }
+    
+    #custom-notification button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    
+    #custom-notification .confirm-btn {
+      background-color: ${borderColor};
+      color: white;
+    }
+    
+    #custom-notification .cancel-btn {
+      background-color: rgba(0,0,0,0.1);
+      color: ${textColor};
+    }
+    
+    #custom-notification .confirm-btn:hover {
+      filter: brightness(90%);
+    }
+    
+    #custom-notification .cancel-btn:hover {
+      background-color: rgba(0,0,0,0.15);
+    }
+  `;
+
+  // Thêm thông báo vào body
+  document.body.appendChild(style);
+  document.body.appendChild(notification);
+
+  // Thêm sự kiện xử lý cho nút đóng
+  const closeButton = notification.querySelector(".notification-close");
+  closeButton.addEventListener("click", () => {
+    document.body.removeChild(notification);
+    document.body.removeChild(style);
+  });
+
+  // Thêm sự kiện xử lý cho nút xác nhận
+  const confirmButton = notification.querySelector(".confirm-btn");
+  confirmButton.addEventListener("click", () => {
+    if (confirmCallback) confirmCallback();
+    document.body.removeChild(notification);
+    document.body.removeChild(style);
+  });
+
+  // Thêm sự kiện xử lý cho nút hủy nếu có
+  const cancelButton = notification.querySelector(".cancel-btn");
+  if (cancelButton) {
+    cancelButton.addEventListener("click", () => {
+      document.body.removeChild(notification);
+      document.body.removeChild(style);
+    });
+  }
+
+  // Tự động đóng sau khoảng thời gian nếu không phải là thông báo xác nhận
+  if (!confirmCallback) {
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+        document.body.removeChild(style);
+      }
+    }, duration);
+  }
+};
+
 const BlogCreate = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+
+  // Kiểm tra quyền người dùng - Staff không được phép tạo bài viết
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    if (!currentUser || currentUser.role === "Staff") {
+      showNotification(
+        "Bạn không có quyền tạo bài viết!",
+        "error",
+        3000,
+        () => {
+          navigate("/blogs");
+        }
+      );
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     setTitle(e.target.value);
@@ -31,7 +236,7 @@ const BlogCreate = () => {
     const content = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     if (!title.trim() || !content.trim() || content === "<p></p>") {
-      alert("Vui lòng điền đầy đủ thông tin!");
+      showNotification("Vui lòng điền đầy đủ thông tin!", "warning");
       return;
     }
 
@@ -47,12 +252,18 @@ const BlogCreate = () => {
       );
 
       if (response.status === 201) {
-        alert("Tạo bài viết thành công! Bài viết đang chờ duyệt.");
-        navigate("/blogs/mine");
+        showNotification(
+          "Tạo bài viết thành công! Bài viết đang chờ duyệt.",
+          "success",
+          3000,
+          () => {
+            navigate("/blogs/mine");
+          }
+        );
       }
     } catch (error) {
       console.error("Lỗi khi tạo bài viết:", error);
-      alert("Có lỗi xảy ra khi tạo bài viết!");
+      showNotification("Có lỗi xảy ra khi tạo bài viết!", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -60,9 +271,14 @@ const BlogCreate = () => {
 
   const handleCancel = () => {
     if (title.trim() || editorState.getCurrentContent().hasText()) {
-      if (window.confirm("Bạn có chắc chắn muốn hủy? Nội dung sẽ bị mất.")) {
-        navigate("/blogs/mine");
-      }
+      showNotification(
+        "Bạn có chắc chắn muốn hủy? Nội dung sẽ bị mất.",
+        "warning",
+        10000,
+        () => {
+          navigate("/blogs/mine");
+        }
+      );
     } else {
       navigate("/blogs/mine");
     }
