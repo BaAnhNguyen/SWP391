@@ -532,6 +532,9 @@ const resources = {
           redcells: "Red Cells",
           unknown: "Unknown",
         },
+        address: "Address",
+        phone: "Phone",
+        distance: "Distance",
       },
 
       // Blood Storage
@@ -754,7 +757,8 @@ const resources = {
         inviteSuccess: "Invitation sent successfully!",
         inviteAllSuccess: "All invitations sent successfully!",
         inviteError: "Error sending invitation",
-        confirmInviteAll: "Are you sure you want to invite all compatible donors?",
+        confirmInviteAll:
+          "Are you sure you want to invite all compatible donors?",
         compatibleDonors: "Compatible Donors Found",
         nearbyDonors: "Find Nearby Compatible Donors",
         noCompatibleDonors: "No compatible donors found near you.",
@@ -1266,6 +1270,9 @@ const resources = {
           redcells: "Hồng Cầu",
           unknown: "Chưa biết",
         },
+        address: "Địa chỉ",
+        phone: "Điện thoại",
+        distance: "Khoảng cách",
       },
 
       // Blood Storage
@@ -1487,7 +1494,8 @@ const resources = {
         inviteSuccess: "Đã gửi lời mời thành công!",
         inviteAllSuccess: "Đã gửi lời mời cho tất cả thành công!",
         inviteError: "Lỗi khi gửi lời mời",
-        confirmInviteAll: "Bạn có chắc chắn muốn mời tất cả người hiến máu tương thích?",
+        confirmInviteAll:
+          "Bạn có chắc chắn muốn mời tất cả người hiến máu tương thích?",
         compatibleDonors: "Tìm thấy người hiến máu tương thích",
         nearbyDonors: "Tìm người hiến máu quanh tôi",
         noCompatibleDonors: "Không tìm thấy người hiến máu nào gần bạn.",

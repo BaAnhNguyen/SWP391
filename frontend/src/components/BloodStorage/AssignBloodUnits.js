@@ -750,6 +750,7 @@ const AssignBloodUnits = () => {
               <FindNear
                 needRequestId={requestId}
                 excludedUserId={requestDetails?.createdBy?._id}
+                bloodGroup={requestDetails?.bloodGroup}
               />
             </div>
           </>

@@ -141,17 +141,6 @@ exports.getBloodUnitsForRequest = async (req, res) => {
         .json({ message: "componentType and bloodType are required." });
     }
 
-    // Enhanced debugging for blood type issues
-    console.log("Request query parameters:", req.query);
-    console.log("Blood type received:", bloodType);
-    console.log("Blood type length:", bloodType.length);
-    console.log(
-      "Blood type character analysis:",
-      Array.from(bloodType)
-        .map((c) => `${c}:${c.charCodeAt(0)}`)
-        .join(", ")
-    );
-
     // Try to normalize the blood type ourselves before passing to getCompatibleBloodTypes
     const normalizedBloodType = bloodType.trim().toUpperCase();
     console.log("Normalized blood type:", normalizedBloodType);

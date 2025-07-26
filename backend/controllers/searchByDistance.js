@@ -1,13 +1,30 @@
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
+const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 
 exports.searchByDistance = async (req, res) => {
   try {
-    console.log("called /users/nearby");
-    const { lng, lat, maxDistance } = req.query;
+    const { lng, lat, maxDistance, bloodRequest } = req.query;
+
     if (!lng || !lat) {
       return res.status(400).json({ message: "Missing location (lng, lat)" });
     }
+
+    if (!bloodRequest || typeof bloodRequest !== "string") {
+      return res
+        .status(400)
+        .json({ message: "Missing or invalid blood group" });
+    }
+
+    const normalizedBloodType = bloodRequest.trim().toUpperCase();
+    const compatibleTypes = getCompatibleBloodTypes(normalizedBloodType);
+
+    if (!Array.isArray(compatibleTypes) || compatibleTypes.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No compatible blood types found for given input." });
+    }
+
     const distance = maxDistance ? parseInt(maxDistance) : 10000;
 
     const users = await User.aggregate([
@@ -20,7 +37,7 @@ exports.searchByDistance = async (req, res) => {
           distanceField: "distance",
           spherical: true,
           maxDistance: distance,
-          query: { role: "Member" },
+          query: { role: "Member", bloodGroup: { $in: compatibleTypes } },
         },
       },
       {
@@ -54,16 +71,30 @@ exports.searchByDistance = async (req, res) => {
       nextEligibleMap[his._id.toString()] = his.lastHistory.nextEligibleDate;
     });
 
-    const result = users.map((user) => ({
-      _id: user._id,
-      name: user.name,
-      bloodGroup: user.bloodGroup,
-      distance: user.distance,
-      nextEligibleDate: nextEligibleMap[user._id.toString()] || null,
-      location: user.location,
-      address: user.address,
-      phoneNumber: user.phoneNumber,
-    }));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const result = users
+      .map((user) => {
+        const nextDate = nextEligibleMap[user._id.toString()];
+        return {
+          _id: user._id,
+          name: user.name,
+          bloodGroup: user.bloodGroup,
+          distance: user.distance,
+          nextEligibleDate: nextDate || null,
+          location: user.location,
+          address: user.address,
+          phoneNumber: user.phoneNumber,
+        };
+      })
+      .filter((user) => {
+        // Chỉ lấy người chưa từng hiến (null) hoặc đã đủ điều kiện
+        if (!user.nextEligibleDate) return true;
+        const next = new Date(user.nextEligibleDate);
+        next.setHours(0, 0, 0, 0);
+        return next <= today;
+      });
 
     res.json(result);
   } catch (err) {
