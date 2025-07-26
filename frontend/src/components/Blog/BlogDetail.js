@@ -270,6 +270,31 @@ const BlogDetail = () => {
         </div>
       </div>
 
+      {/* Image Gallery */}
+      {blog.images && blog.images.length > 0 && (
+        <div className="blog-images">
+          <h3 className="images-title">
+            <span className="images-icon">🖼️</span>
+            Hình ảnh
+          </h3>
+          <div className="image-gallery">
+            <div className="image-item">
+              <img
+                src={blog.images[0].url}
+                alt={blog.images[0].description || "Blog image"}
+                className="gallery-image"
+                onClick={() => window.open(blog.images[0].url, "_blank")}
+              />
+              {blog.images[0].description && (
+                <div className="image-caption">
+                  {blog.images[0].description}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Blog Content */}
       <div className="blog-content">
         <div className="content-wrapper">
@@ -468,6 +493,74 @@ const BlogDetail = () => {
           color: #2c3e50;
           white-space: pre-wrap;
           word-break: break-word;
+        }
+
+        .blog-images {
+          background: white;
+          border-radius: 20px;
+          margin-bottom: 32px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e9ecef;
+          overflow: hidden;
+        }
+
+        .images-title {
+          padding: 24px 32px 16px;
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #2c3e50;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          border-bottom: 2px solid #f8f9fa;
+        }
+
+        .images-icon {
+          font-size: 1.2em;
+        }
+
+        .image-gallery {
+          padding: 24px 32px 32px;
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .image-item {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          max-width: 500px;
+          width: 100%;
+        }
+
+        .image-item:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-image {
+          width: 100%;
+          height: 300px;
+          object-fit: cover;
+          cursor: pointer;
+          transition: transform 0.3s ease;
+        }
+
+        .gallery-image:hover {
+          transform: scale(1.05);
+        }
+
+        .image-caption {
+          padding: 12px 16px;
+          background: #f8f9fa;
+          color: #6c757d;
+          font-size: 14px;
+          line-height: 1.4;
+          border-top: 1px solid #e9ecef;
         }
 
         .comments-section {

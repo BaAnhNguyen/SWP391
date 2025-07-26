@@ -1,4 +1,5 @@
 const Blog = require("../models/Blog");
+const cloudinary = require("cloudinary").v2;
 
 //create blog(admin: approved, member : pending)
 exports.create = async (req, res) => {
@@ -6,11 +7,30 @@ exports.create = async (req, res) => {
     const { title, content } = req.body;
     let status = "Pending";
     if (req.user.role === "Admin") status = "Approved";
+
+    // Kiểm tra số lượng ảnh tối đa
+    if (req.files && req.files.length > 1) {
+      return res.status(400).json({
+        error: "Chỉ được upload tối đa 1 ảnh!",
+      });
+    }
+
+    // Xử lý ảnh upload
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      images = req.files.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+        description: file.originalname,
+      }));
+    }
+
     const post = await Blog.create({
       title,
       content,
       author: req.user._id,
       status,
+      images,
     });
     res.status(201).json(post);
   } catch (err) {
@@ -94,8 +114,34 @@ exports.update = async (req, res) => {
       if (post.status !== "Pending") {
         return res
           .status(400)
-          .josn({ message: "Can not update when approved" });
+          .json({ message: "Can not update when approved" });
       }
+    }
+
+    // Kiểm tra số lượng ảnh tối đa
+    if (req.files && req.files.length > 1) {
+      return res.status(400).json({
+        error: "Chỉ được upload tối đa 1 ảnh!",
+      });
+    }
+
+    // Xử lý ảnh mới nếu có
+    if (req.files && req.files.length > 0) {
+      // Xóa ảnh cũ trên Cloudinary
+      if (post.images && post.images.length > 0) {
+        for (const image of post.images) {
+          if (image.public_id) {
+            await cloudinary.uploader.destroy(image.public_id);
+          }
+        }
+      }
+
+      // Thêm ảnh mới
+      post.images = req.files.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+        description: file.originalname,
+      }));
     }
 
     post.title = title ?? post.title;
@@ -120,6 +166,16 @@ exports.delete = async (req, res) => {
       if (String(post.author) !== String(req.user._id))
         return res.status(403).json({ message: "Do not have permission" });
     }
+
+    // Xóa ảnh trên Cloudinary trước khi xóa blog
+    if (post.images && post.images.length > 0) {
+      for (const image of post.images) {
+        if (image.public_id) {
+          await cloudinary.uploader.destroy(image.public_id);
+        }
+      }
+    }
+
     await post.deleteOne();
     res.json({ message: "Deleted" });
   } catch (err) {
@@ -136,6 +192,28 @@ exports.getBlogById = async (req, res) => {
     );
     if (!post) return res.status(404).json({ message: "Not found" });
     res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Upload ảnh riêng biệt (cho rich text editor)
+exports.uploadImages = async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No images uploaded" });
+    }
+
+    const images = req.files.map((file) => ({
+      url: file.path,
+      public_id: file.filename,
+      description: file.originalname,
+    }));
+
+    res.json({
+      message: "Images uploaded successfully",
+      images,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

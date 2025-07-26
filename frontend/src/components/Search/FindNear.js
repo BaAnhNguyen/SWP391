@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./FindNear.css";
 
 function FindNear({ needRequestId, excludedUserId }) {
+  const { t } = useTranslation();
   const [result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState({});
   const [showInvite, setShowInvite] = useState({});
+  const [invitingAll, setInvitingAll] = useState(false);
 
   // Tìm donor gần đây
   const handleFindNearby = () => {
@@ -65,15 +68,64 @@ function FindNear({ needRequestId, excludedUserId }) {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Đã gửi mail mời hiến máu cho người này!");
+        alert(t("donorInvite.inviteSuccess"));
         setShowInvite((prev) => ({ ...prev, [user._id]: false }));
       } else {
-        alert(data.message || "Gửi mail thất bại!");
+        alert(data.message || t("donorInvite.inviteError"));
       }
     } catch (err) {
-      alert("Lỗi khi gửi mail: " + err.message);
+      alert(t("donorInvite.inviteError") + ": " + err.message);
     }
     setSending((prev) => ({ ...prev, [user._id]: false }));
+  };
+
+  // Invite all compatible donors
+  const handleInviteAll = async () => {
+    if (!window.confirm(t("donorInvite.confirmInviteAll"))) {
+      return;
+    }
+
+    setInvitingAll(true);
+    const eligibleDonors = filteredResult.filter(user => {
+      // Only invite donors who are eligible (no future nextEligibleDate or past nextEligibleDate)
+      if (!user.nextEligibleDate) return true;
+      return new Date(user.nextEligibleDate) <= new Date();
+    });
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const user of eligibleDonors) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/needrequest/invite`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            donorId: user._id,
+            needRequestId: needRequestId,
+          }),
+        });
+
+        if (response.ok) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      } catch (err) {
+        errorCount++;
+      }
+    }
+
+    setInvitingAll(false);
+
+    if (errorCount === 0) {
+      alert(t("donorInvite.inviteAllSuccess") + ` (${successCount} ${t("donorInvite.inviteSuccess").toLowerCase()})`);
+    } else {
+      alert(`${successCount} invitations sent successfully, ${errorCount} failed.`);
+    }
   };
 
   //filter
@@ -88,11 +140,20 @@ function FindNear({ needRequestId, excludedUserId }) {
         onClick={handleFindNearby}
         disabled={loading}
       >
-        {loading ? "Đang tìm..." : "Tìm người hiến máu quanh tôi"}
+        {loading ? t("donorInvite.searching") : t("donorInvite.nearbyDonors")}
       </button>
       {filteredResult.length > 0 ? (
         <div className="search-results">
-          <h2>Kết quả gần bạn:</h2>
+          <div className="results-header">
+            <h2>{t("donorInvite.compatibleDonors")}:</h2>
+            <button
+              className="invite-all-btn"
+              onClick={handleInviteAll}
+              disabled={invitingAll || filteredResult.length === 0}
+            >
+              {invitingAll ? t("donorInvite.sending") : t("donorInvite.inviteAll")}
+            </button>
+          </div>
           <div>
             {filteredResult.map((user) => (
               <div key={user._id} className="donor-result">
@@ -103,18 +164,18 @@ function FindNear({ needRequestId, excludedUserId }) {
                   </div>
                   {user.nextEligibleDate && (
                     <div className="donor-next-date">
-                      Ngày có thể hiến tiếp:{" "}
+                      {t("donateRequest.nextEligibleDate")}:{" "}
                       {new Date(user.nextEligibleDate).toLocaleDateString()}
                     </div>
                   )}
                   <div className="donor-address">
-                    Địa chỉ: {user.address || "(Chưa có)"}
+                    {t("common.address")}: {user.address || t("common.notAvailable")}
                   </div>
                   <div className="donor-phone">
-                    SĐT: {user.phoneNumber || "(Ẩn)"}
+                    {t("common.phone")}: {user.phoneNumber || t("common.hidden")}
                   </div>
                   <div className="donor-distance">
-                    Cách bạn: {user.distance && user.distance.toFixed(1)} m
+                    {t("common.distance")}: {user.distance && user.distance.toFixed(1)} m
                   </div>
                 </div>
 
@@ -128,7 +189,7 @@ function FindNear({ needRequestId, excludedUserId }) {
                       }))
                     }
                   >
-                    Mời hiến máu
+                    {t("donorInvite.inviteBloodDonation")}
                   </button>
                 ) : (
                   <div className="action-buttons">
@@ -137,7 +198,7 @@ function FindNear({ needRequestId, excludedUserId }) {
                       onClick={() => handleSendInvite(user)}
                       disabled={sending[user._id]}
                     >
-                      {sending[user._id] ? "Đang gửi..." : "Gửi lời mời"}
+                      {sending[user._id] ? t("donorInvite.sending") : t("donorInvite.sendInvite")}
                     </button>
                     <button
                       className="cancel-btn"
@@ -149,7 +210,7 @@ function FindNear({ needRequestId, excludedUserId }) {
                       }
                       disabled={sending[user._id]}
                     >
-                      Hủy
+                      {t("donorInvite.cancel")}
                     </button>
                   </div>
                 )}
@@ -160,7 +221,7 @@ function FindNear({ needRequestId, excludedUserId }) {
       ) : (
         !loading && (
           <div className="no-results-message">
-            <p>Không tìm thấy người hiến máu nào gần bạn.</p>
+            <p>{t("donorInvite.noCompatibleDonors")}</p>
           </div>
         )
       )}
