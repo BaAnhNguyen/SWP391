@@ -185,3 +185,36 @@ exports.getBloodUnitsForRequest = async (req, res) => {
     });
   }
 };
+
+//create noti on homepage
+exports.getCriticalBloodComponents = async (req, res) => {
+  try {
+    const units = await BloodUnit.find({ DateExpired: { $gt: new Date() } });
+
+    const summary = {};
+
+    units.forEach((unit) => {
+      const key = `${unit.BloodType}-${unit.ComponentType}`;
+      if (!summary[key]) {
+        summary[key] = {
+          bloodType: unit.BloodType,
+          component: unit.ComponentType,
+          totalQuantity: 0,
+        };
+      }
+      summary[key].totalQuantity += unit.Quantity || 1;
+    });
+
+    // Chuyển sang danh sách thiếu
+    const CRITICAL_THRESHOLD = 10;
+
+    const criticalList = Object.values(summary)
+      .filter((item) => item.totalQuantity <= CRITICAL_THRESHOLD)
+      .map(({ bloodType, component }) => ({ bloodType, component }));
+
+    return res.json({ critical: criticalList });
+  } catch (err) {
+    console.error("getCriticalBloodComponents error:", err.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const SystemConfig = require("../models/SystemConfig");
 
 //get current user profile
 exports.getMe = async (req, res) => {
@@ -164,5 +165,30 @@ exports.unbanUser = async (req, res) => {
     res.json({ message: "User unbanned successfully", user });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+//admin on/off blood alert
+exports.toggleEmergencyAlert = async (req, res) => {
+  try {
+    const config = await SystemConfig.findOneAndUpdate(
+      { key: "showEmergencyAlert" },
+      { value: req.body.value },
+      { new: true, upsert: true }
+    );
+    res.json({ success: true, value: config.value });
+  } catch (err) {
+    console.error("Error updating alert flag:", err);
+    res.status(500).json({ message: "Failed to update alert flag" });
+  }
+};
+
+exports.getEmergencyAlertStatus = async (req, res) => {
+  try {
+    const config = await SystemConfig.findOne({ key: "showEmergencyAlert" });
+    res.json({ value: config?.value ?? false });
+  } catch (err) {
+    console.error("Error fetching alert flag:", err);
+    res.status(500).json({ message: "Failed to fetch alert flag" });
   }
 };

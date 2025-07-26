@@ -2,6 +2,9 @@ const router = require("express").Router();
 const bloodUnitController = require("../controllers/bloodUnitController");
 const { protect, restrictTo } = require("../middlewares/auth");
 
+//noti on homepage
+router.get("/critical", bloodUnitController.getCriticalBloodComponents);
+
 // All routes require authentication
 router.use(protect);
 
