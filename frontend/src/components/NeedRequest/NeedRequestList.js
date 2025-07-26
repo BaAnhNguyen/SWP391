@@ -39,6 +39,13 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [showFulfillSuccessModal, setShowFulfillSuccessModal] = useState(false);
   const [fulfillSuccessMessage, setFulfillSuccessMessage] = useState("");
 
+  // Complete confirmation modal state
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [completeRequestId, setCompleteRequestId] = useState(null);
+
+  // Complete success modal state
+  const [showCompleteSuccessModal, setShowCompleteSuccessModal] = useState(false);
+
   // Search by name state
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -242,6 +249,21 @@ const NeedRequestList = ({ userRole, refresh }) => {
     setFulfillSuccessMessage("");
   };
 
+  // Complete modal handlers
+  const openCompleteModal = (requestId) => {
+    setCompleteRequestId(requestId);
+    setShowCompleteModal(true);
+  };
+
+  const closeCompleteModal = () => {
+    setShowCompleteModal(false);
+    setCompleteRequestId(null);
+  };
+
+  const closeCompleteSuccessModal = () => {
+    setShowCompleteSuccessModal(false);
+  };
+
   const handleFulfillRequest = async (id) => {
     try {
       setLoading(true);
@@ -294,10 +316,16 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(data.message || t("needRequest.completeError"));
       }
       const result = await response.json();
-      alert(result.message);
+
+      // Close the confirmation modal and show success modal
+      closeCompleteModal();
+      setShowCompleteSuccessModal(true);
+
+      // Refresh the requests list
       fetchRequests();
     } catch (err) {
       setError(err.message);
+      closeCompleteModal();
     } finally {
       setLoading(false);
     }
@@ -647,9 +675,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (window.confirm(t("needRequest.confirmComplete"))) {
-                          handleCompleteRequest(request._id);
-                        }
+                        openCompleteModal(request._id);
                       }}
                       className="complete-button"
                     >
@@ -805,6 +831,66 @@ const NeedRequestList = ({ userRole, refresh }) => {
               <button
                 type="button"
                 onClick={closeFulfillSuccessModal}
+                className="success-button"
+              >
+                {t("common.ok")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Complete Confirmation Modal */}
+      {showCompleteModal && (
+        <div className="modal-overlay" onClick={closeCompleteModal}>
+          <div className="modal-content simple-confirm" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("needRequest.confirmCompleteTitle")}</h3>
+            <div className="modal-body">
+              <p className="simple-confirm-message">
+                {t("needRequest.confirmComplete")}
+              </p>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                onClick={() => handleCompleteRequest(completeRequestId)}
+                className="confirm-complete-button"
+                disabled={loading}
+              >
+                {loading ? t("common.processing") : t("common.confirm")}
+              </button>
+              <button
+                type="button"
+                onClick={closeCompleteModal}
+                className="cancel-button"
+                disabled={loading}
+              >
+                {t("common.cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Complete Success Modal */}
+      {showCompleteSuccessModal && (
+        <div className="modal-overlay" onClick={closeCompleteSuccessModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("needRequest.completeSuccessTitle")}</h3>
+            <div className="modal-body">
+              <div className="success-info">
+                <div className="success-icon">
+                  ✅
+                </div>
+                <div className="success-message">
+                  {t("needRequest.completeSuccessMessage")}
+                </div>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                onClick={closeCompleteSuccessModal}
                 className="success-button"
               >
                 {t("common.ok")}
