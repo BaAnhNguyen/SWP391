@@ -79,6 +79,47 @@ const creteCompletionEmailTemplate = (donorName, nextDonationDate) => {
   };
 };
 
+//mail approved
+const sendApprovalMail = async (email, name, readyDate) => {
+  const transporter = createTransporter();
+  const formattedDate = new Date(readyDate).toLocaleDateString("vi-VN");
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+      <h2>Xin chào ${name},</h2>
+      <p>Đơn đăng ký hiến máu của bạn đã được <strong>duyệt</strong>.</p>
+      <p>Vui lòng đến hiến máu vào ngày <strong>${formattedDate}</strong>.</p>
+      <p>Nếu bạn không thể đến đúng lịch, hãy liên hệ với trung tâm để được hỗ trợ đổi ngày.</p>
+      <p>Trân trọng,<br/>Trung tâm Hiến Máu Nhân Đạo</p>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: `"Trung tâm Hiến Máu Nhân Đạo" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Đơn đăng ký hiến máu đã được duyệt",
+    html,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+//mail reject/failed
+const createFailedOrRejectedTemplate = (donorName, reason) => {
+  return {
+    subject: "Thông báo về đơn đăng ký hiến máu",
+    html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>Xin chào ${donorName},</h2>
+        <p>Chúng tôi rất tiếc phải thông báo rằng đơn đăng ký hiến máu của bạn hiện không được chấp nhận với lý do:</p>
+        <p style="font-weight: bold; color: #dc3545;">${reason}</p>
+        <p>Bạn hoàn toàn có thể đăng ký lại vào một thời điểm phù hợp hơn.</p>
+        <p>Trân trọng,<br/>Trung tâm Hiến Máu Nhân Đạo</p>
+      </div>
+    `,
+  };
+};
+
 //gui mail
 const sendMail = async (donorEmail, donorName, nextDonationDate) => {
   try {
@@ -104,4 +145,18 @@ const sendMail = async (donorEmail, donorName, nextDonationDate) => {
   }
 };
 
-module.exports = { sendMail };
+//reject/failed
+const sendMailWithReason = async (donorEmail, donorName, reason) => {
+  const transporter = createTransporter();
+  const template = createFailedOrRejectedTemplate(donorName, reason);
+  const mailOptions = {
+    from: `"Trung tâm Hiến Máu Nhân Đạo" <${process.env.EMAIL_USER}>`,
+    to: donorEmail,
+    subject: template.subject,
+    html: template.html,
+  };
+  const result = await transporter.sendMail(mailOptions);
+  return { success: true, messageId: result.messageId };
+};
+
+module.exports = { sendMail, sendApprovalMail, sendMailWithReason };

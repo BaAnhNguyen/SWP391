@@ -113,6 +113,47 @@ function getInviteDonorMail(donorName, patientName, bloodGroup, component) {
   };
 }
 
+//reject mail
+function getRejectionMail(name, reason) {
+  return {
+    subject: "Đơn yêu cầu nhận máu bị từ chối",
+    html: `
+      <div style="font-family: Arial,sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+        <h2 style="color: #d32f2f;">Đơn bị từ chối</h2>
+        <p>Chào <b>${name}</b>,</p>
+        <p>Chúng tôi rất tiếc phải thông báo rằng đơn yêu cầu nhận máu của bạn đã bị <strong>từ chối</strong>.</p>
+        <p><b>Lý do:</b> ${reason}</p>
+        <p>Bạn có thể tạo lại yêu cầu nếu cần thiết.</p>
+        <hr>
+        <p style="color: #888; font-size: 13px;">Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ: support@blooddonation.com</p>
+      </div>
+    `,
+  };
+}
+
+//fulfield mail
+function getFulfillmentConfirmationMail(name, requestId) {
+  const confirmUrl = `${process.env.CLIENT_BASE_URL}/blood-requests?highlight=${requestId}&tab=view`;
+
+  return {
+    subject: "Đã xử lý đơn nhận máu của bạn",
+    html: `
+      <div style="font-family: Arial,sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+        <h2 style="color: #2e7d32;">Đơn đã được xử lý thành công</h2>
+        <p>Chào <b>${name}</b>,</p>
+        <p>Đơn yêu cầu nhận máu của bạn đã được <strong>xử lý thành công</strong>.</p>
+        <p>Vui lòng xác nhận đã nhận máu bằng cách truy cập liên kết dưới đây:</p>
+        <a href="${confirmUrl}" style="display:inline-block; margin:12px 0; padding:10px 16px; background-color:#1976d2; color:#fff; text-decoration:none; border-radius:4px;">
+          Xác nhận đã nhận máu
+        </a>
+        <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+        <hr>
+        <p style="color: #888; font-size: 13px;">Mọi thắc mắc, vui lòng liên hệ: support@blooddonation.com</p>
+      </div>
+    `,
+  };
+}
+
 // Hàm gửi mail
 async function sendMail(to, subject, html) {
   const mailOptions = {
@@ -127,6 +168,7 @@ async function sendMail(to, subject, html) {
 module.exports = {
   getAppointmentMail,
   sendMail,
-  buildAssignedUnitsTable,
   getInviteDonorMail,
+  getRejectionMail,
+  getFulfillmentConfirmationMail,
 };

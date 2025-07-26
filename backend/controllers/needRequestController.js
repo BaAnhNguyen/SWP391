@@ -4,8 +4,9 @@ const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 const {
   sendMail,
   getAppointmentMail,
-  buildAssignedUnitsTable,
   getInviteDonorMail,
+  getRejectionMail,
+  getFulfillmentConfirmationMail,
 } = require("../service/emailNeedRequest");
 const User = require("../models/User");
 
@@ -329,6 +330,23 @@ exports.fulfillBloodRequest = async (req, res) => {
     request.fulfilledAt = new Date();
     await request.save();
 
+    //mail
+    try {
+      const user = await User.findById(request.createdBy);
+      if (user && user.email) {
+        const { subject, html } = getFulfillmentConfirmationMail(
+          user.name,
+          request._id
+        );
+        await sendMail(user.email, subject, html);
+      }
+    } catch (err) {
+      console.error(
+        " Error sending fulfillment confirmation email:",
+        err.message
+      );
+    }
+
     //delete blood unit
     const deleteResult = await BloodUnit.deleteMany({
       assignedToRequestId: requestId,
@@ -373,7 +391,24 @@ exports.rejectBloodRequest = async (req, res) => {
     request.rejectionReason = reason;
     await request.save();
 
-    res.status(200).json({ message: "Request rejected.", request });
+    //mail
+    let emailSent = false;
+    try {
+      const user = await User.findById(request.createdBy);
+      if (user && user.email) {
+        const { subject, html } = getRejectionMail(user.name, reason);
+        await sendMail(user.email, subject, html);
+        emailSent = true;
+      }
+    } catch (err) {
+      console.error("Error sending rejection email:", err.message);
+    }
+
+    res.status(200).json({
+      message: "Request rejected.",
+      emailSent,
+      request,
+    });
   } catch (error) {
     console.error("Reject Error:", error);
     res.status(500).json({ message: "Failed to reject request." });

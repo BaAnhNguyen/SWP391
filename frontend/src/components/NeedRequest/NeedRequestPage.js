@@ -23,12 +23,20 @@ const NeedRequestPage = ({ user }) => {
     }
   }, [location.search]);
 
-  // Set default active tab to list for staff users
+  // Set default active tab to list for staff users and for mail
   useEffect(() => {
-    if (isStaff) {
+    const params = new URLSearchParams(location.search);
+    const highlightId = params.get("highlight");
+    const tabParam = params.get("tab");
+
+    if (highlightId || tabParam === "list") {
       setActiveTab("list");
+    } else if (isStaff) {
+      setActiveTab("list");
+    } else {
+      setActiveTab("form");
     }
-  }, [isStaff]);
+  }, [location.search, isStaff]);
 
   // Handle successful request creation to refresh the list
   const handleRequestCreated = () => {

@@ -1,7 +1,11 @@
 const DonationRegistration = require("../models/DonationRegistration");
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
-const { sendMail } = require("../service/emailService");
+const {
+  sendMail,
+  sendApprovalMail,
+  sendMailWithReason,
+} = require("../service/emailService");
 const BloodUnit = require("../models/BloodUnit");
 
 //member create donation
@@ -200,9 +204,22 @@ exports.updateStatus = async (req, res) => {
     } else {
       reg.rejectionReason = "";
     }
-
     await reg.save();
-    return res.json(reg);
+    //mail
+    let emailSent = false;
+    try {
+      const user = await User.findById(reg.userId);
+      if (reg.status === "Approved") {
+        await sendApprovalMail(user.email, user.name, reg.readyDate);
+      } else if (reg.status === "Rejected") {
+        await sendMailWithReason(user.email, user.name, reg.rejectionReason);
+      }
+      emailSent = true;
+    } catch (err) {
+      console.error("Error sending status update email:", err.message);
+    }
+
+    return res.json({ ...reg.toObject(), emailSent });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -458,9 +475,21 @@ exports.failedHealthCheck = async (req, res) => {
     if (req.user && req.user._id) reg.completedBy = req.user._id;
     await reg.save();
 
+    //mail
+    let emailSent = false;
+    try {
+      if (reg.userId?.email) {
+        await sendMailWithReason(reg.userId.email, reg.userId.name, reason);
+        emailSent = true;
+      }
+    } catch (err) {
+      console.error("Error sending failed healthcheck email:", err.message);
+    }
+
     return res.status(200).json({
       message: "Donation failed after failed health check.",
       donationHistoryId: donationHistory._id,
+      emailSent,
     });
   } catch (err) {
     console.error("Error rejecting after health check:", err);

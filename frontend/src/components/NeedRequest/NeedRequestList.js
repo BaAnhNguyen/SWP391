@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../config";
 import "./NeedRequestList.css";
 import EnglishDeleteConfirmModal from "../common/EnglishDeleteConfirmModal";
+import { useLocation } from "react-router-dom";
 
 const NeedRequestList = ({ userRole, refresh }) => {
   const { t } = useTranslation();
@@ -44,7 +45,29 @@ const NeedRequestList = ({ userRole, refresh }) => {
   const [completeRequestId, setCompleteRequestId] = useState(null);
 
   // Complete success modal state
-  const [showCompleteSuccessModal, setShowCompleteSuccessModal] = useState(false);
+  const [showCompleteSuccessModal, setShowCompleteSuccessModal] =
+    useState(false);
+
+  //mail
+  const location = useLocation();
+  const [highlightId, setHighlightId] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const highlight = params.get("highlight");
+    if (highlight) {
+      setHighlightId(highlight);
+      setExpandedRequestId(highlight); // auto expand request
+      setTimeout(() => {
+        const element = document.getElementById(`request-${highlight}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("highlighted");
+          setTimeout(() => element.classList.remove("highlighted"), 3000); // remove after 3s
+        }
+      }, 200); // delay after render
+    }
+  }, [location.search]);
 
   // Search by name state
   const [searchTerm, setSearchTerm] = useState("");
@@ -120,10 +143,13 @@ const NeedRequestList = ({ userRole, refresh }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error(t("common.notAuthenticated"));
-      const response = await fetch(`${API_BASE_URL}/needrequest/${deleteRequestId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/needrequest/${deleteRequestId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || t("needRequest.deleteError"));
@@ -345,17 +371,21 @@ const NeedRequestList = ({ userRole, refresh }) => {
   };
 
   // First filter by status
-  const statusFiltered = filterStatus === "all"
-    ? requests
-    : requests.filter((request) => request.status === filterStatus);
+  const statusFiltered =
+    filterStatus === "all"
+      ? requests
+      : requests.filter((request) => request.status === filterStatus);
 
   // Then filter by search term (createdBy's name)
   const filteredRequests = searchTerm
-    ? statusFiltered.filter((request) =>
-      request.createdBy &&
-      request.createdBy.name &&
-      request.createdBy.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    ? statusFiltered.filter(
+        (request) =>
+          request.createdBy &&
+          request.createdBy.name &&
+          request.createdBy.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+      )
     : statusFiltered;
 
   const statusColors = {
@@ -397,14 +427,18 @@ const NeedRequestList = ({ userRole, refresh }) => {
             >
               <option value="all">{t("needRequest.allStatuses")}</option>
               <option value="Pending">{t("needRequest.status.pending")}</option>
-              <option value="Assigned">{t("needRequest.status.assigned")}</option>
+              <option value="Assigned">
+                {t("needRequest.status.assigned")}
+              </option>
               <option value="Fulfilled">
                 {t("needRequest.status.fulfilled")}
               </option>
               <option value="Completed">
                 {t("needRequest.status.completed")}
               </option>
-              <option value="Rejected">{t("needRequest.status.rejected")}</option>
+              <option value="Rejected">
+                {t("needRequest.status.rejected")}
+              </option>
               <option value="Expired">{t("needRequest.status.expired")}</option>
             </select>
             <button
@@ -416,7 +450,9 @@ const NeedRequestList = ({ userRole, refresh }) => {
             </button>
           </div>
           <div className="search-container">
-            <label htmlFor="name-search">{t("needRequest.searchByName")}:</label>
+            <label htmlFor="name-search">
+              {t("needRequest.searchByName")}:
+            </label>
             <input
               id="name-search"
               type="text"
@@ -445,8 +481,10 @@ const NeedRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
-                }`}
+              id={`request-${request._id}`}
+              className={`request-card ${
+                expandedRequestId === request._id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -525,8 +563,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
                     <strong>{t("needRequest.attachment")}:</strong>
                     <div className="image-preview">
                       {request.attachment.toLowerCase().endsWith(".jpg") ||
-                        request.attachment.toLowerCase().endsWith(".jpeg") ||
-                        request.attachment.toLowerCase().endsWith(".png") ? (
+                      request.attachment.toLowerCase().endsWith(".jpeg") ||
+                      request.attachment.toLowerCase().endsWith(".png") ? (
                         <>
                           <img
                             src={request.attachment}
@@ -602,8 +640,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
                                   request._id,
                                   request.appointmentDate
                                     ? new Date(request.appointmentDate)
-                                      .toISOString()
-                                      .slice(0, 16)
+                                        .toISOString()
+                                        .slice(0, 16)
                                     : ""
                                 );
                               }}
@@ -626,19 +664,20 @@ const NeedRequestList = ({ userRole, refresh }) => {
                         )}
 
                         {/* Nút xóa - disabled for Assigned and Fulfilled */}
-                        {request.status !== "Assigned" && request.status !== "Fulfilled" && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleteRequestId(request._id);
-                              setShowDeleteModal(true);
-                            }}
-                            className="delete-button"
-                            style={{ marginLeft: 8 }}
-                          >
-                            {t("common.delete")}
-                          </button>
-                        )}
+                        {request.status !== "Assigned" &&
+                          request.status !== "Fulfilled" && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteRequestId(request._id);
+                                setShowDeleteModal(true);
+                              }}
+                              className="delete-button"
+                              style={{ marginLeft: 8 }}
+                            >
+                              {t("common.delete")}
+                            </button>
+                          )}
                       </>
                     )}
 
@@ -797,7 +836,9 @@ const NeedRequestList = ({ userRole, refresh }) => {
                 className="fulfill-button"
                 disabled={loading}
               >
-                {loading ? t("common.processing") : t("needRequest.confirmFulfillButton")}
+                {loading
+                  ? t("common.processing")
+                  : t("needRequest.confirmFulfillButton")}
               </button>
             </div>
           </div>
@@ -811,12 +852,8 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <h3>{t("needRequest.fulfillSuccessTitle")}</h3>
             <div className="modal-body">
               <div className="success-info">
-                <div className="success-icon">
-                  ✅
-                </div>
-                <div className="success-message">
-                  {fulfillSuccessMessage}
-                </div>
+                <div className="success-icon">✅</div>
+                <div className="success-message">{fulfillSuccessMessage}</div>
                 <div className="success-details">
                   <p>{t("needRequest.fulfillSuccessDetails")}</p>
                   <ul>
@@ -843,7 +880,10 @@ const NeedRequestList = ({ userRole, refresh }) => {
       {/* Complete Confirmation Modal */}
       {showCompleteModal && (
         <div className="modal-overlay" onClick={closeCompleteModal}>
-          <div className="modal-content simple-confirm" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal-content simple-confirm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3>{t("needRequest.confirmCompleteTitle")}</h3>
             <div className="modal-body">
               <p className="simple-confirm-message">
@@ -879,9 +919,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
             <h3>{t("needRequest.completeSuccessTitle")}</h3>
             <div className="modal-body">
               <div className="success-info">
-                <div className="success-icon">
-                  ✅
-                </div>
+                <div className="success-icon">✅</div>
                 <div className="success-message">
                   {t("needRequest.completeSuccessMessage")}
                 </div>
