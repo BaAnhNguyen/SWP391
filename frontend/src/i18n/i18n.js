@@ -73,9 +73,11 @@ const resources = {
         errors: {
           weightRange: "Weight must be between 45 and 150 kg",
           heightRange: "Height must be between 145 and 220 cm",
-          bloodPressureFormat: "Blood pressure must be in the format: number/number (e.g., 120/80)",
+          bloodPressureFormat:
+            "Blood pressure must be in the format: number/number (e.g., 120/80)",
           heartRateRange: "Heart rate must be between 60 and 100 bpm",
-          alcoholLevelInvalid: "Alcohol level must be greater than or equal to 0",
+          alcoholLevelInvalid:
+            "Alcohol level must be greater than or equal to 0",
           temperatureRange: "Temperature must be between 36°C and 38°C",
           hemoglobinRange: "Hemoglobin level must be between 120 and 180 g/dL",
           quantityMin: "Please enter a valid quantity (minimum is 1)",
@@ -122,7 +124,7 @@ const resources = {
         cityHint:
           "Enter a city name. The location will be automatically geocoded.",
         update: "Update profile",
-        profile:"Profile",
+        profile: "Profile",
       },
 
       // Address Form
@@ -362,6 +364,8 @@ const resources = {
       "donateRequest.nav.viewMyRequests": "View Registraion",
       "donateRequest.nav.createRequest": "Register Donation",
       "donateRequest.healthCheck": "HealthCheck",
+      "donate.errors.positiveNumber": "Must be more than or equal to 0",
+      "donate.errors.formatBloodPressure": "Must be format Number/Number",
 
       // Language Switcher
       "language.switch": "Language",
@@ -428,17 +432,21 @@ const resources = {
       "needRequest.confirmFulfill":
         "Are you sure you want to mark this request as fulfilled? This will remove the assigned blood units from inventory.",
       "needRequest.confirmFulfillTitle": "Confirm Fulfill Request",
-      "needRequest.confirmUpdateToFulfilled": "Are you sure you want to update status to fulfilled?",
+      "needRequest.confirmUpdateToFulfilled":
+        "Are you sure you want to update status to fulfilled?",
       "needRequest.confirmFulfillButton": "Mark as Fulfilled",
       "needRequest.fulfillWarning": "This action cannot be undone.",
       "needRequest.currentStatus": "Current Status",
       "needRequest.newStatus": "New Status",
       "needRequest.fulfillDetails": "What will happen:",
       "needRequest.fulfillAction1": "Request status will change to 'Fulfilled'",
-      "needRequest.fulfillAction2": "Assigned blood units will be removed from inventory",
-      "needRequest.fulfillAction3": "Member will be notified to complete the donation",
+      "needRequest.fulfillAction2":
+        "Assigned blood units will be removed from inventory",
+      "needRequest.fulfillAction3":
+        "Member will be notified to complete the donation",
       "needRequest.fulfillSuccessTitle": "Request Fulfilled Successfully",
-      "needRequest.fulfillSuccessDetails": "The following actions have been completed:",
+      "needRequest.fulfillSuccessDetails":
+        "The following actions have been completed:",
       "needRequest.statusUpdated": "Request status updated to 'Fulfilled'",
       "needRequest.inventoryUpdated": "Blood units removed from inventory",
       "needRequest.memberNotified": "Member has been notified",
@@ -571,7 +579,8 @@ const resources = {
       "bloodStorage.import": "Manual Entry",
       "bloodStorage.daysLeft": "Days Left",
       "bloodStorage.delete": "Delete",
-      "bloodStorage.deleteConfirm": "Are you sure you want to delete this blood unit?",
+      "bloodStorage.deleteConfirm":
+        "Are you sure you want to delete this blood unit?",
       "bloodStorage.deleteTitle": "Delete this record",
       "bloodStorage.noRecords": "No matching records found.",
       "bloodStorage.showing": "Showing",
@@ -614,6 +623,7 @@ const resources = {
           cancelled: "Cancelled",
           pending: "Pending",
           rejected: "Rejected",
+          failed: "Failed",
         },
         viewMedicalQuestions: "Medical Questions",
         medicalQuestionsTitle: "Medical Screening Questions",
@@ -830,7 +840,7 @@ const resources = {
           "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
         cityHint: "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
         update: "Cập nhật thông tin",
-        profile:"Thông tin cá nhân",
+        profile: "Thông tin cá nhân",
       },
 
       // Address Form
@@ -1049,7 +1059,6 @@ const resources = {
       "contact.info.description":
         "Liên hệ với chúng tôi qua bất kỳ phương thức nào sau đây:",
 
-
       // Donate Page
       "donate.title": "Đăng ký hiến máu",
       "donate.description":
@@ -1131,18 +1140,25 @@ const resources = {
       "needRequest.confirmFulfill":
         "Bạn có chắc chắn muốn đánh dấu yêu cầu này là đã hoàn thành? Điều này sẽ xóa các đơn vị máu được chỉ định khỏi kho.",
       "needRequest.confirmFulfillTitle": "Xác nhận hoàn thành yêu cầu",
-      "needRequest.confirmUpdateToFulfilled": "Bạn có chắc chắn muốn cập nhật trạng thái thành đã hoàn thành?",
+      "needRequest.confirmUpdateToFulfilled":
+        "Bạn có chắc chắn muốn cập nhật trạng thái thành đã hoàn thành?",
       "needRequest.confirmFulfillButton": "Đánh dấu đã hoàn thành",
       "needRequest.fulfillWarning": "Hành động này không thể hoàn tác.",
       "needRequest.currentStatus": "Trạng thái hiện tại",
       "needRequest.newStatus": "Trạng thái mới",
       "needRequest.fulfillDetails": "Điều gì sẽ xảy ra:",
-      "needRequest.fulfillAction1": "Trạng thái yêu cầu sẽ thay đổi thành 'Đã hoàn thành'",
-      "needRequest.fulfillAction2": "Các đơn vị máu đã được chỉ định sẽ bị xóa khỏi kho",
-      "needRequest.fulfillAction3": "Thành viên sẽ được thông báo để hoàn tất việc hiến máu",
-      "needRequest.fulfillSuccessTitle": "Yêu cầu đã được hoàn thành thành công",
-      "needRequest.fulfillSuccessDetails": "Các hành động sau đã được hoàn thành:",
-      "needRequest.statusUpdated": "Trạng thái yêu cầu đã được cập nhật thành 'Đã hoàn thành'",
+      "needRequest.fulfillAction1":
+        "Trạng thái yêu cầu sẽ thay đổi thành 'Đã hoàn thành'",
+      "needRequest.fulfillAction2":
+        "Các đơn vị máu đã được chỉ định sẽ bị xóa khỏi kho",
+      "needRequest.fulfillAction3":
+        "Thành viên sẽ được thông báo để hoàn tất việc hiến máu",
+      "needRequest.fulfillSuccessTitle":
+        "Yêu cầu đã được hoàn thành thành công",
+      "needRequest.fulfillSuccessDetails":
+        "Các hành động sau đã được hoàn thành:",
+      "needRequest.statusUpdated":
+        "Trạng thái yêu cầu đã được cập nhật thành 'Đã hoàn thành'",
       "needRequest.inventoryUpdated": "Các đơn vị máu đã được xóa khỏi kho",
       "needRequest.memberNotified": "Thành viên đã được thông báo",
       "needRequest.markFulfilled": "Đánh dấu đã hoàn thành",
@@ -1262,7 +1278,8 @@ const resources = {
       "bloodStorage.import": "Nhập Thủ Công",
       "bloodStorage.daysLeft": "Ngày Còn Lại",
       "bloodStorage.delete": "Xóa",
-      "bloodStorage.deleteConfirm": "Bạn có chắc chắn muốn xóa đơn vị máu này không?",
+      "bloodStorage.deleteConfirm":
+        "Bạn có chắc chắn muốn xóa đơn vị máu này không?",
       "bloodStorage.deleteTitle": "Xóa bản ghi này",
       "bloodStorage.noRecords": "Không có kết quả phù hợp.",
       "bloodStorage.showing": "Hiển thị",
@@ -1299,6 +1316,7 @@ const resources = {
           cancelled: "Đã Hủy",
           pending: "Đang Chờ",
           rejected: "Đã Từ Chối",
+          failed: "Không Đạt",
         },
         viewMedicalQuestions: "Câu Hỏi Y Tế",
         medicalQuestionsTitle: "Câu hỏi sàng lọc y tế",
@@ -1347,13 +1365,15 @@ const resources = {
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
       },
-
+      "donate.errors.positiveNumber": "Phải là số lớn hơn hoặc bằng 0",
+      "donate.errors.formatBloodPressure": "Phải đúng kiểu Số/Số",
 
       donate: {
         errors: {
           weightRange: "Cân nặng phải từ 45 đến 150 kg",
           heightRange: "Chiều cao phải từ 145 đến 220 cm",
-          bloodPressureFormat: "Huyết áp phải có định dạng: số/số (ví dụ: 120/80)",
+          bloodPressureFormat:
+            "Huyết áp phải có định dạng: số/số (ví dụ: 120/80)",
           heartRateRange: "Nhịp tim phải từ 60 đến 100 nhịp/phút",
           alcoholLevelInvalid: "Nồng độ cồn phải lớn hơn hoặc bằng 0",
           temperatureRange: "Nhiệt độ phải từ 36°C đến 38°C",

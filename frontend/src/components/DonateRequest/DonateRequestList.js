@@ -50,6 +50,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
     reason: "",
   });
   const [selectedId, setSelectedId] = useState(null);
+  //failed
+  const [showFailedModal, setShowFailedModal] = useState(false);
+  const [failedReason, setFailedReason] = useState("");
 
   const isStaff = userRole === "Staff" || userRole === "Admin";
 
@@ -292,38 +295,38 @@ const DonateRequestList = ({ userRole, refresh }) => {
   };
   function validateHealthCheck(data) {
     const errors = {};
-    // Weight: 45-150 kg
-    if (!data.weight || data.weight < 45 || data.weight > 150)
-      errors.weight = t("donate.errors.weightRange");
-    // Height: 145-220 cm
-    if (!data.height || data.height < 145 || data.height > 220)
-      errors.height = t("donate.errors.heightRange");
-    // Blood pressure: format number/number
-    if (!data.bloodPressure || !/^\d{2,3}\/\d{2,3}$/.test(data.bloodPressure))
-      errors.bloodPressure = t("donate.errors.bloodPressureFormat");
-    // Heart rate: 60-100 bpm
-    if (!data.heartRate || data.heartRate < 60 || data.heartRate > 100)
-      errors.heartRate = t("donate.errors.heartRateRange");
-    // Alcohol level: must be >= 0
-    if (data.alcoholLevel && data.alcoholLevel < 0)
-      errors.alcoholLevel = t("donate.errors.alcoholLevelInvalid");
-    // Temperature: 36-38 °C
-    if (!data.temperature || data.temperature < 36 || data.temperature > 38)
-      errors.temperature = t("donate.errors.temperatureRange");
-    // Hemoglobin: 120-180 g/dL
-    if (!data.hemoglobin || data.hemoglobin < 120 || data.hemoglobin > 180)
-      errors.hemoglobin = t("donate.errors.hemoglobinRange");
 
-    // Quantity and volume checks
-    if (!data.quantity || data.quantity < 1)
-      errors.quantity = t("donate.errors.quantityMin");
-    if (!data.volume || data.volume < 50)
-      errors.volume = t("donate.errors.volumeMin");
+    const isPositiveNumber = (value) =>
+      value !== null &&
+      value !== "" &&
+      !isNaN(parseFloat(value)) &&
+      parseFloat(value) >= 0;
 
+    // Các trường số > 0
+    if (!isPositiveNumber(data.weight))
+      errors.weight = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.height))
+      errors.height = t("donate.errors.positiveNumber");
+    if (!/^\d{2,3}\/\d{2,3}$/.test(data.bloodPressure || ""))
+      errors.bloodPressure = t("donate.errors.formatBloodPressure");
+    if (!isPositiveNumber(data.heartRate))
+      errors.heartRate = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.alcoholLevel))
+      errors.alcoholLevel = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.temperature))
+      errors.temperature = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.hemoglobin))
+      errors.hemoglobin = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.quantity))
+      errors.quantity = t("donate.errors.positiveNumber");
+    if (!isPositiveNumber(data.volume))
+      errors.volume = t("donate.errors.positiveNumber");
+
+    // Các trường bắt buộc chọn
     if (!data.confirmedBloodGroup)
-      errors.confirmedBloodGroup = t("donate.errors.bloodGroupRequired");
+      errors.confirmedBloodGroup = "Vui lòng chọn nhóm máu";
     if (!data.confirmedComponent)
-      errors.confirmedComponent = t("donate.errors.componentRequired");
+      errors.confirmedComponent = "Vui lòng chọn thành phần máu";
 
     return errors;
   }
@@ -451,7 +454,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
             height: healthCheckData.height
               ? parseFloat(healthCheckData.height)
               : null,
-            bloodPressure: healthCheckData.bloodPressure || "",
+            bloodPressure: healthCheckData.bloodPressure?.trim() || null,
             heartRate: healthCheckData.heartRate
               ? parseFloat(healthCheckData.heartRate)
               : null,
@@ -627,7 +630,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
     Approved: "var(--status-approved)",
     Completed: "var(--status-completed)",
     Rejected: "var(--status-cancelled)",
-    Cancelled: "var(--status-cancelled)",
+    Failed: "#dc3545",
   };
 
   if (loading) return <div className="loading">{t("common.loading")}</div>;
@@ -667,6 +670,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
             <option value="Cancelled">
               {t("donateRequest.status.cancelled")}
             </option>
+            <option value="Failed">{t("donateRequest.status.failed")}</option>
           </select>
 
           <div className="date-range-filter">
@@ -800,10 +804,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
               <div className="request-content">
                 {(request.status === "Rejected" ||
-                  request.status === "Cancelled") &&
+                  request.status === "Cancelled" ||
+                  request.status === "Failed") &&
                   request.rejectionReason && (
                     <div className="rejection-reason">
-                      <strong>{t("donateRequest.rejectionReason")}:</strong>{" "}
+                      <strong>
+                        {request.status === "Failed"
+                          ? "Lý do không đạt"
+                          : t("donateRequest.rejectionReason")}
+                        :
+                      </strong>{" "}
                       {request.rejectionReason}
                     </div>
                   )}
@@ -890,7 +900,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   >
                     {t("donateRequest.medicalHistory")}
                   </button>
-                   {request.status === "Completed" && (
+                  {(request.status === "Completed" ||
+                    request.status === "Failed") && (
                     <button
                       className="detail-button"
                       onClick={(e) => {
@@ -907,7 +918,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
           ))}
         </div>
       )}
-       {/* Model history detail*/}
+      {/* Model history detail*/}
       {selectedId && (
         <DonateHistoryDetail
           id={selectedId}
@@ -1230,11 +1241,25 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 >
                   {t("common.cancel")}
                 </button>
-                <button type="submit" className="submit-button">
-                  {activeTab === "complete"
-                    ? t("donateRequest.confirmComplete")
-                    : t("donateRequest.confirmCancel")}
-                </button>
+                {activeTab === "complete" && (
+                  <>
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      style={{ backgroundColor: "#28a745" }}
+                    >
+                      {t("donateRequest.confirmComplete")}
+                    </button>
+                    <button
+                      type="button"
+                      className="submit-button"
+                      style={{ backgroundColor: "#dc3545", marginLeft: 8 }}
+                      onClick={() => setShowFailedModal(true)}
+                    >
+                      Đánh dấu Failed
+                    </button>
+                  </>
+                )}
               </div>
             </form>
           </div>
@@ -1425,6 +1450,122 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 }}
               >
                 DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFailedModal && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.className === "modal-overlay") {
+              setShowFailedModal(false);
+              setFailedReason("");
+            }
+          }}
+        >
+          <div className="modal-content">
+            <h3>Lý do không đạt</h3>
+            <textarea
+              placeholder="Nhập lý do người hiến không đủ điều kiện"
+              value={failedReason}
+              onChange={(e) => setFailedReason(e.target.value)}
+              rows={4}
+              style={{ width: "100%", marginTop: 12 }}
+            />
+            <div
+              style={{
+                marginTop: 16,
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() => {
+                  setShowFailedModal(false);
+                  setFailedReason("");
+                }}
+                style={{
+                  background: "#ccc",
+                  marginRight: 8,
+                  padding: "6px 16px",
+                  borderRadius: 4,
+                  border: "none",
+                }}
+              >
+                Hủy
+              </button>
+              <button
+                onClick={async () => {
+                  if (!failedReason.trim()) {
+                    alert("Vui lòng nhập lý do");
+                    return;
+                  }
+
+                  try {
+                    const token = localStorage.getItem("token");
+                    const apiUrl = `${API_BASE_URL}/donateRegistration/${healthCheckRequest._id}/failed`;
+
+                    const requestData = {
+                      healthCheckStatus: "rejected",
+                      reason: failedReason.trim(),
+                      healthCheck: {
+                        weight: healthCheckData.weight
+                          ? parseFloat(healthCheckData.weight)
+                          : null,
+                        height: healthCheckData.height
+                          ? parseFloat(healthCheckData.height)
+                          : null,
+                        bloodPressure: healthCheckData.bloodPressure || null,
+                        heartRate: healthCheckData.heartRate
+                          ? parseFloat(healthCheckData.heartRate)
+                          : null,
+                        alcoholLevel: healthCheckData.alcoholLevel
+                          ? parseFloat(healthCheckData.alcoholLevel)
+                          : null,
+                        temperature: healthCheckData.temperature
+                          ? parseFloat(healthCheckData.temperature)
+                          : null,
+                        hemoglobin: healthCheckData.hemoglobin
+                          ? parseFloat(healthCheckData.hemoglobin)
+                          : null,
+                      },
+                    };
+
+                    const res = await fetch(apiUrl, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                      body: JSON.stringify(requestData),
+                    });
+
+                    if (!res.ok) {
+                      const error = await res.json();
+                      throw new Error(error.message || "Lỗi đánh dấu Failed");
+                    }
+
+                    setShowFailedModal(false);
+                    setFailedReason("");
+                    setSuccessMessage("Đã đánh dấu Failed");
+                    setShowSuccessModal(true);
+                    handleCloseHealthCheck();
+                  } catch (err) {
+                    alert("Lỗi: " + err.message);
+                  }
+                }}
+                style={{
+                  background: "#dc3545",
+                  color: "white",
+                  padding: "6px 16px",
+                  borderRadius: 4,
+                  border: "none",
+                }}
+              >
+                Xác nhận Failed
               </button>
             </div>
           </div>

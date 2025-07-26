@@ -409,6 +409,67 @@ exports.update = async (req, res) => {
   }
 };
 
+exports.failedHealthCheck = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { healthCheckStatus, healthCheck, reason } = req.body;
+
+    if (!reason || reason.trim() === "") {
+      return res.status(400).json({ message: "Rejection reason is required." });
+    }
+
+    if (!healthCheckStatus || healthCheckStatus !== "rejected") {
+      return res.status(400).json({
+        message: "Health check status must be 'rejected'.",
+      });
+    }
+
+    const reg = await DonationRegistration.findById(id).populate("userId");
+    if (!reg) {
+      return res
+        .status(404)
+        .json({ message: "Donation registration not found." });
+    }
+
+    if (reg.status !== "Approved") {
+      return res
+        .status(400)
+        .json({ message: "Registration must be approved first." });
+    }
+
+    // Tạo lịch sử
+    const donationHistory = await DonationHistory.create({
+      userId: reg.userId._id,
+      donationDate: new Date(),
+      bloodGroup: reg.bloodGroup,
+      component: reg.component,
+      status: "Failed",
+      quantity: 0,
+      volume: 0,
+      healthCheck: healthCheck || {},
+      nextEligibleDate: null,
+    });
+
+    reg.status = "Failed";
+    reg.rejectionReason = reason;
+    reg.healthCheck = healthCheck || {};
+    reg.historyId = donationHistory._id;
+    reg.completedAt = new Date();
+    if (req.user && req.user._id) reg.completedBy = req.user._id;
+    await reg.save();
+
+    return res.status(200).json({
+      message: "Donation failed after failed health check.",
+      donationHistoryId: donationHistory._id,
+    });
+  } catch (err) {
+    console.error("Error rejecting after health check:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
 //helper": calculate next eligible date
 function calNextEligible(component, fromDate) {
   let day;
