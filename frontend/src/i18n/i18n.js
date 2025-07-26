@@ -765,6 +765,12 @@ const resources = {
         inviteError: "Error sending invitation",
         confirmInviteAll:
           "Are you sure you want to invite all compatible donors?",
+        confirmInviteAllTitle: "Confirm Invite All Donors",
+        confirmInviteAllButton: "Invite All",
+        eligibleDonorsCount: "{{count}} eligible donors will be invited",
+        inviteAllResultsTitle: "Invitation Results",
+        successfulInvites: "{{count}} invitations sent successfully",
+        failedInvites: "{{count}} invitations failed",
         compatibleDonors: "Compatible Donors Found",
         nearbyDonors: "Find Nearby Compatible Donors",
         noCompatibleDonors: "No compatible donors found near you.",
@@ -1508,6 +1514,13 @@ const resources = {
         inviteError: "Lỗi khi gửi lời mời",
         confirmInviteAll:
           "Bạn có chắc chắn muốn mời tất cả người hiến máu tương thích?",
+        confirmInviteAllTitle: "Xác nhận mời tất cả người hiến máu",
+        confirmInviteAllButton: "Mời tất cả",
+        eligibleDonorsCount:
+          "{{count}} người hiến máu đủ điều kiện sẽ được mời",
+        inviteAllResultsTitle: "Kết quả gửi lời mời",
+        successfulInvites: "{{count}} lời mời đã gửi thành công",
+        failedInvites: "{{count}} lời mời thất bại",
         compatibleDonors: "Tìm thấy người hiến máu tương thích",
         nearbyDonors: "Tìm người hiến máu quanh tôi",
         noCompatibleDonors: "Không tìm thấy người hiến máu nào gần bạn.",
