@@ -20,6 +20,11 @@ const resources = {
         refresh: "Refresh",
         ok: "OK",
         notAuthenticated: "You are not authenticated. Please log in.",
+        address: "Address",
+        phone: "Phone",
+        distance: "Distance",
+        notAvailable: "Not available",
+        hidden: "Hidden",
       },
 
       // Header Navigation
@@ -122,7 +127,7 @@ const resources = {
         cityHint:
           "Enter a city name. The location will be automatically geocoded.",
         update: "Update profile",
-        profile:"Profile",
+        profile: "Profile",
       },
 
       // Address Form
@@ -406,9 +411,9 @@ const resources = {
       "needRequest.assign": "Assign",
       "needRequest.assignError": "Error assigning blood units",
       "needRequest.status.assigned": "Assigned",
-      "needRequest.markCompleted": "Đánh dấu đã hoàn tất",
+      "needRequest.markCompleted": "Mark as Completed",
       "needRequest.confirmComplete":
-        "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
+        "Are you sure you want to mark this request as completed?",
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
@@ -623,6 +628,7 @@ const resources = {
         medicalHistoryTitle: "Blood Donation History",
         historyTitleAll: "All Donation History",
         historyTitleMy: "My Donation History",
+        nextEligibleDate: "Next eligible date",
         createdAt: "Created At",
         completedAt: "Completed At",
         rejectionReason: "Rejection Reason",
@@ -726,6 +732,23 @@ const resources = {
         notCompatible: "Not Compatible",
         limitedCompatibility: "Limited Compatibility",
       },
+
+      // Donor Invitation
+      donorInvite: {
+        inviteBloodDonation: "Invite Blood Donation",
+        inviteAll: "Invite All",
+        sendInvite: "Send Invite",
+        sending: "Sending...",
+        searching: "Searching...",
+        cancel: "Cancel",
+        inviteSuccess: "Invitation sent successfully!",
+        inviteAllSuccess: "All invitations sent successfully!",
+        inviteError: "Error sending invitation",
+        confirmInviteAll: "Are you sure you want to invite all compatible donors?",
+        compatibleDonors: "Compatible Donors Found",
+        nearbyDonors: "Find Nearby Compatible Donors",
+        noCompatibleDonors: "No compatible donors found near you.",
+      },
     },
   },
   vi: {
@@ -744,6 +767,11 @@ const resources = {
         refresh: "Làm mới",
         ok: "OK",
         notAuthenticated: "Bạn chưa được xác thực. Vui lòng đăng nhập.",
+        address: "Địa chỉ",
+        phone: "SĐT",
+        distance: "Cách bạn",
+        notAvailable: "Chưa có",
+        hidden: "Ẩn",
       },
 
       // Header Navigation
@@ -830,7 +858,7 @@ const resources = {
           "Chọn nhóm máu của bạn. Thông tin này rất quan trọng để phù hợp với nhu cầu hiến tặng.",
         cityHint: "Nhập tên thành phố. Vị trí sẽ được tự động mã hóa địa lý.",
         update: "Cập nhật thông tin",
-        profile:"Thông tin cá nhân",
+        profile: "Thông tin cá nhân",
       },
 
       // Address Form
@@ -1308,6 +1336,7 @@ const resources = {
         medicalHistoryTitle: "Lịch sử hiến máu",
         historyTitleAll: "Lịch Sử Hiến Máu",
         historyTitleMy: "Lịch Sử Hiến Máu Của Tôi",
+        nextEligibleDate: "Ngày có thể hiến tiếp",
         createdAt: "Tạo Lúc",
         completedAt: "Hoàn Thành Lúc",
         rejectionReason: "Lý Do Từ Chối",
@@ -1425,6 +1454,23 @@ const resources = {
         compatible: "Tương Thích",
         notCompatible: "Không Tương Thích",
         limitedCompatibility: "Tương Thích Có Giới Hạn",
+      },
+
+      // Donor Invitation
+      donorInvite: {
+        inviteBloodDonation: "Mời hiến máu",
+        inviteAll: "Mời tất cả",
+        sendInvite: "Gửi lời mời",
+        sending: "Đang gửi...",
+        searching: "Đang tìm...",
+        cancel: "Hủy",
+        inviteSuccess: "Đã gửi lời mời thành công!",
+        inviteAllSuccess: "Đã gửi lời mời cho tất cả thành công!",
+        inviteError: "Lỗi khi gửi lời mời",
+        confirmInviteAll: "Bạn có chắc chắn muốn mời tất cả người hiến máu tương thích?",
+        compatibleDonors: "Tìm thấy người hiến máu tương thích",
+        nearbyDonors: "Tìm người hiến máu quanh tôi",
+        noCompatibleDonors: "Không tìm thấy người hiến máu nào gần bạn.",
       },
     },
   },
