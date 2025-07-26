@@ -418,7 +418,11 @@ const resources = {
       "needRequest.markCompleted": "Mark as Completed",
       "needRequest.confirmComplete":
         "Are you sure you want to mark this request as completed?",
-      "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
+      "needRequest.confirmCompleteTitle": "Mark as Completed",
+      "needRequest.completeSuccessTitle": "Request Completed Successfully",
+      "needRequest.completeSuccessMessage":
+        "The blood request has been marked as completed successfully.",
+      "needRequest.completeError": "Error completing the request",
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
       "needRequest.deleteTitle": "Delete Blood Request",
@@ -460,7 +464,7 @@ const resources = {
       "needRequest.fulfillError": "Error fulfilling blood request",
       "needRequest.createdDate": "Created at",
       "needRequest.bloodRequestType": "Blood group",
-      "needRequest.attachment": "Image",
+      "needRequest.attachment": "Prescription",
       "needRequest.fullImage": "View Image",
       "needRequest.nav.createRequest": "Register Request",
       "needRequest.nav.searchBlood": "Search compatible blood group",
@@ -489,6 +493,8 @@ const resources = {
       "needRequest.rejectionReason": "Reject reason",
       "needRequest.units": "units",
       "needRequest.unitsRequired": "Units required",
+      "common.confirm": "Confirm",
+      "common.ok": "Ok",
 
       // Common
       common: {
@@ -1153,6 +1159,10 @@ const resources = {
       "needRequest.markCompleted": "Đánh dấu đã hoàn tất",
       "needRequest.confirmComplete":
         "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã hoàn tất?",
+      "needRequest.confirmCompleteTitle": "Đánh dấu đã hoàn tất",
+      "needRequest.completeSuccessTitle": "Đã hoàn tất yêu cầu thành công",
+      "needRequest.completeSuccessMessage":
+        "Yêu cầu máu đã được đánh dấu hoàn tất thành công.",
       "needRequest.completeError": "Lỗi khi hoàn tất yêu cầu",
       "needRequest.confirmDelete":
         "Bạn có chắc chắn muốn xóa yêu cầu máu này không?",
@@ -1198,7 +1208,7 @@ const resources = {
       "needRequest.fulfillError": "Lỗi khi hoàn thành yêu cầu máu",
       "needRequest.createdDate": "Ngày tạo đơn",
       "needRequest.bloodRequestType": "Nhóm máu",
-      "needRequest.attachment": "Hình ảnh",
+      "needRequest.attachment": "Đơn thuốc",
       "needRequest.fullImage": "Xem ảnh",
       "needRequest.nav.createRequest": "Đăng ký nhận máu",
       "needRequest.nav.searchBlood": "Tìm nhóm máu phù hợp",
@@ -1227,6 +1237,8 @@ const resources = {
       "needRequest.rejectionReason": "Lý do từ chối",
       "needRequest.units": "Đơn vị máu",
       "needRequest.unitsRequired": "Đơn vị máu yêu cầu",
+      "common.confirm": "Đồng ý",
+      "common.ok": "Đồng ý",
 
       // Common
       common: {

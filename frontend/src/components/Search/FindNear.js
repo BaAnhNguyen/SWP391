@@ -11,15 +11,6 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   const [showInvite, setShowInvite] = useState({});
   const [invitingAll, setInvitingAll] = useState(false);
 
-  // Invite All Confirmation Modal state
-  const [showInviteAllModal, setShowInviteAllModal] = useState(false);
-  const [showInviteAllSuccessModal, setShowInviteAllSuccessModal] =
-    useState(false);
-  const [inviteAllResults, setInviteAllResults] = useState({
-    success: 0,
-    error: 0,
-  });
-
   // Tìm donor gần đây
   const handleFindNearby = () => {
     if (!navigator.geolocation) {
@@ -253,98 +244,6 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
             <p>{t("donorInvite.noCompatibleDonors")}</p>
           </div>
         )
-      )}
-
-      {/* Invite All Confirmation Modal */}
-      {showInviteAllModal && (
-        <div className="invite-modal-overlay" onClick={closeInviteAllModal}>
-          <div
-            className="invite-modal-content invite-confirm-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3>{t("donorInvite.confirmInviteAllTitle")}</h3>
-            <div className="invite-modal-body">
-              <p className="invite-confirm-message">
-                {t("donorInvite.confirmInviteAll")}
-              </p>
-              <div className="invite-donor-count">
-                {t("donorInvite.eligibleDonorsCount", {
-                  count: filteredResult.filter((user) => {
-                    if (!user.nextEligibleDate) return true;
-                    return new Date(user.nextEligibleDate) <= new Date();
-                  }).length,
-                })}
-              </div>
-            </div>
-            <div className="invite-modal-actions">
-              <button
-                type="button"
-                onClick={confirmInviteAll}
-                className="confirm-invite-all-btn"
-                disabled={invitingAll}
-              >
-                {invitingAll
-                  ? t("donorInvite.sending")
-                  : t("donorInvite.confirmInviteAllButton")}
-              </button>
-              <button
-                type="button"
-                onClick={closeInviteAllModal}
-                className="cancel-invite-all-btn"
-                disabled={invitingAll}
-              >
-                {t("donorInvite.cancel")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Invite All Success Modal */}
-      {showInviteAllSuccessModal && (
-        <div
-          className="invite-modal-overlay"
-          onClick={closeInviteAllSuccessModal}
-        >
-          <div
-            className="invite-modal-content invite-success-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3>{t("donorInvite.inviteAllResultsTitle")}</h3>
-            <div className="invite-modal-body">
-              <div className="invite-success-info">
-                <div className="invite-success-icon">
-                  {inviteAllResults.error === 0 ? "✅" : "⚠️"}
-                </div>
-                <div className="invite-results-summary">
-                  <div className="invite-success-count">
-                    ✓{" "}
-                    {t("donorInvite.successfulInvites", {
-                      count: inviteAllResults.success,
-                    })}
-                  </div>
-                  {inviteAllResults.error > 0 && (
-                    <div className="invite-error-count">
-                      ✗{" "}
-                      {t("donorInvite.failedInvites", {
-                        count: inviteAllResults.error,
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="invite-modal-actions">
-              <button
-                type="button"
-                onClick={closeInviteAllSuccessModal}
-                className="invite-success-btn"
-              >
-                {t("common.ok")}
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
