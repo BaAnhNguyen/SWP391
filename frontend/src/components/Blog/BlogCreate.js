@@ -203,6 +203,8 @@ const BlogCreate = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   // Kiểm tra quyền người dùng - Staff không được phép tạo bài viết
   useEffect(() => {
@@ -230,6 +232,48 @@ const BlogCreate = () => {
     setWordCount(plainText.length);
   }, [editorState]);
 
+  // Xử lý chọn ảnh
+  const handleImageSelect = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 1) {
+      showNotification("Chỉ được chọn tối đa 1 ảnh!", "warning");
+      return;
+    }
+
+    // Kiểm tra kích thước file
+    const invalidFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      showNotification("Kích thước ảnh không được vượt quá 5MB!", "warning");
+      return;
+    }
+
+    setSelectedImages(files);
+
+    // Tạo preview cho ảnh
+    const previews = files.map((file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) =>
+          resolve({
+            file,
+            url: e.target.result,
+            name: file.name,
+          });
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(previews).then(setImagePreviews);
+  };
+
+  // Xóa ảnh đã chọn
+  const removeImage = (index) => {
+    const newImages = selectedImages.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setSelectedImages(newImages);
+    setImagePreviews(newPreviews);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -243,13 +287,23 @@ const BlogCreate = () => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_BASE_URL}/blogs`,
-        { title, content },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+
+      // Tạo FormData để gửi kèm ảnh
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+
+      // Thêm ảnh vào FormData
+      selectedImages.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      const response = await axios.post(`${API_BASE_URL}/blogs`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 201) {
         showNotification(
@@ -362,6 +416,49 @@ const BlogCreate = () => {
                     {wordCount} / 5000 ký tự
                   </span>
                 </div>
+              </div>
+            </div>
+
+            {/* Image Upload Section */}
+            <div className="form-group">
+              <label className="form-label">
+                <span className="label-text">Ảnh minh họa</span>
+                <span className="optional-mark">(Tùy chọn - 1 ảnh)</span>
+              </label>
+              <div className="image-upload-container">
+                <input
+                  type="file"
+                  id="images"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="image-input"
+                  style={{ display: "none" }}
+                />
+                <label htmlFor="images" className="image-upload-button">
+                  <span className="upload-icon">📷</span>
+                  <span>Chọn ảnh (1 ảnh, ≤ 5MB)</span>
+                </label>
+
+                {imagePreviews.length > 0 && (
+                  <div className="image-preview-container">
+                    <h4>Ảnh đã chọn:</h4>
+                    <div className="image-preview-grid">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="image-preview-item">
+                          <img src={preview.url} alt="Preview" />
+                          <button
+                            type="button"
+                            className="remove-image-button"
+                            onClick={() => removeImage(index)}
+                          >
+                            ×
+                          </button>
+                          <span className="image-name">{preview.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -775,6 +872,113 @@ const BlogCreate = () => {
           .tips-container {
             order: -1;
           }
+        }
+
+        /* Image Upload Styles */
+        .image-upload-container {
+          margin-top: 0.5rem;
+        }
+
+        .image-upload-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 1.5rem;
+          border: 2px dashed #e74c3c;
+          border-radius: 12px;
+          background: #fdf2f2;
+          color: #e74c3c;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-weight: 500;
+        }
+
+        .image-upload-button:hover {
+          background: #f8e8e8;
+          border-color: #c0392b;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+        }
+
+        .upload-icon {
+          font-size: 1.5rem;
+        }
+
+        .optional-mark {
+          color: #6c757d;
+          font-weight: 400;
+          font-size: 0.9rem;
+        }
+
+        .image-preview-container {
+          margin-top: 1rem;
+          padding: 1rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+        }
+
+        .image-preview-container h4 {
+          margin: 0 0 1rem 0;
+          color: #2c3e50;
+          font-size: 1rem;
+        }
+
+        .image-preview-grid {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+        }
+
+        .image-preview-item {
+          position: relative;
+          background: white;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          width: 300px;
+          max-width: 100%;
+        }
+
+        .image-preview-item img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          display: block;
+        }
+
+        .remove-image-button {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 50%;
+          background: #e74c3c;
+          color: white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          font-weight: bold;
+          transition: all 0.2s ease;
+        }
+
+        .remove-image-button:hover {
+          background: #c0392b;
+          transform: scale(1.1);
+        }
+
+        .image-name {
+          display: block;
+          padding: 0.5rem;
+          font-size: 0.8rem;
+          color: #6c757d;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
 
         @media (max-width: 768px) {

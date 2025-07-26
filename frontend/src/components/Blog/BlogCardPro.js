@@ -99,6 +99,22 @@ export default function BlogCardPro({
         <h3 className="blog-title">
           <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
         </h3>
+
+        {/* Image Gallery */}
+        {blog.images && blog.images.length > 0 && (
+          <div className="blog-images">
+            <div className="image-grid">
+              <div className="image-item">
+                <img
+                  src={blog.images[0].url}
+                  alt={blog.images[0].description || "Blog image"}
+                  className="blog-image"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <p className="blog-excerpt">
           {blog.content
             ? blog.content.replace(/<[^>]+>/g, "").substring(0, 150)
@@ -261,6 +277,52 @@ export default function BlogCardPro({
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
+
+        .blog-images {
+          margin: 16px 0;
+        }
+
+        .image-grid {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          max-height: 180px;
+          overflow: hidden;
+        }
+
+        .image-item {
+          position: relative;
+          border-radius: 8px;
+          overflow: hidden;
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .blog-image {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 8px;
+          transition: transform 0.3s ease;
+        }
+
+        .blog-image:hover {
+          transform: scale(1.05);
+        }
+
+        .more-images {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(231, 76, 60, 0.1);
+          border-radius: 8px;
+          height: 80px;
+          font-size: 12px;
+          font-weight: 600;
+          color: #e74c3c;
+          border: 2px dashed #e74c3c;
+        }
+
         .blog-excerpt {
           color: #6c757d;
           line-height: 1.6;

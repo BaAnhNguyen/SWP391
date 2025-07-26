@@ -19,6 +19,9 @@ const BlogEdit = () => {
   const [status, setStatus] = useState("");
   const [user, setUser] = useState(null);
   const [wordCount, setWordCount] = useState(0);
+  const [currentImages, setCurrentImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -34,6 +37,11 @@ const BlogEdit = () => {
         });
         setForm({ title: res.data.title, content: res.data.content });
         setStatus(res.data.status);
+
+        // Load current images
+        if (res.data.images && res.data.images.length > 0) {
+          setCurrentImages(res.data.images);
+        }
 
         // Convert HTML content to draft.js editor state
         const contentBlock = htmlToDraft(res.data.content);
@@ -65,6 +73,54 @@ const BlogEdit = () => {
     setError(null);
   };
 
+  // Xử lý chọn ảnh mới
+  const handleImageSelect = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 1) {
+      setError("Chỉ được chọn tối đa 1 ảnh!");
+      return;
+    }
+
+    // Kiểm tra kích thước file
+    const invalidFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      setError("Kích thước ảnh không được vượt quá 5MB!");
+      return;
+    }
+
+    setSelectedImages(files);
+
+    // Tạo preview cho ảnh
+    const previews = files.map((file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) =>
+          resolve({
+            file,
+            url: e.target.result,
+            name: file.name,
+          });
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(previews).then(setImagePreviews);
+  };
+
+  // Xóa ảnh mới đã chọn
+  const removeNewImage = (index) => {
+    const newImages = selectedImages.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setSelectedImages(newImages);
+    setImagePreviews(newPreviews);
+  };
+
+  // Xóa ảnh hiện tại
+  const removeCurrentImage = (index) => {
+    const newCurrentImages = currentImages.filter((_, i) => i !== index);
+    setCurrentImages(newCurrentImages);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (user?.role !== "Admin" && status !== "Pending") {
@@ -83,9 +139,24 @@ const BlogEdit = () => {
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const updatedForm = { ...form, content };
-      await axios.put(`${API_BASE_URL}/blogs/${id}`, updatedForm, {
-        headers: { Authorization: `Bearer ${token}` },
+
+      // Tạo FormData để gửi kèm ảnh
+      const formData = new FormData();
+      formData.append("title", form.title);
+      formData.append("content", content);
+
+      // Thêm ảnh mới vào FormData nếu có
+      if (selectedImages.length > 0) {
+        selectedImages.forEach((image) => {
+          formData.append("images", image);
+        });
+      }
+
+      await axios.put(`${API_BASE_URL}/blogs/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
       navigate("/blogs/mine");
     } catch (err) {
@@ -272,6 +343,93 @@ const BlogEdit = () => {
               </div>
             </div>
           </div>
+
+          {/* Image Upload Section */}
+          <div className="form-group">
+            <label className="form-label">
+              <span className="label-text">Ảnh minh họa</span>
+              <span className="optional-mark">(Tùy chọn)</span>
+            </label>
+
+            {/* Current Images */}
+            {currentImages.length > 0 && (
+              <div className="current-images-section">
+                <h4>Ảnh hiện tại:</h4>
+                <div className="image-preview-grid">
+                  {currentImages.map((image, index) => (
+                    <div key={index} className="image-preview-item">
+                      <img src={image.url} alt={`Current ${index + 1}`} />
+                      <button
+                        type="button"
+                        className="remove-image-button"
+                        onClick={() => removeCurrentImage(index)}
+                        disabled={
+                          saving ||
+                          (status !== "Pending" && user?.role !== "Admin")
+                        }
+                      >
+                        ×
+                      </button>
+                      <span className="image-name">
+                        {image.description || "Ảnh hiện tại"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New Image Upload */}
+            <div className="image-upload-container">
+              <input
+                type="file"
+                id="images"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="image-input"
+                style={{ display: "none" }}
+                disabled={
+                  saving || (status !== "Pending" && user?.role !== "Admin")
+                }
+              />
+              <label
+                htmlFor="images"
+                className={`image-upload-button ${
+                  saving || (status !== "Pending" && user?.role !== "Admin")
+                    ? "disabled"
+                    : ""
+                }`}
+              >
+                <span className="upload-icon">📷</span>
+                <span>Thay đổi ảnh (1 ảnh, ≤ 5MB)</span>
+              </label>
+
+              {imagePreviews.length > 0 && (
+                <div className="image-preview-container">
+                  <h4>Ảnh mới sẽ thay thế:</h4>
+                  <div className="image-preview-grid">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="image-preview-item">
+                        <img
+                          src={preview.url}
+                          alt={`New Preview ${index + 1}`}
+                        />
+                        <button
+                          type="button"
+                          className="remove-image-button"
+                          onClick={() => removeNewImage(index)}
+                        >
+                          ×
+                        </button>
+                        <span className="image-name">{preview.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="form-actions">
             <button
               type="button"
@@ -569,6 +727,137 @@ const BlogEdit = () => {
 
         .count-normal {
           color: #6c757d;
+        }
+
+        /* Image Upload Styles */
+        .image-upload-container {
+          margin-top: 1rem;
+        }
+
+        .current-images-section {
+          margin-bottom: 1rem;
+          padding: 1rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+        }
+
+        .current-images-section h4 {
+          margin: 0 0 1rem 0;
+          color: #2c3e50;
+          font-size: 1rem;
+        }
+
+        .image-upload-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 1.5rem;
+          border: 2px dashed #e74c3c;
+          border-radius: 12px;
+          background: #fdf2f2;
+          color: #e74c3c;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-weight: 500;
+        }
+
+        .image-upload-button:hover:not(.disabled) {
+          background: #f8e8e8;
+          border-color: #c0392b;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+        }
+
+        .image-upload-button.disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background: #f5f5f5;
+          border-color: #ccc;
+          color: #999;
+        }
+
+        .upload-icon {
+          font-size: 1.5rem;
+        }
+
+        .optional-mark {
+          color: #6c757d;
+          font-weight: 400;
+          font-size: 0.9rem;
+        }
+
+        .image-preview-container {
+          margin-top: 1rem;
+          padding: 1rem;
+          background: #e8f5e9;
+          border-radius: 8px;
+        }
+
+        .image-preview-container h4 {
+          margin: 0 0 1rem 0;
+          color: #2c3e50;
+          font-size: 1rem;
+        }
+
+        .image-preview-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 1rem;
+        }
+
+        .image-preview-item {
+          position: relative;
+          background: white;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-preview-item img {
+          width: 100%;
+          height: 120px;
+          object-fit: cover;
+          display: block;
+        }
+
+        .remove-image-button {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 50%;
+          background: #e74c3c;
+          color: white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          font-weight: bold;
+          transition: all 0.2s ease;
+        }
+
+        .remove-image-button:hover:not(:disabled) {
+          background: #c0392b;
+          transform: scale(1.1);
+        }
+
+        .remove-image-button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .image-name {
+          display: block;
+          padding: 0.5rem;
+          font-size: 0.8rem;
+          color: #6c757d;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
 
         @media (max-width: 768px) {

@@ -16,6 +16,21 @@ const blogSchema = new Schema(
       enum: ["Pending", "Approved", "Rejected"],
       default: "Pending",
     },
+    images: {
+      type: [
+        {
+          url: String,
+          public_id: String,
+          description: String,
+        },
+      ],
+      validate: {
+        validator: function (v) {
+          return v.length <= 1;
+        },
+        message: "Chỉ được upload tối đa 1 ảnh!",
+      },
+    },
   },
   { timestamps: true }
 );
