@@ -110,8 +110,8 @@ const AssignBloodUnits = () => {
         "Blood type charcode analysis:",
         bloodType
           ? Array.from(bloodType)
-            .map((c) => `${c}:${c.charCodeAt(0)}`)
-            .join(", ")
+              .map((c) => `${c}:${c.charCodeAt(0)}`)
+              .join(", ")
           : "none"
       );
 
@@ -215,7 +215,7 @@ const AssignBloodUnits = () => {
           (type) =>
             type.toLowerCase() === bloodType.trim().toLowerCase() ||
             type.toLowerCase().replace(/[+-]/, "") ===
-            bloodType.trim().toLowerCase()
+              bloodType.trim().toLowerCase()
         );
 
         if (exactMatch) {
@@ -287,8 +287,9 @@ const AssignBloodUnits = () => {
               errorData.message || t("needRequest.fetchBloodUnitsError");
           }
         } catch (err) {
-          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${err.message
-            }`;
+          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${
+            err.message
+          }`;
         }
 
         // FALLBACK: If API call fails, try to manually get all blood units and filter locally
@@ -623,10 +624,14 @@ const AssignBloodUnits = () => {
 
           <div className="request-info-grid">
             <div className="info-item">
-              <label style={{ fontWeight: 'bold' }}>{t("common.bloodType")}:</label>
-
-              {requestDetails.bloodGroup}
-
+              <label>{t("common.bloodType")}:</label>
+              <span
+                className={`blood-badge blood-${requestDetails.bloodGroup
+                  ?.replace("+", "pos")
+                  .replace("-", "neg")}`}
+              >
+                {requestDetails.bloodGroup}
+              </span>
             </div>
             <div className="info-item">
               <label>{t("bloodStorage.component")}:</label>
@@ -793,7 +798,7 @@ const AssignBloodUnits = () => {
                           type="checkbox"
                           checked={isSelected}
                           disabled={isDisabled}
-                          onChange={() => { }}
+                          onChange={() => {}}
                           onClick={(e) => e.stopPropagation()}
                         />
                       </td>
@@ -819,8 +824,9 @@ const AssignBloodUnits = () => {
                       </td>
                       <td>
                         <span
-                          className={`source-badge source-${unit.SourceType || "unknown"
-                            }`}
+                          className={`source-badge source-${
+                            unit.SourceType || "unknown"
+                          }`}
                         >
                           {unit.SourceType || "Unknown"}
                         </span>

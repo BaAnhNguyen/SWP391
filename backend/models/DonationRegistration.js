@@ -31,7 +31,7 @@ const donationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Rejected", "Completed", "Cancelled"],
+      enum: ["Pending", "Approved", "Rejected", "Completed", "Failed"],
       default: "Pending",
     },
     rejectionReason: {

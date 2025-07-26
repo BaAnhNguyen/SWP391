@@ -144,35 +144,42 @@ const DonateHistoryDetail = ({ id, onClose }) => {
                 <div className="info-row">
                   <span className="label">Cân nặng</span>
                   <span className="value">
-                    {detail.healthCheck.weight ?? "?"} kg
+                    {detail.healthCheck.weight ?? "0"} kg
                   </span>
                 </div>
 
                 <div className="info-row">
                   <span className="label">Chiều cao</span>
                   <span className="value">
-                    {detail.healthCheck.height ?? "?"} cm
+                    {detail.healthCheck.height ?? "0"} cm
                   </span>
                 </div>
 
                 <div className="info-row">
                   <span className="label">Huyết áp</span>
                   <span className="value">
-                    {detail.healthCheck.bloodPressure ?? "?"}
+                    {detail.healthCheck.bloodPressure ?? "0"}
                   </span>
                 </div>
 
                 <div className="info-row">
                   <span className="label">Nhịp tim</span>
                   <span className="value">
-                    {detail.healthCheck.heartRate ?? "?"} bpm
+                    {detail.healthCheck.heartRate ?? "0"} bpm
                   </span>
                 </div>
 
                 <div className="info-row">
                   <span className="label">Nhiệt độ</span>
                   <span className="value">
-                    {detail.healthCheck.temperature ?? "?"} °C
+                    {detail.healthCheck.temperature ?? "0"} °C
+                  </span>
+                </div>
+
+                <div className="info-row">
+                  <span className="label">Huyết sắc tố</span>
+                  <span className="value">
+                    {detail.healthCheck.hemoglobin ?? "0"} g/L
                   </span>
                 </div>
               </div>
