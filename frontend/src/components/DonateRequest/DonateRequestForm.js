@@ -315,7 +315,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
       {nextEligibleDate && (
         <p style={{ marginTop: "1rem", color: "orange" }}>
           Bạn có thể hiến máu lại từ ngày:{" "}
-          <strong>{nextEligibleDate.toLocaleDateString("vi-VN")}</strong>
+          <strong>{nextEligibleDate.toLocaleDateString("en-US")}</strong>
         </p>
       )}
 
