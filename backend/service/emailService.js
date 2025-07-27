@@ -95,7 +95,7 @@ const sendApprovalMail = async (email, name, readyDate) => {
   `;
 
   const mailOptions = {
-    from: `"Trung tâm Hiến Máu Nhân Đạo" <${process.env.EMAIL_USER}>`,
+    from: `"Trung tâm Hiến Máu" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Đơn đăng ký hiến máu đã được duyệt",
     html,
@@ -150,7 +150,7 @@ const sendMailWithReason = async (donorEmail, donorName, reason) => {
   const transporter = createTransporter();
   const template = createFailedOrRejectedTemplate(donorName, reason);
   const mailOptions = {
-    from: `"Trung tâm Hiến Máu Nhân Đạo" <${process.env.EMAIL_USER}>`,
+    from: `"Trung tâm Hiến Máu" <${process.env.EMAIL_USER}>`,
     to: donorEmail,
     subject: template.subject,
     html: template.html,

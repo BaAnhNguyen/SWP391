@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
 import "./NeedRequestForm.css";
@@ -25,6 +25,8 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     { value: "RedCells", label: t("common.component.redcells") },
   ];
 
+  const [todayCount, setTodayCount] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -38,7 +40,10 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     setFile(selectedFile);
 
     // Create preview for image files
-    if (selectedFile && (selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/png')) {
+    if (
+      selectedFile &&
+      (selectedFile.type === "image/jpeg" || selectedFile.type === "image/png")
+    ) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setFilePreview(e.target.result);
@@ -104,6 +109,23 @@ const NeedRequestForm = ({ onRequestCreated }) => {
     }
   };
 
+  //show noti
+  useEffect(() => {
+    const fetchTodayCount = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_BASE_URL}/needRequest/countToday`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setTodayCount(data.count);
+      } catch (err) {
+        console.error("Lỗi khi lấy số lượng đơn hôm nay:", err);
+      }
+    };
+    fetchTodayCount();
+  }, []);
+
   return (
     <div className="need-request-form-container">
       <h2>{t("needRequest.title")}</h2>
@@ -114,6 +136,17 @@ const NeedRequestForm = ({ onRequestCreated }) => {
       )}
 
       {error && <div className="error-message">{error}</div>}
+
+      {todayCount !== null && (
+        <p
+          style={{
+            marginTop: "1rem",
+            color: todayCount >= 3 ? "red" : "inherit",
+          }}
+        >
+          Bạn đã đăng ký {todayCount}/3 đơn hôm nay.
+        </p>
+      )}
 
       <form
         onSubmit={handleSubmit}
@@ -199,9 +232,7 @@ const NeedRequestForm = ({ onRequestCreated }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="attachment">
-            {t("needRequest.attachment")}
-          </label>
+          <label htmlFor="attachment">{t("needRequest.attachment")}</label>
           <input
             type="file"
             id="attachment"
@@ -218,12 +249,12 @@ const NeedRequestForm = ({ onRequestCreated }) => {
                 src={filePreview}
                 alt="Preview"
                 className="attachment-preview"
-                onClick={() => window.open(filePreview, '_blank')}
+                onClick={() => window.open(filePreview, "_blank")}
               />
               <button
                 className="view-full-image"
                 type="button"
-                onClick={() => window.open(filePreview, '_blank')}
+                onClick={() => window.open(filePreview, "_blank")}
               >
                 {t("needRequest.fullImage")}
               </button>

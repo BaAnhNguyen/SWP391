@@ -66,6 +66,9 @@ router.post(
   ctrl.confirm
 );
 
+//show number of sending request
+router.get("/countToday", restrictTo("Member"), ctrl.countToday);
+
 //take one request
 router.get("/:id", ctrl.getNeedRequestById);
 

@@ -7,6 +7,8 @@ router.use(protect);
 //member routes
 router.post("/", ctrl.create); //create new donation registration
 router.get("/me", ctrl.listMine); //list user's own donations
+router.get("/countToday", ctrl.countToday);
+router.get("/nextEligibleDate", restrictTo("Member"), ctrl.getNextEligibleDate);
 
 //staff routes
 router.get("/", restrictTo("Staff"), ctrl.listAll); //list all donations

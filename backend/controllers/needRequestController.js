@@ -25,6 +25,15 @@ exports.create = async (req, res) => {
       return res.status(400).json({ message: "Units must be at least 1" });
     }
 
+    //  Giới hạn số lượng đơn đăng ký trong 1 ngày
+    const todayCount = await countTodayInternal(createdBy);
+    if (todayCount >= 3) {
+      return res.status(429).json({
+        message:
+          "Bạn đã tạo quá 3 đơn đăng ký trong ngày. Vui lòng thử lại vào ngày mai.",
+      });
+    }
+
     const nr = await NeedRequest.create({
       createdBy,
       bloodGroup,
@@ -415,6 +424,7 @@ exports.rejectBloodRequest = async (req, res) => {
   }
 };
 
+//confirm
 exports.confirm = async (req, res) => {
   try {
     const { requestId } = req.params;
@@ -520,3 +530,22 @@ exports.updateAppointmentDate = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
+//show request in one day
+exports.countToday = async (req, res) => {
+  const count = await countTodayInternal(req.user._id);
+  return res.json({ count });
+};
+
+//count request in day
+async function countTodayInternal(userId) {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  return await NeedRequest.countDocuments({
+    createdBy: userId,
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+  });
+}

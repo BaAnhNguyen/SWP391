@@ -29,6 +29,9 @@ const DonateRequestForm = ({ onRequestCreated }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [bloodGroupError, setBloodGroupError] = useState(null);
 
+  const [todayCount, setTodayCount] = useState(null);
+  const [nextEligibleDate, setNextEligibleDate] = useState(null);
+
   const bloodGroups = [
     "A+",
     "A-",
@@ -240,6 +243,55 @@ const DonateRequestForm = ({ onRequestCreated }) => {
     }
   };
 
+  //load thong bao gioi han so lan gui
+  useEffect(() => {
+    const fetchTodayCount = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          `${API_BASE_URL}/donateregistration/countToday`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data = await res.json();
+        setTodayCount(data.count);
+      } catch (err) {
+        console.error("Lỗi khi lấy số lượng đơn hôm nay:", err);
+      }
+    };
+    fetchTodayCount();
+  }, []);
+
+  //lay ngay hien tiep theo
+  useEffect(() => {
+    const fetchNextEligibleDate = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch(
+          `${API_BASE_URL}/donateRegistration/nextEligibleDate`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!response.ok)
+          throw new Error("Không lấy được ngày hiến máu tiếp theo");
+
+        const data = await response.json();
+        if (data.nextEligibleDate) {
+          setNextEligibleDate(new Date(data.nextEligibleDate));
+        }
+      } catch (err) {
+        console.error("Lỗi lấy ngày đủ điều kiện hiến máu:", err);
+      }
+    };
+
+    fetchNextEligibleDate();
+  }, []);
+
   return (
     <div className="donate-request-form-container">
       <h2>{t("donateRequest.title")}</h2>
@@ -259,6 +311,23 @@ const DonateRequestForm = ({ onRequestCreated }) => {
             liên hệ quản trị viên.
           </p>
         </div>
+      )}
+      {nextEligibleDate && (
+        <p style={{ marginTop: "1rem", color: "orange" }}>
+          Bạn có thể hiến máu lại từ ngày:{" "}
+          <strong>{nextEligibleDate.toLocaleDateString("vi-VN")}</strong>
+        </p>
+      )}
+
+      {todayCount !== null && (
+        <p
+          style={{
+            marginTop: "1rem",
+            color: todayCount >= 3 ? "red" : "inherit",
+          }}
+        >
+          Bạn đã đăng ký {todayCount}/3 đơn hôm nay.
+        </p>
       )}
 
       {step === 1 && (

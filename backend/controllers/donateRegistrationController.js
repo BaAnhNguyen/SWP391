@@ -22,7 +22,10 @@ exports.create = async (req, res) => {
     }
 
     // Kiểm tra ngày đủ điều kiện hiến máu tiếp theo
-    const lastHistory = await DonationHistory.findOne({ userId: userId }).sort({
+    const lastHistory = await DonationHistory.findOne({
+      userId: userId,
+      status: "Completed",
+    }).sort({
       donationDate: -1,
     });
     if (lastHistory && lastHistory.nextEligibleDate) {
@@ -104,6 +107,15 @@ exports.create = async (req, res) => {
     if (confirmation !== true) {
       return res.status(400).json({
         message: "You must valid your information",
+      });
+    }
+
+    //gioi han sô lan gui don
+    const todayCount = await countTodayInternal(userId);
+    if (todayCount >= 3) {
+      return res.status(429).json({
+        message:
+          "Bạn đã tạo quá 3 đơn đăng ký trong ngày. Vui lòng thử lại vào ngày mai.",
       });
     }
 
@@ -498,6 +510,52 @@ exports.failedHealthCheck = async (req, res) => {
       .json({ message: "Internal server error", error: err.message });
   }
 };
+
+//show noti about next eligible day
+exports.getNextEligibleDate = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Tìm lần hiến máu gần nhất đã thành công
+    const latest = await DonationHistory.findOne({
+      userId,
+      status: "Completed",
+    })
+      .sort({ donationDate: -1 })
+      .lean();
+
+    if (!latest || !latest.nextEligibleDate) {
+      return res.json({
+        message: "Bạn chưa có lịch hiến máu gần đây.",
+        nextEligibleDate: null,
+      });
+    }
+
+    return res.json({
+      nextEligibleDate: latest.nextEligibleDate,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+exports.countToday = async (req, res) => {
+  const count = await countTodayInternal(req.user._id);
+  return res.json({ count });
+};
+
+//count regis in day
+async function countTodayInternal(userId) {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  return await DonationRegistration.countDocuments({
+    userId,
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+  });
+}
 
 //helper": calculate next eligible date
 function calNextEligible(component, fromDate) {
