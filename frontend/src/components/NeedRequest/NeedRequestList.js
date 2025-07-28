@@ -314,7 +314,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
         throw new Error(result.message || t("needRequest.rejectError"));
 
       // Show success message and update UI
-      alert(result.message || "Đã từ chối đơn!");
+      alert(result.message || t("needRequest.rejectSuccess", "Request rejected successfully!"));
       fetchRequests();
       closeRejectModal();
     } catch (err) {
@@ -394,7 +394,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
       if (!response.ok) throw new Error(result.message || "Đổi ngày thất bại!");
 
       // Show success message and update UI
-      alert(result.message || "Đã đổi ngày hẹn thành công!");
+      alert(result.message || t("needRequest.appointmentDateChanged", "Appointment date changed successfully!"));
       fetchRequests();
       closeAppointmentModal();
     } catch (err) {
@@ -896,7 +896,7 @@ const NeedRequestList = ({ userRole, refresh }) => {
                               className="edit-appointment-button"
                               style={{ marginLeft: 8 }}
                             >
-                              Đổi ngày hẹn
+                              {t("needRequest.changeAppointmentDate", "Change Appointment Date")}
                             </button>
                             <button
                               onClick={(e) => {
@@ -1020,11 +1020,11 @@ const NeedRequestList = ({ userRole, refresh }) => {
         </div>
       )}
 
-      {/* Modal đổi ngày hẹn */}
+      {/* Change Appointment Date Modal */}
       {showAppointmentModal && (
         <div className="modal-overlay" onClick={closeAppointmentModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Đổi ngày hẹn</h3>
+            <h3>{t("needRequest.changeAppointmentDateTitle", "Change Appointment Date")}</h3>
             <form onSubmit={handleAppointmentSubmit}>
               <input
                 type="datetime-local"
@@ -1041,10 +1041,10 @@ const NeedRequestList = ({ userRole, refresh }) => {
                   onClick={closeAppointmentModal}
                   style={{ marginRight: 8 }}
                 >
-                  Hủy
+                  {t("common.cancel", "Cancel")}
                 </button>
                 <button type="submit" className="assign-button">
-                  Xác nhận đổi ngày
+                  {t("needRequest.confirmDateChange", "Confirm Date Change")}
                 </button>
               </div>
             </form>

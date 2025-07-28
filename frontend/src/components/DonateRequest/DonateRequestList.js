@@ -266,7 +266,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
       }
       handleCloseEditDateModal();
       fetchRequests();
-      alert("Cập nhật ngày hẹn thành công!");
+      alert(t("donateRequest.appointmentDateUpdated", "Appointment date updated successfully!"));
     } catch (err) {
       setEditDateError(err.message);
     }
@@ -725,9 +725,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${
-                expandedRequestId === request._id ? "expanded" : ""
-              }`}
+              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
+                }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -775,8 +774,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         <strong>Ngày sinh:</strong>{" "}
                         {request.userId.dateOfBirth
                           ? new Date(
-                              request.userId.dateOfBirth
-                            ).toLocaleDateString()
+                            request.userId.dateOfBirth
+                          ).toLocaleDateString()
                           : ""}
                       </div>
                       <div>
@@ -784,8 +783,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         {request.userId.gender === "male"
                           ? "Nam"
                           : request.userId.gender === "female"
-                          ? "Nữ"
-                          : request.userId.gender}
+                            ? "Nữ"
+                            : request.userId.gender}
                       </div>
                     </div>
                   )}
@@ -871,7 +870,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         handleOpenEditDateModal(request);
                       }}
                     >
-                      Đổi ngày hẹn
+                      {t("donateRequest.changeAppointmentDate", "Change Appointment Date")}
                     </button>
                   </div>
                 )}
@@ -902,16 +901,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   </button>
                   {(request.status === "Completed" ||
                     request.status === "Failed") && (
-                    <button
-                      className="detail-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedId(request.historyId);
-                      }}
-                    >
-                      {t("donateRequest.detailInfo")}
-                    </button>
-                  )}
+                      <button
+                        className="detail-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedId(request.historyId);
+                        }}
+                      >
+                        {t("donateRequest.detailInfo")}
+                      </button>
+                    )}
                 </div>
               </div>
             </div>
@@ -994,17 +993,15 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
             <div className="health-check-tabs">
               <button
-                className={`health-check-tab ${
-                  activeTab === "complete" ? "active" : ""
-                }`}
+                className={`health-check-tab ${activeTab === "complete" ? "active" : ""
+                  }`}
                 onClick={() => setActiveTab("complete")}
               >
                 {t("donateRequest.completeTab")}
               </button>
               <button
-                className={`health-check-tab ${
-                  activeTab === "cancel" ? "active" : ""
-                }`}
+                className={`health-check-tab ${activeTab === "cancel" ? "active" : ""
+                  }`}
                 onClick={() => setActiveTab("cancel")}
               >
                 {t("donateRequest.cancelTab")}
@@ -1327,9 +1324,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
           }}
         >
           <div className="modal-content">
-            <h3>Đổi ngày hẹn hiến máu</h3>
+            <h3>{t("donateRequest.changeBloodDonationAppointment", "Change Blood Donation Appointment")}</h3>
             <form onSubmit={handleSubmitEditDate}>
-              <label>Ngày hẹn mới:</label>
+              <label>{t("donateRequest.newAppointmentDate", "New Appointment Date")}:</label>
               <input
                 type="date"
                 value={editReadyDate}
@@ -1342,10 +1339,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
               )}
               <div style={{ marginTop: 12 }}>
                 <button type="button" onClick={handleCloseEditDateModal}>
-                  Hủy
+                  {t("common.cancel", "Cancel")}
                 </button>
                 <button type="submit" style={{ marginLeft: 8 }}>
-                  Cập nhật
+                  {t("common.update", "Update")}
                 </button>
               </div>
             </form>
@@ -1500,7 +1497,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
               <button
                 onClick={async () => {
                   if (!failedReason.trim()) {
-                    alert("Vui lòng nhập lý do");
+                    alert(t("donateRequest.reasonRequired", "Please enter a reason"));
                     return;
                   }
 
@@ -1554,7 +1551,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     setShowSuccessModal(true);
                     handleCloseHealthCheck();
                   } catch (err) {
-                    alert("Lỗi: " + err.message);
+                    alert(t("common.error", "Error") + ": " + err.message);
                   }
                 }}
                 style={{
