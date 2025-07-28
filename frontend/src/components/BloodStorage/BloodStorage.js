@@ -1,3 +1,16 @@
+/**
+ * BloodStorage Component
+ * 
+ * This component is responsible for displaying and managing the blood storage inventory.
+ * It provides functionality for:
+ * - Viewing blood inventory summary by blood type and component
+ * - Adding new blood units to inventory manually
+ * - Viewing detailed inventory history with filtering options
+ * - Deleting blood units from inventory
+ * - Tracking expiration dates and status of blood units
+ * - Pagination for inventory history table
+ */
+
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { API_BASE_URL } from "../../config";
@@ -7,13 +20,28 @@ import "../../styles/tables.css";
 import "../../styles/blood-badges.css";
 import EnglishBloodDeleteConfirmModal from "./EnglishBloodDeleteConfirmModal";
 
+/**
+ * Array of all blood types for display and filtering
+ */
 const bloodTypes = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
+/**
+ * Formats a date string to locale date format
+ * 
+ * @param {string} dateString - ISO date string to format
+ * @returns {string} Formatted date string in user's locale format
+ */
 function formatDate(dateString) {
   if (!dateString) return "";
   return new Date(dateString).toLocaleDateString();
 }
 
+/**
+ * Calculates the number of days until a blood unit expires
+ * 
+ * @param {string} expirationDate - ISO date string of expiration date
+ * @returns {number} Number of days until expiration (negative if already expired)
+ */
 function getDaysUntilExpiration(expirationDate) {
   if (!expirationDate) return "";
   const now = new Date();
@@ -22,22 +50,38 @@ function getDaysUntilExpiration(expirationDate) {
   return diff;
 }
 
+/**
+ * Gets the CSS class name for a blood inventory status
+ * 
+ * @param {string} status - Status of blood inventory ('sufficient', 'medium', 'critical')
+ * @returns {string} CSS class name for styling the status
+ */
 function getStatusClass(status) {
   switch (status) {
     case "sufficient":
-      return "status-sufficient";
+      return "status-sufficient";  // Green - Good supply
     case "medium":
-      return "status-medium";
+      return "status-medium";      // Orange - Medium supply
     case "critical":
-      return "status-critical";
+      return "status-critical";    // Red - Critical/Low supply
     default:
       return "";
   }
 }
 
-// Summarize the number of bags & ml, only for blood that hasn't expired
+/**
+ * Processes blood inventory data to create a summary by blood type and component
+ * Calculates totals and determines inventory status (critical, medium, sufficient)
+ * Only includes blood units that have not expired
+ * 
+ * @param {Array} data - Raw blood inventory data from API
+ * @returns {Object} Summarized inventory data grouped by blood type with status indicators
+ */
 const processBloodInventory = (data) => {
+  // Ensure data is an array
   const arr = Array.isArray(data) ? data : [];
+
+  // Initialize summary object with zeroes for all blood types and components
   const summary = {};
   bloodTypes.forEach((type) => {
     summary[type] = {
@@ -51,153 +95,216 @@ const processBloodInventory = (data) => {
       RedCellsVolume: 0,
       total: 0,
       totalVolume: 0,
-      status: "critical",
+      status: "critical",  // Default to critical until evaluated
     };
   });
 
+  // Current date for checking expiration
   const now = new Date();
+
+  // Process each blood unit and update the summary
   arr.forEach((unit) => {
+    // Only count units that haven't expired and have a valid blood type
     if (summary[unit.BloodType] && new Date(unit.DateExpired) > now) {
-      const qty = Number(unit.Quantity) || 1;
-      const vol = Number(unit.Volume) || 0;
+      const qty = Number(unit.Quantity) || 1;  // Default to 1 if quantity not specified
+      const vol = Number(unit.Volume) || 0;    // Default to 0 if volume not specified
+
+      // Update component-specific counts
       summary[unit.BloodType][unit.ComponentType] += qty;
       summary[unit.BloodType][unit.ComponentType + "Volume"] += vol;
+
+      // Update total counts
       summary[unit.BloodType].total += qty;
       summary[unit.BloodType].totalVolume += vol;
     }
   });
 
+  // Determine status for each blood type based on total units available
   Object.keys(summary).forEach((type) => {
     const total = summary[type].total;
     if (total > 20) {
-      summary[type].status = "sufficient";
+      summary[type].status = "sufficient";  // More than 20 units is sufficient
     } else if (total > 10) {
-      summary[type].status = "medium";
+      summary[type].status = "medium";      // 11-20 units is medium
     } else {
-      summary[type].status = "critical";
+      summary[type].status = "critical";    // 0-10 units is critical
     }
   });
 
   return summary;
 };
 
+/**
+ * BloodStorage component for managing blood inventory
+ * 
+ * @returns {JSX.Element} The rendered BloodStorage component
+ */
 const BloodStorage = () => {
-  const { t } = useTranslation();
-  const [bloodInventory, setBloodInventory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  // Core hooks and state
+  const { t } = useTranslation();  // Translation hook
+  const [bloodInventory, setBloodInventory] = useState([]);  // Blood inventory data from API
+  const [loading, setLoading] = useState(true);  // Loading state for API calls
+  const [error, setError] = useState(null);  // Error state for API calls
+  const [showAddForm, setShowAddForm] = useState(false);  // Controls visibility of add blood form
 
-  // Filter dates and source type for inventory table
-  const [filterStartDate, setFilterStartDate] = useState("");
-  const [filterEndDate, setFilterEndDate] = useState("");
-  const [filterSourceType, setFilterSourceType] = useState("all");
+  // Filter states for inventory table
+  const [filterStartDate, setFilterStartDate] = useState("");  // Start date filter
+  const [filterEndDate, setFilterEndDate] = useState("");  // End date filter
+  const [filterSourceType, setFilterSourceType] = useState("all");  // Source type filter (donation/import/all)
 
-  // Pagination for inventory history
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  // Pagination states for inventory history table
+  const [currentPage, setCurrentPage] = useState(1);  // Current page number
+  const [itemsPerPage, setItemsPerPage] = useState(10);  // Number of items per page
 
   // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
-    bloodType: "A+",
-    volume: 450,
-    sourceType: "Donation",
-    collectionDate: new Date().toISOString().split('T')[0],
+    bloodType: "A+",  // Default blood type
+    volume: 450,  // Default volume (450ml is standard for whole blood donation)
+    sourceType: "Donation",  // Default source type
+    collectionDate: new Date().toISOString().split('T')[0],  // Default collection date (today)
   });
-  const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(false);  // Loading state for adding blood unit
 
   // Delete confirmation modal state
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);  // Controls visibility of delete modal
+  const [deleteItemId, setDeleteItemId] = useState(null);  // ID of blood unit to delete
 
-  // Load blood storage data
+  /**
+   * Fetches blood inventory data from the API
+   * Updates state with the fetched data or error message
+   */
   const fetchInventory = () => {
-    setLoading(true);
+    setLoading(true);  // Start loading
+
+    // Get authentication token
     const token = localStorage.getItem("token");
+
+    // Fetch blood units from API
     fetch(`${API_BASE_URL}/bloodunit`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => {
+        // Handle different response formats
         if (Array.isArray(data)) {
+          // Direct array response
           setBloodInventory(data);
         } else if (data && Array.isArray(data.data)) {
+          // Nested data property containing array
           setBloodInventory(data.data);
         } else {
+          // No valid data format, set empty array
           setBloodInventory([]);
         }
-        setLoading(false);
+        setLoading(false);  // End loading
       })
       .catch((err) => {
+        // Handle fetch errors
         setError(err.message || "Unable to load blood storage data.");
-        setBloodInventory([]);
-        setLoading(false);
+        setBloodInventory([]);  // Reset inventory on error
+        setLoading(false);  // End loading
       });
   };
 
+  /**
+   * Effect hook to fetch inventory data when component mounts
+   */
   useEffect(() => {
     fetchInventory();
     // eslint-disable-next-line
   }, []);
 
+  // Process blood inventory data for summary display
   const summaryData = processBloodInventory(bloodInventory);
 
-  // Filter for inventory history table
+  /**
+   * Filter blood inventory based on selected filters
+   * Filters by source type and date range
+   */
   const filteredBloodInventory = (
     Array.isArray(bloodInventory) ? bloodInventory : []
   ).filter((unit) => {
-    // Filter by source type
+    // Filter by source type (donation, import, or all)
     if (filterSourceType !== "all" && unit.SourceType !== filterSourceType)
       return false;
+
     // Filter by date added
     const date = new Date(unit.DateAdded);
+    // Check if date is after start date (if provided)
     if (filterStartDate && date < new Date(filterStartDate)) return false;
+    // Check if date is before end date (if provided, including the entire end day)
     if (filterEndDate && date > new Date(filterEndDate + "T23:59:59"))
       return false;
+
+    // Include this unit if it passes all filters
     return true;
   });
 
   // Calculate pagination values
-  const totalItems = filteredBloodInventory.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalItems = filteredBloodInventory.length;  // Total number of filtered items
+  const totalPages = Math.ceil(totalItems / itemsPerPage);  // Total number of pages
 
-  // Reset to first page when filters change
+  /**
+   * Effect hook to reset to first page when filters change
+   * Prevents showing empty pages when filter results are smaller than current page
+   */
   useEffect(() => {
     setCurrentPage(1);
   }, [filterSourceType, filterStartDate, filterEndDate]);
 
-  // Get current page items
+  // Get current page items based on pagination settings
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredBloodInventory.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
-  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+  /**
+   * Pagination functions to navigate between pages
+   */
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);  // Go to specific page
+  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));  // Go to next page
+  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));  // Go to previous page
 
-  // Total bags and volume for current filter
+  /**
+   * Calculate totals for filtered inventory
+   * Used to display summary information at the bottom of the table
+   */
+  // Total number of blood bags/units
   const totalQuantity = filteredBloodInventory.reduce(
-    (sum, unit) => sum + (Number(unit.Quantity) || 1),
+    (sum, unit) => sum + (Number(unit.Quantity) || 1),  // Default to 1 if quantity not specified
     0
   );
+  // Total volume in ml
   const totalVolume = filteredBloodInventory.reduce(
-    (sum, unit) => sum + (Number(unit.Volume) || 0),
+    (sum, unit) => sum + (Number(unit.Volume) || 0),  // Default to 0 if volume not specified
     0
   );
 
-  // Handle changes to the manual entry form
+  /**
+   * Handles input changes in the manual blood entry form
+   * Updates the newUnit state with the changed values
+   * 
+   * @param {Event} e - The input change event
+   */
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewUnit((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target;  // Get field name and new value
+    setNewUnit((prev) => ({ ...prev, [name]: value }));  // Update state preserving other fields
   };
 
-  // Handle submission of manual blood entry
+  /**
+   * Handles the submission of the manual blood entry form
+   * Adds a new blood unit to the inventory through API
+   * 
+   * @param {Event} e - The form submission event
+   */
   const handleAddBloodUnit = async (e) => {
-    e.preventDefault();
-    setAdding(true);
+    e.preventDefault();  // Prevent default form submission
+    setAdding(true);     // Set loading state
+
     try {
+      // Get authentication token
       const token = localStorage.getItem("token");
+
+      // Send request to create new blood unit
       const res = await fetch(`${API_BASE_URL}/bloodunit`, {
         method: "POST",
         headers: {
@@ -206,45 +313,68 @@ const BloodStorage = () => {
         },
         body: JSON.stringify({
           ...newUnit,
-          Quantity: Number(newUnit.Quantity),
-          Volume: Number(newUnit.Volume),
-          SourceType: "import",
+          Quantity: Number(newUnit.Quantity),  // Ensure quantity is a number
+          Volume: Number(newUnit.Volume),      // Ensure volume is a number
+          SourceType: "import",                // Mark as manually imported
         }),
       });
+
+      // Handle unsuccessful response
       if (!res.ok) throw new Error(t("bloodStorage.addError"));
+
+      // Reset form to default values on success
       setNewUnit({
         bloodType: "A+",
         volume: 450,
         sourceType: "Donation",
         collectionDate: new Date().toISOString().split('T')[0],
       });
-      // Reload dashboard
+
+      // Reload inventory data to include the new unit
       fetchInventory();
-      setShowAddForm(false); // Hide form after successful submission
+
+      // Hide the form after successful submission
+      setShowAddForm(false);
     } catch (err) {
+      // Display error message
       alert(err.message);
+    } finally {
+      // Reset loading state regardless of outcome
+      setAdding(false);
     }
-    setAdding(false);
   };
 
-  // Open delete confirmation modal
+  /**
+   * Opens the delete confirmation modal for a blood unit
+   * 
+   * @param {string} id - The ID of the blood unit to delete
+   */
   const openDeleteModal = (id) => {
-    setDeleteItemId(id);
-    setShowDeleteModal(true);
+    setDeleteItemId(id);     // Set the ID of unit to delete
+    setShowDeleteModal(true); // Show the confirmation modal
   };
 
-  // Close delete confirmation modal
+  /**
+   * Closes the delete confirmation modal and resets state
+   */
   const closeDeleteModal = () => {
-    setShowDeleteModal(false);
-    setDeleteItemId(null);
+    setShowDeleteModal(false); // Hide the confirmation modal
+    setDeleteItemId(null);    // Clear the ID of unit to delete
   };
 
-  // Delete blood from storage
+  /**
+   * Handles the deletion of a blood unit after confirmation
+   * Removes the unit from inventory through API
+   */
   const handleDeleteBloodUnit = async () => {
+    // Check if there is a valid unit ID to delete
     if (!deleteItemId) return;
 
     try {
+      // Get authentication token
       const token = localStorage.getItem("token");
+
+      // Send request to delete blood unit
       await fetch(`${API_BASE_URL}/bloodunit/${deleteItemId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
@@ -252,43 +382,59 @@ const BloodStorage = () => {
 
       // Close the modal after successful deletion
       closeDeleteModal();
+
+      // Refresh inventory data to remove deleted unit
       fetchInventory();
     } catch (err) {
+      // Display error message
       alert(t("bloodStorage.deleteError"));
     }
   };
 
-  // Add translations for blood components and operations
+  /**
+   * Gets the translated name for a blood component type
+   * 
+   * @param {string} componentType - The blood component type key
+   * @returns {string} Translated name of the component
+   */
   const getComponentTranslation = (componentType) => {
     switch (componentType) {
       case "WholeBlood":
-        return t("bloodStorage.wholeBlood");
+        return t("bloodStorage.wholeBlood"); // Whole blood
       case "Plasma":
-        return t("bloodStorage.plasma");
+        return t("bloodStorage.plasma");     // Blood plasma
       case "Platelets":
-        return t("bloodStorage.platelets");
+        return t("bloodStorage.platelets");  // Blood platelets
       case "RedCells":
-        return t("bloodStorage.redCells");
+        return t("bloodStorage.redCells");   // Red blood cells
       default:
-        return componentType;
+        return componentType;                // Return original if no translation
     }
   };
 
+  /**
+   * Gets the translated name for a blood source type
+   * 
+   * @param {string} sourceType - The source type key (donation/import)
+   * @returns {string} Translated name of the source type
+   */
   const getSourceTypeTranslation = (sourceType) => {
     switch (sourceType) {
       case "donation":
-        return t("bloodStorage.donation");
+        return t("bloodStorage.donation"); // From direct donation
       case "import":
-        return t("bloodStorage.import");
+        return t("bloodStorage.import");   // Manually imported
       default:
-        return sourceType;
+        return sourceType;                 // Return original if no translation
     }
   };
 
   return (
     <div className="blood-storage-container">
+      {/* Page Title */}
       <h1>{t("bloodStorage.centerTitle")}</h1>
 
+      {/* Error Message Display */}
       {error && (
         <div
           className="error-message"

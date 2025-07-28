@@ -1,3 +1,16 @@
+/**
+ * AssignBloodUnits Component
+ * 
+ * This component allows staff to assign blood units from inventory to a specific blood need request.
+ * It provides functionality for:
+ * - Viewing request details
+ * - Searching and filtering compatible blood units
+ * - Selecting multiple units for assignment
+ * - Setting an appointment date
+ * - Assigning selected units to fulfill the request
+ * - Finding nearby donors if inventory is insufficient
+ */
+
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
@@ -8,41 +21,58 @@ import "../../styles/tables.css";
 import "../../styles/blood-badges.css";
 import FindNear from "../Search/FindNear";
 
+/**
+ * AssignBloodUnits component for assigning blood units to a need request
+ * 
+ * @returns {JSX.Element} The rendered AssignBloodUnits component
+ */
 const AssignBloodUnits = () => {
-  const { t } = useTranslation();
-  const { requestId } = useParams();
-  const navigate = useNavigate();
+  const { t } = useTranslation();  // Translation hook
+  const { requestId } = useParams();  // Get request ID from URL parameters
+  const navigate = useNavigate();  // Navigation hook for redirecting
 
-  const [requestDetails, setRequestDetails] = useState(null);
-  const [availableBloodUnits, setAvailableBloodUnits] = useState([]);
-  const [selectedBloodUnits, setSelectedBloodUnits] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [assigning, setAssigning] = useState(false);
-  const [appointmentDate, setAppointmentDate] = useState("");
+  // Core state variables
+  const [requestDetails, setRequestDetails] = useState(null);  // Details of the blood need request
+  const [availableBloodUnits, setAvailableBloodUnits] = useState([]);  // Available blood units from inventory
+  const [selectedBloodUnits, setSelectedBloodUnits] = useState([]);  // Blood units selected for assignment
+  const [loading, setLoading] = useState(true);  // Loading state for API calls
+  const [error, setError] = useState(null);  // Error state for API calls
+  const [assigning, setAssigning] = useState(false);  // Loading state during assignment process
+  const [appointmentDate, setAppointmentDate] = useState("");  // Appointment date for blood pickup
 
-  // Filter states
-  const [filterBloodType, setFilterBloodType] = useState("all");
-  const [filterComponent, setFilterComponent] = useState("all");
-  const [sortBy, setSortBy] = useState("DateExpired");
-  const [sortOrder, setSortOrder] = useState("asc");
+  // Filter and sort states
+  const [filterBloodType, setFilterBloodType] = useState("all");  // Filter by blood type
+  const [filterComponent, setFilterComponent] = useState("all");  // Filter by component type
+  const [sortBy, setSortBy] = useState("DateExpired");  // Sort field (expiration date by default)
+  const [sortOrder, setSortOrder] = useState("asc");  // Sort order (ascending by default)
 
+  /**
+   * Effect hook to fetch request details when component mounts or requestId changes
+   */
   useEffect(() => {
     fetchRequestDetails();
   }, [requestId]);
 
-  // Fetch blood units only after request details are loaded
+  /**
+   * Effect hook to fetch available blood units after request details are loaded
+   * This ensures we have the blood type and component information before fetching
+   */
   useEffect(() => {
     if (requestDetails) {
       fetchAvailableBloodUnits();
     }
   }, [requestDetails]);
 
+  /**
+   * Fetches the details of the blood need request from the API
+   * First tries direct fetch by ID, then falls back to fetching all requests and filtering
+   */
   const fetchRequestDetails = async () => {
     try {
+      // Get authentication token
       const token = localStorage.getItem("token");
 
-      // First try to get the specific request directly
+      // First approach: Try to get the specific request directly by ID
       try {
         const singleResponse = await fetch(
           `${API_BASE_URL}/needrequest/${requestId}`,
@@ -51,6 +81,7 @@ const AssignBloodUnits = () => {
           }
         );
 
+        // If direct fetch succeeds, use the result
         if (singleResponse.ok) {
           const request = await singleResponse.json();
           console.log("Fetched single request details:", request);
@@ -58,45 +89,61 @@ const AssignBloodUnits = () => {
           return;
         }
       } catch (singleErr) {
+        // Log error and continue to fallback approach
         console.log(
           "Single request fetch failed, trying all requests:",
           singleErr
         );
       }
 
-      // Fallback to getting all requests and finding the one we need
+      // Fallback approach: Get all requests and find the one we need by ID
       const response = await fetch(`${API_BASE_URL}/needrequest/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      // Check if the request was successful
       if (!response.ok) throw new Error(t("needRequest.fetchError"));
 
+      // Parse the response data
       const requests = await response.json();
       console.log("Fetched all requests, count:", requests.length);
 
+      // Find the specific request by ID
       const request = requests.find((req) => req._id === requestId);
       if (!request) throw new Error(t("needRequest.requestNotFound"));
 
+      // Set the request details
       console.log("Found request details:", request);
       setRequestDetails(request);
     } catch (err) {
+      // Handle any errors in fetching
       console.error("Error fetching request details:", err);
       setError(err.message);
     }
   };
 
+  /**
+   * Fetches available blood units from inventory that match the request requirements
+   * Handles blood type normalization and compatibility checks
+   */
   const fetchAvailableBloodUnits = async () => {
+    // Skip if request details aren't loaded
     if (!requestDetails) return;
 
     try {
+      // Get authentication token
       const token = localStorage.getItem("token");
+
+      // Extract component type and blood group from request details
       const componentType = requestDetails.component;
       const bloodType = requestDetails.bloodGroup;
 
+      // Debug logging
       console.log("Request details:", requestDetails);
       console.log("Component Type:", componentType);
       console.log("Blood Type:", bloodType);
 
+      // Verify both required fields are present
       if (!componentType || !bloodType) {
         throw new Error("Request details missing component type or blood type");
       }
@@ -107,11 +154,11 @@ const AssignBloodUnits = () => {
       console.log("Blood type type:", typeof bloodType);
       console.log("Blood type length:", bloodType ? bloodType.length : 0);
       console.log(
-        "Blood type charcode analysis:",
+        "Blood type charcode analysis:",  // Check for invisible or special characters
         bloodType
           ? Array.from(bloodType)
-              .map((c) => `${c}:${c.charCodeAt(0)}`)
-              .join(", ")
+            .map((c) => `${c}:${c.charCodeAt(0)}`)
+            .join(", ")
           : "none"
       );
 
@@ -215,7 +262,7 @@ const AssignBloodUnits = () => {
           (type) =>
             type.toLowerCase() === bloodType.trim().toLowerCase() ||
             type.toLowerCase().replace(/[+-]/, "") ===
-              bloodType.trim().toLowerCase()
+            bloodType.trim().toLowerCase()
         );
 
         if (exactMatch) {
@@ -287,9 +334,8 @@ const AssignBloodUnits = () => {
               errorData.message || t("needRequest.fetchBloodUnitsError");
           }
         } catch (err) {
-          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${
-            err.message
-          }`;
+          errorMessage = `${t("needRequest.fetchBloodUnitsError")}: ${err.message
+            }`;
         }
 
         // FALLBACK: If API call fails, try to manually get all blood units and filter locally
@@ -795,7 +841,7 @@ const AssignBloodUnits = () => {
                           type="checkbox"
                           checked={isSelected}
                           disabled={isDisabled}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           onClick={(e) => e.stopPropagation()}
                         />
                       </td>
@@ -821,9 +867,8 @@ const AssignBloodUnits = () => {
                       </td>
                       <td>
                         <span
-                          className={`source-badge source-${
-                            unit.SourceType || "unknown"
-                          }`}
+                          className={`source-badge source-${unit.SourceType || "unknown"
+                            }`}
                         >
                           {unit.SourceType || "Unknown"}
                         </span>
