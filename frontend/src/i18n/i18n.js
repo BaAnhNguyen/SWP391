@@ -693,7 +693,15 @@ const resources = {
         detailInfo: "Detail Information",
         delete:"Delete",
         healthcheckAlert:"Appointment date not yet",
-        confirmDelete:"Are you sure to delete this request?"
+        confirmDelete:"Are you sure to delete this request?",
+        confirmedComponent:"Blood Component",
+        confirmedBloodGroup:"Blood Group",
+        bloodVolume:"Blood Volume",
+        markFailed:"Mark as Failed",
+        failedReason:"Fail Reason",
+        confirmFailed:"Confirm Failed",
+        markedFail:"Mark Failed",
+        errorFail:"Error Failed",
       },
 
       // Blood Components Compatibility
@@ -1421,7 +1429,7 @@ const resources = {
         cancellationReasonPlaceholder:
           "Vui lòng giải thích lý do hủy hiến máu này",
         followUpDate: "Ngày Hẹn Tái Khám",
-        confirmComplete: "Hoàn Thành Hiến Máu",
+        confirmComplete: "Hoàn Thành",
         confirmCancel: "Hủy Hiến Máu",
         followUpDateRequired: "Vui lòng chọn ngày hẹn tái khám",
         completedSuccessfully: "Hiến máu đã được hoàn tất thành công!",
@@ -1431,7 +1439,15 @@ const resources = {
         detailInfo: "Thông tin chi tiết",
         delete:"Xoá",
         healthcheckAlert:"Chưa tới ngày hẹn khám",
-        confirmDelete:"Bạn có chắc muốn xóa đơn này?"
+        confirmDelete:"Bạn có chắc muốn xóa đơn này?",
+        confirmedComponent:"Thành phần máu",
+        confirmedBloodGroup:"Nhóm máu",
+        bloodVolume:"Thể tích máu",
+        markFailed:"Không đạt",
+        failedReason:"Lý do không đạt",
+        confirmFailed:"Xác nhận không đạt",
+        markFail:"Đánh dấu không đạt",
+        errorFail:"Lỗi không đạt",
 
       },
       "donate.errors.positiveNumber": "Phải là số lớn hơn hoặc bằng 0",

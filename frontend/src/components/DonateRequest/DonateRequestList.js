@@ -282,7 +282,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
       handleCloseEditDateModal();
       fetchRequests();
       setDateSuccessMessage(
-        t("donateRequest.appointmentDateUpdated","Appointment date updated successfully!")
+        t(
+          "donateRequest.appointmentDateUpdated",
+          "Appointment date updated successfully!"
+        )
       );
       setShowDateSuccessModal(true);
     } catch (err) {
@@ -1157,7 +1160,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     )}
                   </div>
                   <div className="form-field">
-                    <label>Nhóm máu xác nhận</label>
+                    <label>{t("donateRequest.confirmedBloodGroup")}</label>
                     <select
                       name="confirmedBloodGroup"
                       value={healthCheckData.confirmedBloodGroup}
@@ -1169,7 +1172,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
                           : ""
                       }
                     >
-                      <option value="">Chọn nhóm máu</option>
                       <option value="A+">A+</option>
                       <option value="A-">A-</option>
                       <option value="B+">B+</option>
@@ -1186,7 +1188,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     )}
                   </div>
                   <div className="form-field">
-                    <label>Thành phần máu xác nhận</label>
+                    <label>{t("donateRequest.confirmedComponent")}</label>
                     <select
                       name="confirmedComponent"
                       value={healthCheckData.confirmedComponent}
@@ -1198,11 +1200,21 @@ const DonateRequestList = ({ userRole, refresh }) => {
                           : ""
                       }
                     >
-                      <option value="">Chọn thành phần</option>
-                      <option value="WholeBlood">Toàn phần</option>
-                      <option value="Plasma">Huyết tương</option>
-                      <option value="Platelets">Tiểu cầu</option>
-                      <option value="RedCells">Hồng cầu</option>
+                      <option value="WholeBlood">
+                        {t("common.component.wholeblood")}
+                      </option>
+                      <option value="Plasma">
+                        {t("common.component.plasma")}
+                      </option>
+                      <option value="Platelets">
+                        {t("common.component.platelets")}
+                      </option>
+                      <option value="RedCells">
+                        {t("common.component.redcells")}
+                      </option>
+                      <option value="RedCells">
+                        {t("common.component.unknown")}
+                      </option>
                     </select>
                     {healthErrors.confirmedComponent && (
                       <div className="field-error">
@@ -1223,10 +1235,13 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       min="1"
                       value={healthCheckData.quantity}
                       onChange={handleHealthCheckChange}
+                      className={
+                        healthErrors.quantity ? "field-error-border" : ""
+                      }
                     />
                   </div>
-                  <div className="form-field">
-                    <label>Thể tích máu (ml)</label>
+                  <div className="form-field quantity-field large-quantity">
+                    <label>{t("donateRequest.bloodVolume")} (ml)</label>
                     <input
                       type="number"
                       name="volume"
@@ -1234,6 +1249,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       value={healthCheckData.volume}
                       onChange={handleHealthCheckChange}
                       required
+                      className={
+                        healthErrors.volume ? "field-error-border" : ""
+                      }
                     />
                   </div>
                 </>
@@ -1257,8 +1275,20 @@ const DonateRequestList = ({ userRole, refresh }) => {
               <div className="form-actions">
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="cancell-button"
                   onClick={handleCloseHealthCheck}
+                  style={{
+                    backgroundColor: "#6c757d",
+                    marginRight: 8,
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "10px 16px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                    width: "170px",
+                  }}
                 >
                   {t("common.cancel")}
                 </button>
@@ -1267,17 +1297,38 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     <button
                       type="submit"
                       className="submit-button"
-                      style={{ backgroundColor: "#28a745" }}
+                      style={{
+                        backgroundColor: "#28a745",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "10px 16px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        textTransform: "uppercase",
+                        width: "170px",
+                      }}
                     >
                       {t("donateRequest.confirmComplete")}
                     </button>
                     <button
                       type="button"
                       className="submit-button"
-                      style={{ backgroundColor: "#dc3545", marginLeft: 8 }}
+                      style={{
+                        backgroundColor: "#dc3545",
+                        marginLeft: 8,
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "10px 16px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        textTransform: "uppercase",
+                        width: "170px",
+                      }}
                       onClick={() => setShowFailedModal(true)}
                     >
-                      Đánh dấu Failed
+                      {t("donateRequest.markFailed")}
                     </button>
                   </>
                 )}
@@ -1495,12 +1546,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
           }}
         >
           <div className="modal-content">
-            <h3>Lý do không đạt</h3>
+            <h3>{t("donateRequest.failedReason")}</h3>
             <textarea
-              placeholder="Nhập lý do người hiến không đủ điều kiện"
               value={failedReason}
               onChange={(e) => setFailedReason(e.target.value)}
               rows={4}
+              className="large-textarea"
               style={{ width: "100%", marginTop: 12 }}
             />
             <div
@@ -1516,14 +1567,18 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   setFailedReason("");
                 }}
                 style={{
-                  background: "#ccc",
-                  marginRight: 8,
-                  padding: "6px 16px",
-                  borderRadius: 4,
+                  backgroundColor: "#6c757d",
+                  color: "white",
                   border: "none",
+                  borderRadius: "8px",
+                  padding: "10px 16px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  textTransform: "uppercase",
+                  marginRight: 8,
                 }}
               >
-                Hủy
+                {t("common.cancel")}
               </button>
               <button
                 onClick={async () => {
@@ -1575,12 +1630,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
                     if (!res.ok) {
                       const error = await res.json();
-                      throw new Error(error.message || "Lỗi đánh dấu Failed");
+                      throw new Error(error.message || t("donateRequest.errorFail"));
                     }
 
                     setShowFailedModal(false);
                     setFailedReason("");
-                    setSuccessMessage("Đã đánh dấu Failed");
+                    setSuccessMessage(t("donateRequest.markedFail"));
                     setShowSuccessModal(true);
                     handleCloseHealthCheck();
                   } catch (err) {
@@ -1588,14 +1643,18 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   }
                 }}
                 style={{
-                  background: "#dc3545",
+                  backgroundColor: "#dc3545",
                   color: "white",
-                  padding: "6px 16px",
-                  borderRadius: 4,
                   border: "none",
+                  borderRadius: "8px",
+                  padding: "10px 16px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  textTransform: "uppercase",
+                  width: "170px",
                 }}
               >
-                Xác nhận Failed
+                {t("donateRequest.confirmFailed")}
               </button>
             </div>
           </div>
@@ -1646,7 +1705,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 marginBottom: "15px",
               }}
             >
-              <h3 style={{ margin: 0 }}>{t("donateRequest.success")}</h3>
+              <h3 style={{ margin: 0 }}>{t("common.notify")}</h3>
               <button
                 className="close-button"
                 onClick={handleCloseSuccessModal}
