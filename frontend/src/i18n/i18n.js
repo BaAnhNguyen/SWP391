@@ -543,6 +543,7 @@ const resources = {
         phone: "Phone",
         distance: "Distance",
         alertDate:"Appointment date not yet",
+        notify:"Notification",
       },
 
       // Blood Storage
@@ -691,6 +692,8 @@ const resources = {
           "The selected blood group does not match your profile",
         detailInfo: "Detail Information",
         delete:"Delete",
+        healthcheckAlert:"Appointment date not yet",
+        confirmDelete:"Are you sure to delete this request?"
       },
 
       // Blood Components Compatibility
@@ -1297,6 +1300,7 @@ const resources = {
         phone: "Điện thoại",
         distance: "Khoảng cách",
         alertDate:"Chưa tới ngày hẹn khám",
+        notify:"Thông báo",
       },
 
       // Blood Storage
@@ -1426,6 +1430,9 @@ const resources = {
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
         delete:"Xoá",
+        healthcheckAlert:"Chưa tới ngày hẹn khám",
+        confirmDelete:"Bạn có chắc muốn xóa đơn này?"
+
       },
       "donate.errors.positiveNumber": "Phải là số lớn hơn hoặc bằng 0",
       "donate.errors.formatBloodPressure": "Phải đúng kiểu Số/Số",

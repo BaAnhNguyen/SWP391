@@ -25,6 +25,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [healthCheckRequest, setHealthCheckRequest] = useState(null);
   const [showDateAlert, setShowDateAlert] = useState(false);
   const [dateAlertMessage, setDateAlertMessage] = useState("");
+  const [showDateSuccessModal, setShowDateSuccessModal] = useState(false);
+  const [dateSuccessMessage, setDateSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState("complete");
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -175,6 +177,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
     setDateAlertMessage("");
   };
 
+  const handleCloseDateSuccessModal = () => {
+    setShowDateSuccessModal(false);
+    setDateSuccessMessage("");
+  };
+
   const handleOpenRejectionModal = (requestId) => {
     setRejectionData({
       requestId: requestId,
@@ -274,12 +281,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
       }
       handleCloseEditDateModal();
       fetchRequests();
-      alert(
-        t(
-          "donateRequest.appointmentDateUpdated",
-          "Appointment date updated successfully!"
-        )
+      setDateSuccessMessage(
+        t("donateRequest.appointmentDateUpdated","Appointment date updated successfully!")
       );
+      setShowDateSuccessModal(true);
     } catch (err) {
       setEditDateError(err.message);
     }
@@ -1420,7 +1425,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 alignItems: "center",
               }}
             >
-              <h3 style={{ margin: 0 }}>Delete</h3>
+              <h3 style={{ margin: 0 }}>{t("common.delete")}</h3>
               <button
                 className="close-button"
                 onClick={handleCloseDeleteModal}
@@ -1708,7 +1713,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 textAlign: "center",
               }}
             >
-              Thông báo
+              {t("common.notify")}
             </h3>
             <p
               style={{
@@ -1717,7 +1722,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 fontSize: "16px",
               }}
             >
-              {dateAlertMessage || "Chưa tới ngày khám"}
+              {dateAlertMessage || t("donateRquest.healthcheckAlert")}
             </p>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <button
@@ -1725,6 +1730,55 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 style={{
                   padding: "10px 20px",
                   backgroundColor: "#e74c3c",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Date Success Modal */}
+      {showDateSuccessModal && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.className === "modal-overlay") {
+              handleCloseDateSuccessModal();
+            }
+          }}
+        >
+          <div className="modal-content" style={{ maxWidth: "400px" }}>
+            <h3
+              style={{
+                color: "#28a745",
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              {t("common.notify")}
+            </h3>
+            <p
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+                fontSize: "16px",
+              }}
+            >
+              {dateSuccessMessage}
+            </p>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                onClick={handleCloseDateSuccessModal}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#28a745",
                   color: "white",
                   border: "none",
                   borderRadius: "4px",
