@@ -194,7 +194,7 @@
     margin-top: 16px;
 }
 
-.info-item {
+.assign-blood-units-container .info-item {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -207,13 +207,13 @@
 
 }
 
-.info-item:hover {
+.assign-blood-units-container .info-item:hover {
     background-color: #f8faff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
     transform: translateY(-2px);
 }
 
-.info-item label {
+.assign-blood-units-container .info-item label {
     font-weight: bold;
     font-size: 14px;
     color: #555;
@@ -221,7 +221,7 @@
     letter-spacing: 0.5px;
 }
 
-.info-item span {
+.assign-blood-units-container .info-item span {
     font-size: 16px;
     padding: 4px 0;
     color: #333;
@@ -584,13 +584,13 @@
     /* Changed to negative z-index to ensure it doesn't block inputs */
 }
 
-.form-group {
+.assign-blood-units-container .form-group {
     margin-bottom: 20px;
     position: relative;
     z-index: 4;
 }
 
-.form-group label {
+.assign-blood-units-container .form-group label {
     display: block;
     margin-bottom: 12px;
     font-weight: 600;
@@ -599,7 +599,8 @@
     position: relative;
 }
 
-.form-group label:after {
+/* Giới hạn phạm vi của label:after chỉ trong assign-blood-units-container */
+.assign-blood-units-container .form-group label:after {
     content: '';
     position: absolute;
     bottom: -4px;
@@ -609,7 +610,7 @@
     background-color: rgba(25, 118, 210, 0.5);
 }
 
-.form-group input[type="datetime-local"] {
+.assign-blood-units-container .form-group input[type="datetime-local"] {
     width: 100%;
     max-width: 350px;
     padding: 14px 18px;
@@ -625,7 +626,7 @@
     /* Higher z-index to ensure it's clickable */
 }
 
-.form-group input[type="datetime-local"]:focus {
+.assign-blood-units-container .form-group input[type="datetime-local"]:focus {
     outline: none;
     border-color: #1976d2;
     box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15), 0 8px 15px rgba(0, 0, 0, 0.05);

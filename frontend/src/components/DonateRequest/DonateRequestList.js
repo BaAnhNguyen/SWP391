@@ -886,7 +886,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         );
                         handleOpenDeleteModal(request._id);
                       }}
-                      className="delete-button"
+                      className="donate-delete-button"
                     >
                       {t("donateRequest.delete")}
                     </button>
@@ -1434,7 +1434,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 CANCEL
               </button>
               <button
-                className="delete-button"
+                className="donate-delete-button"
                 onClick={handleDelete}
                 style={{
                   padding: "8px 24px",

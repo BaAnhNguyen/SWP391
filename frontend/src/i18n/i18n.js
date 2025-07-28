@@ -688,6 +688,7 @@ const resources = {
         bloodGroupMismatch:
           "The selected blood group does not match your profile",
         detailInfo: "Detail Information",
+        delete:"Delete",
       },
 
       // Blood Components Compatibility
@@ -1420,6 +1421,7 @@ const resources = {
         bloodGroupError: "Nhóm máu không đúng",
         bloodGroupMismatch: "Nhóm máu được chọn không khớp với hồ sơ của bạn",
         detailInfo: "Thông tin chi tiết",
+        delete:"Xoá",
       },
       "donate.errors.positiveNumber": "Phải là số lớn hơn hoặc bằng 0",
       "donate.errors.formatBloodPressure": "Phải đúng kiểu Số/Số",

@@ -1309,19 +1309,58 @@
 }
 
 .field-error-border {
-  border: 2px solid #e74c3c !important;
-  background: #fff5f5 !important;
-  box-shadow: 0 0 0 1px #e74c3c22;
+    border: 2px solid #e74c3c !important;
+    background: #fff5f5 !important;
+    box-shadow: 0 0 0 1px #e74c3c22;
 }
+
 .field-error {
-  color: #e74c3c;
-  font-size: 0.96rem;
-  margin-top: 3px;
-  margin-bottom: 3px;
-  min-height: 18px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  animation: fadeIn 0.2s;
+    color: #e74c3c;
+    font-size: 0.96rem;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    min-height: 18px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    animation: fadeIn 0.2s;
+}
+
+/* Custom Delete Button for DonateRequestList */
+.donate-delete-button {
+    background-color: #e74c3c;
+    /* Keep the original red color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    /* Match the rounded corners */
+    padding: 8px 12px;
+    /* Match the padding of other buttons */
+    font-size: 0.9rem;
+    /* Match the font size */
+    font-weight: 500;
+    /* Match the font weight */
+    text-transform: uppercase;
+    /* For all-caps text like other buttons */
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    /* Ensure minimum width similar to other buttons */
+    letter-spacing: 0.5px;
+    /* Match letter spacing if any */
+}
+
+.donate-delete-button:hover {
+    background-color: #c0392b;
+    /* Darker red on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.donate-delete-button:active {
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 /* Action divider styling */
@@ -1348,7 +1387,7 @@
 .approve-button:disabled,
 .reject-button:disabled,
 .complete-button:disabled,
-.delete-button:disabled {
+.donate-delete-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
@@ -1357,7 +1396,7 @@
 .approve-button:disabled:hover,
 .reject-button:disabled:hover,
 .complete-button:disabled:hover,
-.delete-button:disabled:hover {
+.donate-delete-button:disabled:hover {
     transform: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -1366,7 +1405,7 @@
 .approve-button:focus,
 .reject-button:focus,
 .complete-button:focus,
-.delete-button:focus,
+.donate-delete-button:focus,
 .history-button:focus,
 .detail-button:focus,
 .edit-date-button:focus {
@@ -1394,6 +1433,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -1415,6 +1455,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1485,7 +1526,7 @@
     border-left: 4px solid #e74c3c;
 }
 
-.modal-overlay .modal-content > div {
+.modal-overlay .modal-content>div {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
@@ -1541,16 +1582,16 @@
         padding: 1.5rem;
         margin: 1rem;
     }
-    
+
     .modal-overlay .modal-content h3 {
         font-size: 1.3rem;
     }
-    
-    .modal-overlay .modal-content > div {
+
+    .modal-overlay .modal-content>div {
         flex-direction: column;
         gap: 0.8rem;
     }
-    
+
     .modal-overlay .modal-content button {
         width: 100%;
         padding: 1rem;
