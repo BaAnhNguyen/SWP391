@@ -39,6 +39,7 @@ const AssignBloodUnits = () => {
   const [error, setError] = useState(null);  // Error state for API calls
   const [assigning, setAssigning] = useState(false);  // Loading state during assignment process
   const [appointmentDate, setAppointmentDate] = useState("");  // Appointment date for blood pickup
+  const [showSuccessModal, setShowSuccessModal] = useState(false);  // Success modal visibility
 
   // Filter and sort states
   const [filterBloodType, setFilterBloodType] = useState("all");  // Filter by blood type
@@ -497,7 +498,7 @@ const AssignBloodUnits = () => {
 
   const handleAssignBloodUnits = async () => {
     if (!appointmentDate) {
-      alert("Please select an appointment date");
+      alert(t("needRequest.selectAppointmentDate", "Please select an appointment date"));
       return;
     }
 
@@ -525,9 +526,9 @@ const AssignBloodUnits = () => {
         throw new Error(errorData.message || "Failed to assign blood units");
       }
 
-      alert("Blood units assigned successfully!");
-      // Add a timestamp as a query parameter to force the page to refresh
-      navigate(`/staff/need-requests?refresh=${Date.now()}`);
+      // Show success modal instead of alert
+      setShowSuccessModal(true);
+      // Will navigate after modal is closed
     } catch (err) {
       setError(err.message);
     } finally {
@@ -930,6 +931,26 @@ const AssignBloodUnits = () => {
           </button>
         </div>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="success-modal-overlay">
+          <div className="success-modal-content">
+            <span className="success-modal-icon">✅</span>
+            <h3>{t("needRequest.assignSuccessTitle", "Blood units assigned successfully!")}</h3>
+            <button
+              className="success-button"
+              onClick={() => {
+                setShowSuccessModal(false);
+                // Navigate after closing the modal
+                navigate(`/staff/need-requests?refresh=${Date.now()}`);
+              }}
+            >
+              {t("common.ok", "OK")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

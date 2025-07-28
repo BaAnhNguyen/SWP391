@@ -49,7 +49,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   const handleFindNearby = () => {
     // Check if geolocation is supported by the browser
     if (!navigator.geolocation) {
-      alert("Trình duyệt không hỗ trợ lấy vị trí!");
+      alert(t("donorInvite.browserLocationNotSupported", "Your browser doesn't support geolocation!"));
       return;
     }
 
@@ -86,7 +86,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
           setResult(result);
         } catch (err) {
           // Handle API errors
-          alert("Lỗi API: " + (err.message || "Không rõ nguyên nhân"));
+          alert(t("donorInvite.apiError", "API Error") + ": " + (err.message || t("common.unknownError", "Unknown error")));
           setResult([]);
         } finally {
           // End loading state
@@ -96,7 +96,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
       // Error callback for geolocation
       (error) => {
         setLoading(false);
-        alert("Không lấy được vị trí của bạn!");
+        alert(t("donorInvite.locationError", "Could not get your location!"));
       }
     );
   };

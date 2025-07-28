@@ -142,7 +142,7 @@ const NeedRequestPage = ({ user }) => {
         >
           {isStaff
             ? t("needRequest.nav.viewAllRequests")  // Staff see all requests
-            : t("needRequest.nav.viewMyRequests")}  // Members see only their requests
+            : t("needRequest.nav.viewMyRequests")}
         </button>
       </div>
 
