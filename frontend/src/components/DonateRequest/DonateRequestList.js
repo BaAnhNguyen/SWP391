@@ -23,6 +23,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
   // Health check state
   const [showHealthCheck, setShowHealthCheck] = useState(false);
   const [healthCheckRequest, setHealthCheckRequest] = useState(null);
+  const [showDateAlert, setShowDateAlert] = useState(false);
+  const [dateAlertMessage, setDateAlertMessage] = useState("");
   const [activeTab, setActiveTab] = useState("complete");
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -138,7 +140,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
     readyDate.setHours(0, 0, 0, 0);
 
     if (readyDate > today) {
-      alert(t("common.alertDate"));
+      setDateAlertMessage(t("common.alertDate"));
+      setShowDateAlert(true);
       return;
     }
     setHealthCheckRequest(request);
@@ -165,6 +168,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const handleCloseHealthCheck = () => {
     setShowHealthCheck(false);
     setHealthCheckRequest(null);
+  };
+
+  const handleCloseDateAlert = () => {
+    setShowDateAlert(false);
+    setDateAlertMessage("");
   };
 
   const handleOpenRejectionModal = (requestId) => {
@@ -266,7 +274,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
       }
       handleCloseEditDateModal();
       fetchRequests();
-      alert(t("donateRequest.appointmentDateUpdated", "Appointment date updated successfully!"));
+      alert(
+        t(
+          "donateRequest.appointmentDateUpdated",
+          "Appointment date updated successfully!"
+        )
+      );
     } catch (err) {
       setEditDateError(err.message);
     }
@@ -725,8 +738,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
           {filteredRequests.map((request) => (
             <div
               key={request._id}
-              className={`request-card ${expandedRequestId === request._id ? "expanded" : ""
-                }`}
+              className={`request-card ${
+                expandedRequestId === request._id ? "expanded" : ""
+              }`}
               onClick={() => toggleExpandRequest(request._id)}
             >
               <div className="request-header">
@@ -774,8 +788,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         <strong>Ngày sinh:</strong>{" "}
                         {request.userId.dateOfBirth
                           ? new Date(
-                            request.userId.dateOfBirth
-                          ).toLocaleDateString()
+                              request.userId.dateOfBirth
+                            ).toLocaleDateString()
                           : ""}
                       </div>
                       <div>
@@ -783,8 +797,8 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         {request.userId.gender === "male"
                           ? "Nam"
                           : request.userId.gender === "female"
-                            ? "Nữ"
-                            : request.userId.gender}
+                          ? "Nữ"
+                          : request.userId.gender}
                       </div>
                     </div>
                   )}
@@ -846,7 +860,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         e.stopPropagation();
                         handleOpenRejectionModal(request._id);
                       }}
-                      className="reject-button"
+                      className="rejectt-button"
                     >
                       {t("donateRequest.markRejected")}
                     </button>
@@ -870,7 +884,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
                         handleOpenEditDateModal(request);
                       }}
                     >
-                      {t("donateRequest.changeAppointmentDate", "Change Appointment Date")}
+                      {t(
+                        "donateRequest.changeAppointmentDate",
+                        "Change Appointment Date"
+                      )}
                     </button>
                   </div>
                 )}
@@ -901,16 +918,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   </button>
                   {(request.status === "Completed" ||
                     request.status === "Failed") && (
-                      <button
-                        className="detail-button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedId(request.historyId);
-                        }}
-                      >
-                        {t("donateRequest.detailInfo")}
-                      </button>
-                    )}
+                    <button
+                      className="detail-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedId(request.historyId);
+                      }}
+                    >
+                      {t("donateRequest.detailInfo")}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -993,15 +1010,17 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
             <div className="health-check-tabs">
               <button
-                className={`health-check-tab ${activeTab === "complete" ? "active" : ""
-                  }`}
+                className={`health-check-tab ${
+                  activeTab === "complete" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("complete")}
               >
                 {t("donateRequest.completeTab")}
               </button>
               <button
-                className={`health-check-tab ${activeTab === "cancel" ? "active" : ""
-                  }`}
+                className={`health-check-tab ${
+                  activeTab === "cancel" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("cancel")}
               >
                 {t("donateRequest.cancelTab")}
@@ -1324,9 +1343,16 @@ const DonateRequestList = ({ userRole, refresh }) => {
           }}
         >
           <div className="modal-content">
-            <h3>{t("donateRequest.changeBloodDonationAppointment", "Change Blood Donation Appointment")}</h3>
+            <h3>
+              {t(
+                "donateRequest.changeBloodDonationAppointment",
+                "Change Blood Donation Appointment"
+              )}
+            </h3>
             <form onSubmit={handleSubmitEditDate}>
-              <label>{t("donateRequest.newAppointmentDate", "New Appointment Date")}:</label>
+              <label>
+                {t("donateRequest.newAppointmentDate", "New Appointment Date")}:
+              </label>
               <input
                 type="date"
                 value={editReadyDate}
@@ -1497,7 +1523,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
               <button
                 onClick={async () => {
                   if (!failedReason.trim()) {
-                    alert(t("donateRequest.reasonRequired", "Please enter a reason"));
+                    alert(
+                      t("donateRequest.reasonRequired", "Please enter a reason")
+                    );
                     return;
                   }
 
@@ -1648,6 +1676,55 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 style={{
                   padding: "8px 24px",
                   background: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Date Alert Modal */}
+      {showDateAlert && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.className === "modal-overlay") {
+              handleCloseDateAlert();
+            }
+          }}
+        >
+          <div className="modal-content" style={{ maxWidth: "400px" }}>
+            <h3
+              style={{
+                color: "#e74c3c",
+                marginBottom: "20px",
+                textAlign: "center",
+              }}
+            >
+              Thông báo
+            </h3>
+            <p
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+                fontSize: "16px",
+              }}
+            >
+              {dateAlertMessage || "Chưa tới ngày khám"}
+            </p>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                onClick={handleCloseDateAlert}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#e74c3c",
                   color: "white",
                   border: "none",
                   borderRadius: "4px",

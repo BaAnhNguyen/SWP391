@@ -542,6 +542,7 @@ const resources = {
         address: "Address",
         phone: "Phone",
         distance: "Distance",
+        alertDate:"Appointment date not yet",
       },
 
       // Blood Storage
@@ -657,6 +658,7 @@ const resources = {
         markApproved: "Mark as Approved",
         markCompleted: "Mark as Completed",
         markCancelled: "Mark as Cancelled",
+        markRejected:"Mark as Rejected",
         rejectionModalTitle: "Reject Donation Request",
         rejectionReasonPlaceholder:
           "Please explain why this donation request is being rejected...",
@@ -1294,6 +1296,7 @@ const resources = {
         address: "Địa chỉ",
         phone: "Điện thoại",
         distance: "Khoảng cách",
+        alertDate:"Chưa tới ngày hẹn khám",
       },
 
       // Blood Storage
@@ -1391,6 +1394,7 @@ const resources = {
         markApproved: "Phê Duyệt",
         markCompleted: "Hoàn Thành",
         markCancelled: "Đánh Dấu Đã Hủy",
+        markRejected:"Từ Chối",
         rejectionModalTitle: "Từ Chối Yêu Cầu Hiến Máu",
         rejectionReasonPlaceholder:
           "Vui lòng giải thích lý do từ chối yêu cầu hiến máu này...",
