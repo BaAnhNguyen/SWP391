@@ -119,9 +119,6 @@ function HomePage() {
               >
                 {t("home.hero.donateButton")}
               </Link>
-              <Link to="/donation-process" className="btn btn-outline">
-                {t("home.hero.learnMore")}
-              </Link>
             </div>
           </div>
           <div className="hero-image">
