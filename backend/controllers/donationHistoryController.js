@@ -1,6 +1,7 @@
+// Controller lịch sử hiến máu - xem, thống kê lịch sử hiến máu
 const DonationHistory = require("../models/DonationHistory");
 
-// Lấy chi tiết 1 lần hiến máu theo id (dành cho cả member và staff)
+// Lấy chi tiết 1 lần hiến máu theo ID
 exports.getOne = async (req, res) => {
   try {
     const { id } = req.params;

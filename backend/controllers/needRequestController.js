@@ -1,3 +1,4 @@
+// Controller yêu cầu máu khẩn cấp - tạo, duyệt, phân phối, thống kê
 const NeedRequest = require("../models/NeedRequest");
 const BloodUnit = require("../models/BloodUnit");
 const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
@@ -10,7 +11,7 @@ const {
 } = require("../service/emailNeedRequest");
 const User = require("../models/User");
 
-//create
+// Tạo yêu cầu máu khẩn cấp
 exports.create = async (req, res) => {
   try {
     const { bloodGroup, component, units, reason } = req.body;

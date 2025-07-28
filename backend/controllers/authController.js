@@ -1,8 +1,9 @@
+// Controller xác thực - Google OAuth, lấy thông tin user hiện tại
 const User = require("../models/User");
 const generateToken = require("../utils/jwt");
 const bcrypt = require("bcryptjs");
 
-// Google callback (passport đã gắn req.user)
+// Callback xử lý đăng nhập Google (passport đã gắn req.user)
 exports.googleCallback = (req, res) => {
   try {
     const token = generateToken(req.user);
@@ -13,7 +14,7 @@ exports.googleCallback = (req, res) => {
   }
 };
 
-// Get current user information
+// Lấy thông tin user hiện tại đang đăng nhập
 exports.getCurrentUser = async (req, res) => {
   try {
     const user = req.user;

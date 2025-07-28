@@ -1,12 +1,15 @@
+/**
+ * Controller quản lý user - profile, admin operations, system config
+ */
 const User = require("../models/User");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const SystemConfig = require("../models/SystemConfig");
 
-//get current user profile
+// Lấy thông tin profile của user hiện tại
 exports.getMe = async (req, res) => {
   try {
-    // The user object is already attached by the auth middleware
+    // User đã được gắn vào req qua auth middleware
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -20,7 +23,7 @@ exports.getMe = async (req, res) => {
   }
 };
 
-//update
+// Cập nhật thông tin profile của user
 exports.updateMe = async (req, res) => {
   try {
     const {
@@ -34,7 +37,7 @@ exports.updateMe = async (req, res) => {
       location, // <-- thêm dòng này!
     } = req.body;
 
-    // Validate required fields
+    // Kiểm tra trường bắt buộc
     if (!name) {
       return res.status(400).json({
         success: false,
@@ -42,7 +45,7 @@ exports.updateMe = async (req, res) => {
       });
     }
 
-    // Validate blood group if provided
+    // Kiểm tra nhóm máu hợp lệ
     const validBloodGroups = [
       "A+",
       "A-",
@@ -68,6 +71,7 @@ exports.updateMe = async (req, res) => {
     if (gender) updates.gender = gender;
     if (address) updates.address = address;
 
+    // Xử lý tọa độ địa lý cho tìm kiếm donor gần
     if (
       location &&
       typeof location.lat === "number" &&
@@ -106,13 +110,13 @@ exports.updateMe = async (req, res) => {
   }
 };
 
-//admin  get all users
+// Admin lấy danh sách tất cả users
 exports.getAll = async (req, res) => {
   const users = await User.find();
   res.json(users);
 };
 
-//admin update
+// Admin cập nhật role của user
 exports.updateRole = async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
@@ -123,13 +127,13 @@ exports.updateRole = async (req, res) => {
   res.json(user);
 };
 
-//admin delete
+// Admin xóa user
 exports.delete = async (req, res) => {
   const { id } = req.params;
   if (await User.findByIdAndDelete(id)) res.json({ message: "User deleted" });
 };
 
-//admin ban
+// Admin cấm user
 exports.banUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -149,7 +153,7 @@ exports.banUser = async (req, res) => {
   }
 };
 
-//admin unban
+// Admin bỏ cấm user
 exports.unbanUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -168,7 +172,7 @@ exports.unbanUser = async (req, res) => {
   }
 };
 
-//admin on/off blood alert
+// Admin bật/tắt cảnh báo khẩn cấp thiếu máu
 exports.toggleEmergencyAlert = async (req, res) => {
   try {
     const config = await SystemConfig.findOneAndUpdate(
@@ -183,6 +187,7 @@ exports.toggleEmergencyAlert = async (req, res) => {
   }
 };
 
+// Lấy trạng thái cảnh báo khẩn cấp thiếu máu
 exports.getEmergencyAlertStatus = async (req, res) => {
   try {
     const config = await SystemConfig.findOne({ key: "showEmergencyAlert" });

@@ -1,7 +1,8 @@
+// Controller quản lý blog - tạo, sửa, xóa, duyệt bài viết
 const Blog = require("../models/Blog");
 const cloudinary = require("cloudinary").v2;
 
-//create blog(admin: approved, member : pending)
+// Tạo blog mới (admin: approved, member: pending)
 exports.create = async (req, res) => {
   try {
     const { title, content } = req.body;
@@ -38,7 +39,7 @@ exports.create = async (req, res) => {
   }
 };
 
-//list my blog
+// Lấy danh sách blog của tôi
 exports.getMine = async (req, res) => {
   try {
     const posts = await Blog.find({ author: req.user._id }).sort({
@@ -50,7 +51,7 @@ exports.getMine = async (req, res) => {
   }
 };
 
-//list blog when approved at homepage
+// Lấy danh sách blog đã được duyệt hiển thị trang chủ
 exports.getBlog = async (req, res) => {
   try {
     const posts = await Blog.find({ status: "Approved" })
@@ -62,7 +63,7 @@ exports.getBlog = async (req, res) => {
   }
 };
 
-//admin watch blog (pending)
+// Admin xem blog chờ duyệt (pending)
 exports.getPending = async (req, res) => {
   try {
     const posts = await Blog.find({ status: "Pending" })
@@ -74,7 +75,7 @@ exports.getPending = async (req, res) => {
   }
 };
 
-//admin approved
+// Admin duyệt blog
 exports.approve = async (req, res) => {
   try {
     const post = await Blog.findByIdAndUpdate(req.params.id, {
@@ -86,7 +87,7 @@ exports.approve = async (req, res) => {
   }
 };
 
-//admin deny
+// Admin từ chối blog
 exports.reject = async (req, res) => {
   try {
     const { adminNote } = req.body;
@@ -100,7 +101,7 @@ exports.reject = async (req, res) => {
   }
 };
 
-//update blog (member before approved)
+// Cập nhật blog (member trước khi được duyệt)
 exports.update = async (req, res) => {
   try {
     const { title, content } = req.body;
@@ -155,7 +156,7 @@ exports.update = async (req, res) => {
   }
 };
 
-//delete
+// Xóa blog
 exports.delete = async (req, res) => {
   try {
     const post = await Blog.findById(req.params.id);
@@ -183,7 +184,7 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Lấy chi tiết 1 blog
+// Lấy chi tiết 1 blog theo ID
 exports.getBlogById = async (req, res) => {
   try {
     const post = await Blog.findById(req.params.id).populate(

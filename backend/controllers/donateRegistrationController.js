@@ -1,3 +1,4 @@
+// Controller đăng ký hiến máu - tạo, duyệt, từ chối đơn đăng ký
 const DonationRegistration = require("../models/DonationRegistration");
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
@@ -8,7 +9,7 @@ const {
 } = require("../service/emailService");
 const BloodUnit = require("../models/BloodUnit");
 
-//member create donation
+// Member tạo đơn đăng ký hiến máu
 exports.create = async (req, res) => {
   try {
     const { bloodGroup, component, readyDate, screening, confirmation } =
@@ -134,7 +135,7 @@ exports.create = async (req, res) => {
   }
 };
 
-//view donation(member)
+// Member xem đơn đăng ký của mình
 exports.listMine = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -148,7 +149,7 @@ exports.listMine = async (req, res) => {
   }
 };
 
-//view all donation (staff)
+// Staff xem tất cả đơn đăng ký
 exports.listAll = async (req, res) => {
   try {
     // Trả về tất cả thông tin và populate user
@@ -163,7 +164,7 @@ exports.listAll = async (req, res) => {
   }
 };
 
-//delete (member delete when status = Pending, staff delete any reg)
+// Xóa đơn đăng ký (member xóa khi Pending, staff xóa bất kỳ)
 exports.delete = async (req, res) => {
   try {
     const { id } = req.params;
@@ -186,7 +187,8 @@ exports.delete = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-//update (reject/ approved)
+
+// Staff cập nhật trạng thái (duyệt/từ chối)
 exports.updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -237,6 +239,7 @@ exports.updateStatus = async (req, res) => {
   }
 };
 
+// Staff hoàn thành quy trình hiến máu
 exports.complete = async (req, res) => {
   try {
     const { id } = req.params;
@@ -412,7 +415,7 @@ exports.complete = async (req, res) => {
   }
 };
 
-//update reg
+// Member cập nhật thông tin đăng ký
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -438,6 +441,7 @@ exports.update = async (req, res) => {
   }
 };
 
+// Staff xử lý khi khám sức khỏe không đạt
 exports.failedHealthCheck = async (req, res) => {
   try {
     const { id } = req.params;
@@ -511,7 +515,7 @@ exports.failedHealthCheck = async (req, res) => {
   }
 };
 
-//show noti about next eligible day
+// Lấy ngày đủ điều kiện hiến máu tiếp theo
 exports.getNextEligibleDate = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -539,6 +543,7 @@ exports.getNextEligibleDate = async (req, res) => {
   }
 };
 
+// Đếm số lượng đăng ký hiến máu hôm nay
 exports.countToday = async (req, res) => {
   const count = await countTodayInternal(req.user._id);
   return res.json({ count });

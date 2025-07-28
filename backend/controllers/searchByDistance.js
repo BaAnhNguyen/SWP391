@@ -1,7 +1,9 @@
+// Controller tìm kiếm donor theo khoảng cách địa lý
 const User = require("../models/User");
 const DonationHistory = require("../models/DonationHistory");
 const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 
+// Tìm kiếm donor theo khoảng cách và nhóm máu
 exports.searchByDistance = async (req, res) => {
   try {
     const { lng, lat, maxDistance, bloodRequest } = req.query;

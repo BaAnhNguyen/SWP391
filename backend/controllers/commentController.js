@@ -1,6 +1,7 @@
+// Controller quản lý comment - tạo, sửa, xóa comment/reply
 const Comment = require("../models/Comment");
 
-// Thêm comment hoặc reply comment
+// Tạo comment hoặc reply comment
 exports.createComment = async (req, res) => {
   try {
     const { postId, content, parent } = req.body;
@@ -17,7 +18,7 @@ exports.createComment = async (req, res) => {
   }
 };
 
-// Lấy tất cả comment (bao gồm reply) cho 1 bài viết
+// Lấy tất cả comment cho 1 bài viết
 exports.getComments = async (req, res) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
@@ -29,7 +30,7 @@ exports.getComments = async (req, res) => {
   }
 };
 
-// Sửa comment (chỉ author hoặc admin)
+// Sửa comment (chỉ tác giả hoặc admin)
 exports.updateComment = async (req, res) => {
   try {
     const { content } = req.body;
@@ -53,7 +54,7 @@ exports.updateComment = async (req, res) => {
   }
 };
 
-// Xóa comment (chỉ author hoặc admin)
+// Xóa comment (chỉ tác giả hoặc admin)
 exports.deleteComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);

@@ -1,8 +1,9 @@
+// Controller quản lý kho máu - thêm, cập nhật, xóa, tìm kiếm đơn vị máu
 const BloodUnit = require("../models/BloodUnit");
 const NeedRequest = require("../models/NeedRequest");
 const { getCompatibleBloodTypes } = require("../utils/bloodCompatibility");
 
-// Add a new blood unit to the inventory
+// Thêm đơn vị máu mới vào kho
 exports.addBloodUnit = async (req, res) => {
   try {
     const {
@@ -67,7 +68,7 @@ exports.addBloodUnit = async (req, res) => {
   }
 };
 
-// Get all blood units in the inventory
+// Lấy tất cả đơn vị máu trong kho
 exports.getAllBloodUnits = async (req, res) => {
   try {
     const bloodUnits = await BloodUnit.find().populate({
@@ -83,7 +84,7 @@ exports.getAllBloodUnits = async (req, res) => {
   }
 };
 
-// Update a blood unit by ID
+// Cập nhật đơn vị máu theo ID
 exports.updateBloodUnit = async (req, res) => {
   try {
     const { id } = req.params;
