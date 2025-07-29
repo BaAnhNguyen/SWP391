@@ -702,9 +702,11 @@ const resources = {
         bloodVolume: "Blood Volume",
         markFailed: "Mark as Failed",
         failedReason: "Fail Reason",
+        failedReasonPlaceholder:"Please explain the reason",
         confirmFailed: "Confirm Failed",
         markedFail: "Mark Failed",
         errorFail: "Error Failed",
+        approvedSuccessfully:"Donate request approve successfully!"
       },
 
       // Blood Components Compatibility
@@ -1451,9 +1453,11 @@ const resources = {
         bloodVolume: "Thể tích máu",
         markFailed: "Không đạt",
         failedReason: "Lý do không đạt",
+        failedReasonPlaceholder:"Vui lòng giải thích lý do",
         confirmFailed: "Xác nhận không đạt",
         markFail: "Đánh dấu không đạt",
         errorFail: "Lỗi không đạt",
+        approvedSuccessfully:"Đơn đã được duyệt!",
       },
       "donate.errors.positiveNumber": "Phải là số lớn hơn hoặc bằng 0",
       "donate.errors.formatBloodPressure": "Phải đúng kiểu Số/Số",

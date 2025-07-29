@@ -136,7 +136,7 @@
     margin-top: 2rem;
 }
 
-.back-button {
+.backk-button {
     background-color: #6c757d;
     color: white;
     border: none;
@@ -148,7 +148,7 @@
     transition: background-color 0.3s;
 }
 
-.back-button:hover {
+.backk-button:hover {
     background-color: #5a6268;
 }
 
@@ -168,8 +168,12 @@
 
 /* Adjust width for buttons in the multi-step form */
 .form-actions .submit-button,
-.form-actions .back-button {
-    width: 48%;
+.form-actions .backk-button {
+    width: 50%;
+    height: 50px;
+}
+.backk-button{
+    margin-top: 20px;
 }
 
 /* Debug info styling */
