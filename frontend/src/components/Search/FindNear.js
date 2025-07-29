@@ -1,6 +1,6 @@
 /**
  * FindNear Component
- * 
+ *
  * This component allows staff to find nearby eligible blood donors for a specific blood need request.
  * It provides functionality for:
  * - Finding donors based on geolocation and blood type compatibility
@@ -17,7 +17,7 @@ import "./FindNear.css";
 
 /**
  * FindNear component for finding nearby eligible blood donors
- * 
+ *
  * @param {Object} props - Component props
  * @param {string} props.needRequestId - ID of the blood need request
  * @param {string} props.excludedUserId - ID of user to exclude from results (usually request creator)
@@ -26,21 +26,25 @@ import "./FindNear.css";
  */
 function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   // Core hooks and state
-  const { t } = useTranslation();  // Translation hook
-  const [result, setResult] = useState([]);  // Search results of nearby donors
-  const [loading, setLoading] = useState(false);  // Loading state for search
-  const [sending, setSending] = useState({});  // Tracking which invites are being sent
-  const [showInvite, setShowInvite] = useState({});  // Controls which invite forms are shown
-  const [invitingAll, setInvitingAll] = useState(false);  // Loading state for batch invites
+  const { t } = useTranslation(); // Translation hook
+  const [result, setResult] = useState([]); // Search results of nearby donors
+  const [loading, setLoading] = useState(false); // Loading state for search
+  const [sending, setSending] = useState({}); // Tracking which invites are being sent
+  const [showInvite, setShowInvite] = useState({}); // Controls which invite forms are shown
+  const [invitingAll, setInvitingAll] = useState(false); // Loading state for batch invites
 
   // Modal states for inviting all donors
-  const [showInviteAllModal, setShowInviteAllModal] = useState(false);  // Confirmation modal visibility
+  const [showInviteAllModal, setShowInviteAllModal] = useState(false); // Confirmation modal visibility
   const [showInviteAllSuccessModal, setShowInviteAllSuccessModal] =
-    useState(false);  // Success modal visibility
+    useState(false); // Success modal visibility
   const [inviteAllResults, setInviteAllResults] = useState({
-    success: 0,  // Count of successful invites
-    error: 0,    // Count of failed invites
+    success: 0, // Count of successful invites
+    error: 0, // Count of failed invites
   });
+
+  // Individual invite success modal state
+  const [showInviteSuccessModal, setShowInviteSuccessModal] = useState(false);
+  const [invitedUserName, setInvitedUserName] = useState("");
 
   /**
    * Finds nearby blood donors based on current location and requested blood type
@@ -49,7 +53,12 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   const handleFindNearby = () => {
     // Check if geolocation is supported by the browser
     if (!navigator.geolocation) {
-      alert(t("donorInvite.browserLocationNotSupported", "Your browser doesn't support geolocation!"));
+      alert(
+        t(
+          "donorInvite.browserLocationNotSupported",
+          "Your browser doesn't support geolocation!"
+        )
+      );
       return;
     }
 
@@ -86,7 +95,11 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
           setResult(result);
         } catch (err) {
           // Handle API errors
-          alert(t("donorInvite.apiError", "API Error") + ": " + (err.message || t("common.unknownError", "Unknown error")));
+          alert(
+            t("donorInvite.apiError", "API Error") +
+              ": " +
+              (err.message || t("common.unknownError", "Unknown error"))
+          );
           setResult([]);
         } finally {
           // End loading state
@@ -103,7 +116,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
 
   /**
    * Sends an email invitation to a specific donor to donate blood for this request
-   * 
+   *
    * @param {Object} user - The donor user object to invite
    */
   const handleSendInvite = async (user) => {
@@ -119,7 +132,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          donorId: user._id,          // ID of donor to invite
+          donorId: user._id, // ID of donor to invite
           needRequestId: needRequestId, // ID of blood need request
         }),
       });
@@ -129,7 +142,10 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
 
       // Handle successful response
       if (response.ok) {
-        alert(t("donorInvite.inviteSuccess"));
+        // Store the invited user's name for display in success modal
+        setInvitedUserName(user.name);
+        // Show success modal instead of alert
+        setShowInviteSuccessModal(true);
         // Hide the invite form after successful invitation
         setShowInvite((prev) => ({ ...prev, [user._id]: false }));
       } else {
@@ -212,7 +228,16 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   // Closes the success modal shown after batch invitations are sent
   const closeInviteAllSuccessModal = () => {
     setShowInviteAllSuccessModal(false);
-    setInviteAllResults({ success: 0, error: 0 });  // Reset results
+    setInviteAllResults({ success: 0, error: 0 }); // Reset results
+<<<<<<< HEAD
+  };
+
+  // Closes the individual invite success modal
+  const closeInviteSuccessModal = () => {
+    setShowInviteSuccessModal(false);
+    setInvitedUserName("");  // Reset invited user name
+=======
+>>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
   };
 
   /**
@@ -220,8 +245,8 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
    * Closes the confirmation modal and starts sending invitations
    */
   const confirmInviteAll = () => {
-    closeInviteAllModal();  // Close confirmation modal
-    handleInviteAll();      // Start sending invitations
+    closeInviteAllModal(); // Close confirmation modal
+    handleInviteAll(); // Start sending invitations
   };
 
   /**
@@ -229,8 +254,8 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
    * This prevents staff from inviting the person who already needs blood
    */
   const filteredResult = excludedUserId
-    ? result.filter((user) => user._id !== excludedUserId)  // Remove excluded user (typically request creator)
-    : result;  // Use all results if no exclusion
+    ? result.filter((user) => user._id !== excludedUserId) // Remove excluded user (typically request creator)
+    : result; // Use all results if no exclusion
 
   return (
     <div className="find-near-container">
@@ -238,7 +263,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
       <button
         className="find-donor-btn"
         onClick={handleFindNearby}
-        disabled={loading}  // Disable while searching
+        disabled={loading} // Disable while searching
       >
         {loading ? t("donorInvite.searching") : t("donorInvite.nearbyDonors")}
       </button>
@@ -255,8 +280,16 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
               disabled={invitingAll || filteredResult.length === 0} // Disabled during sending or if no results
             >
               {invitingAll
+<<<<<<< HEAD
+<<<<<<< HEAD
                 ? t("donorInvite.sending")  // Show sending text while in progress
-                : t("donorInvite.inviteAll")} // Normal text when ready to send
+=======
+                ? t("donorInvite.sending") // Show sending text while in progress
+>>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+=======
+                ? t("donorInvite.sending") // Show sending text while in progress
+>>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+                : t("donorInvite.inviteAll")}
             </button>
           </div>
           {/* Donor results listing */}
@@ -302,7 +335,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
                     onClick={() =>
                       setShowInvite((prev) => ({
                         ...prev,
-                        [user._id]: true,  // Show invite options for this donor
+                        [user._id]: true, // Show invite options for this donor
                       }))
                     }
                   >
@@ -318,8 +351,17 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
                       disabled={sending[user._id]} // Disable during API call
                     >
                       {sending[user._id]
+<<<<<<< HEAD
+                        ? t("donorInvite.sending")
+                        : t("donorInvite.sendInvite")}
+=======
                         ? t("donorInvite.sending") // Show loading state
-                        : t("donorInvite.sendInvite")} // Normal state
+                        : t("donorInvite.sendInvite")}{" "}
+                      // Normal state
+<<<<<<< HEAD
+>>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+=======
+>>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
                     </button>
                     {/* Cancel button to hide invite options */}
                     <button
@@ -437,6 +479,47 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
               <button
                 type="button"
                 onClick={closeInviteAllSuccessModal}
+                className="invite-success-btn"
+              >
+                {t("common.ok")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Individual Invite Success Modal - Shows after successfully inviting a single donor */}
+      {showInviteSuccessModal && (
+        <div
+          className="invite-modal-overlay"
+          onClick={closeInviteSuccessModal} // Close modal when clicking outside
+        >
+          <div
+            className="invite-modal-content invite-success-modal"
+            onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
+          >
+            {/* Modal title */}
+            <h3>{t("donorInvite.inviteSuccessTitle", "Invitation Sent!")}</h3>
+            <div className="invite-modal-body">
+              <div className="invite-success-info">
+                {/* Success icon */}
+                <div className="invite-success-icon">✅</div>
+                {/* Success message with donor name */}
+                <div className="invite-results-summary">
+                  <p>
+                    {t("donorInvite.inviteSuccessMessage", {
+                      name: invitedUserName,
+                      defaultValue: `Invitation sent successfully to ${invitedUserName}.`
+                    })}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Action button to close the modal */}
+            <div className="invite-modal-actions">
+              <button
+                type="button"
+                onClick={closeInviteSuccessModal}
                 className="invite-success-btn"
               >
                 {t("common.ok")}

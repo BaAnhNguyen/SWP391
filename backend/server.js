@@ -183,7 +183,15 @@ app.use("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
+/**
+ * SERVER CONFIGURATION & DATABASE CONNECTION
+ * Cấu hình server và kết nối database
+ */
+
+// Lấy PORT từ environment variable hoặc sử dụng default 5000
 const PORT = process.env.PORT || 5000;
+
+// Lấy MongoDB URI từ environment variable hoặc sử dụng local database
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/swp391";
 
 /**

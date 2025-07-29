@@ -589,6 +589,7 @@ const resources = {
       "bloodStorage.note": "Note",
       "bloodStorage.processing": "Processing...",
       "bloodStorage.addToInventory": "Add to Storage",
+      "bloodStorage.collectionDate": "Collection Date",
       "bloodStorage.inventoryHistory": "Blood Inventory History",
       "bloodStorage.fromDate": "From Date",
       "bloodStorage.toDate": "To Date",
@@ -778,6 +779,8 @@ const resources = {
         searching: "Searching...",
         cancel: "Cancel",
         inviteSuccess: "Invitation sent successfully!",
+        inviteSuccessTitle: "Invitation Sent!",
+        inviteSuccessMessage: "Invitation sent successfully to {{name}}.",
         inviteAllSuccess: "All invitations sent successfully!",
         inviteError: "Error sending invitation",
         confirmInviteAll:
