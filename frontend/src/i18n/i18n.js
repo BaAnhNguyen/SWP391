@@ -1546,6 +1546,8 @@ const resources = {
         searching: "Đang tìm...",
         cancel: "Hủy",
         inviteSuccess: "Đã gửi lời mời thành công!",
+        inviteSuccessTitle: "Đã gửi lời mời!",
+        inviteSuccessMessage: "Đã gửi lời mời thành công đến {{name}}.",
         inviteAllSuccess: "Đã gửi lời mời cho tất cả thành công!",
         inviteError: "Lỗi khi gửi lời mời",
         confirmInviteAll:
