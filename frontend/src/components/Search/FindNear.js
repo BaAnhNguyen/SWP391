@@ -97,8 +97,8 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
           // Handle API errors
           alert(
             t("donorInvite.apiError", "API Error") +
-              ": " +
-              (err.message || t("common.unknownError", "Unknown error"))
+            ": " +
+            (err.message || t("common.unknownError", "Unknown error"))
           );
           setResult([]);
         } finally {
@@ -228,16 +228,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
   // Closes the success modal shown after batch invitations are sent
   const closeInviteAllSuccessModal = () => {
     setShowInviteAllSuccessModal(false);
-    setInviteAllResults({ success: 0, error: 0 }); // Reset results
-<<<<<<< HEAD
-  };
-
-  // Closes the individual invite success modal
-  const closeInviteSuccessModal = () => {
-    setShowInviteSuccessModal(false);
-    setInvitedUserName("");  // Reset invited user name
-=======
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+    setInviteAllResults({ success: 0, error: 0 });  // Reset results
   };
 
   /**
@@ -280,16 +271,8 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
               disabled={invitingAll || filteredResult.length === 0} // Disabled during sending or if no results
             >
               {invitingAll
-<<<<<<< HEAD
-<<<<<<< HEAD
                 ? t("donorInvite.sending")  // Show sending text while in progress
-=======
-                ? t("donorInvite.sending") // Show sending text while in progress
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
-=======
-                ? t("donorInvite.sending") // Show sending text while in progress
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
-                : t("donorInvite.inviteAll")}
+                : t("donorInvite.inviteAll")} // Normal text when ready to send
             </button>
           </div>
           {/* Donor results listing */}
@@ -356,12 +339,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
                         : t("donorInvite.sendInvite")}
 =======
                         ? t("donorInvite.sending") // Show loading state
-                        : t("donorInvite.sendInvite")}{" "}
-                      // Normal state
-<<<<<<< HEAD
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
-=======
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+                        : t("donorInvite.sendInvite")} // Normal state
                     </button>
                     {/* Cancel button to hide invite options */}
                     <button

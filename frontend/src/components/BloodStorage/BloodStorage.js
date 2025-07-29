@@ -788,14 +788,7 @@ const BloodStorage = () => {
                       <button
                         key={i + 1}
                         onClick={() => paginate(i + 1)}
-<<<<<<< HEAD
-                        className={`pagination-button ${currentPage === i + 1 ? "active" : ""
-                          }`}
-=======
-                        className={`pagination-button ${
-                          currentPage === i + 1 ? "active" : ""
-                        }`}
->>>>>>> aa7ca4b3ef0fe7cffa2fe87d6807f35e3bc4eb5a
+                        className={`pagination-button ${currentPage === i + 1 ? 'active' : ''}`}
                       >
                         {i + 1}
                       </button>
