@@ -158,10 +158,13 @@ const BloodStorage = () => {
 
   // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
-    bloodType: "A+", // Default blood type
-    volume: 450, // Default volume (450ml is standard for whole blood donation)
-    sourceType: "Donation", // Default source type
-    collectionDate: new Date().toISOString().split("T")[0], // Default collection date (today)
+    BloodType: "A+", // Default blood type
+    ComponentType: "WholeBlood", // Default component type
+    Quantity: 1, // Default quantity
+    Volume: 450, // Default volume (450ml is standard for whole blood donation)
+    SourceType: "import", // Default source type (marked as manually imported)
+    DateAdded: new Date().toISOString().split("T")[0], // Default collection date (today)
+    note: "", // Default note (empty)
   });
   const [adding, setAdding] = useState(false); // Loading state for adding blood unit
 
@@ -308,6 +311,16 @@ const BloodStorage = () => {
       // Get authentication token
       const token = localStorage.getItem("token");
 
+      // Prepare data for API submission
+      const bloodUnitData = {
+        ...newUnit,
+        Quantity: Number(newUnit.Quantity), // Ensure quantity is a number
+        Volume: Number(newUnit.Volume), // Ensure volume is a number
+        SourceType: "import", // Mark as manually imported
+      };
+
+      console.log("Submitting blood unit:", bloodUnitData); // Debug log
+
       // Send request to create new blood unit
       const res = await fetch(`${API_BASE_URL}/bloodunit`, {
         method: "POST",
@@ -315,12 +328,7 @@ const BloodStorage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...newUnit,
-          Quantity: Number(newUnit.Quantity), // Ensure quantity is a number
-          Volume: Number(newUnit.Volume), // Ensure volume is a number
-          SourceType: "import", // Mark as manually imported
-        }),
+        body: JSON.stringify(bloodUnitData),
       });
 
       // Handle unsuccessful response
@@ -328,10 +336,13 @@ const BloodStorage = () => {
 
       // Reset form to default values on success
       setNewUnit({
-        bloodType: "A+",
-        volume: 450,
-        sourceType: "Donation",
-        collectionDate: new Date().toISOString().split("T")[0],
+        BloodType: "A+",
+        ComponentType: "WholeBlood",
+        Quantity: 1,
+        Volume: 450,
+        SourceType: "import",
+        DateAdded: new Date().toISOString().split("T")[0],
+        note: "",
       });
 
       // Reload inventory data to include the new unit
