@@ -589,6 +589,7 @@ const resources = {
       "bloodStorage.note": "Note",
       "bloodStorage.processing": "Processing...",
       "bloodStorage.addToInventory": "Add to Storage",
+      "bloodStorage.collectionDate": "Collection Date",
       "bloodStorage.inventoryHistory": "Blood Inventory History",
       "bloodStorage.fromDate": "From Date",
       "bloodStorage.toDate": "To Date",
@@ -780,6 +781,8 @@ const resources = {
         searching: "Searching...",
         cancel: "Cancel",
         inviteSuccess: "Invitation sent successfully!",
+        inviteSuccessTitle: "Invitation Sent!",
+        inviteSuccessMessage: "Invitation sent successfully to {{name}}.",
         inviteAllSuccess: "All invitations sent successfully!",
         inviteError: "Error sending invitation",
         confirmInviteAll:
@@ -1547,6 +1550,8 @@ const resources = {
         searching: "Đang tìm...",
         cancel: "Hủy",
         inviteSuccess: "Đã gửi lời mời thành công!",
+        inviteSuccessTitle: "Đã gửi lời mời!",
+        inviteSuccessMessage: "Đã gửi lời mời thành công đến {{name}}.",
         inviteAllSuccess: "Đã gửi lời mời cho tất cả thành công!",
         inviteError: "Lỗi khi gửi lời mời",
         confirmInviteAll:

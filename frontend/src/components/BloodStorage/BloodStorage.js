@@ -1,6 +1,6 @@
 /**
  * BloodStorage Component
- * 
+ *
  * This component is responsible for displaying and managing the blood storage inventory.
  * It provides functionality for:
  * - Viewing blood inventory summary by blood type and component
@@ -27,7 +27,7 @@ const bloodTypes = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
 /**
  * Formats a date string to locale date format
- * 
+ *
  * @param {string} dateString - ISO date string to format
  * @returns {string} Formatted date string in user's locale format
  */
@@ -38,7 +38,7 @@ function formatDate(dateString) {
 
 /**
  * Calculates the number of days until a blood unit expires
- * 
+ *
  * @param {string} expirationDate - ISO date string of expiration date
  * @returns {number} Number of days until expiration (negative if already expired)
  */
@@ -52,18 +52,18 @@ function getDaysUntilExpiration(expirationDate) {
 
 /**
  * Gets the CSS class name for a blood inventory status
- * 
+ *
  * @param {string} status - Status of blood inventory ('sufficient', 'medium', 'critical')
  * @returns {string} CSS class name for styling the status
  */
 function getStatusClass(status) {
   switch (status) {
     case "sufficient":
-      return "status-sufficient";  // Green - Good supply
+      return "status-sufficient"; // Green - Good supply
     case "medium":
-      return "status-medium";      // Orange - Medium supply
+      return "status-medium"; // Orange - Medium supply
     case "critical":
-      return "status-critical";    // Red - Critical/Low supply
+      return "status-critical"; // Red - Critical/Low supply
     default:
       return "";
   }
@@ -73,7 +73,7 @@ function getStatusClass(status) {
  * Processes blood inventory data to create a summary by blood type and component
  * Calculates totals and determines inventory status (critical, medium, sufficient)
  * Only includes blood units that have not expired
- * 
+ *
  * @param {Array} data - Raw blood inventory data from API
  * @returns {Object} Summarized inventory data grouped by blood type with status indicators
  */
@@ -95,7 +95,7 @@ const processBloodInventory = (data) => {
       RedCellsVolume: 0,
       total: 0,
       totalVolume: 0,
-      status: "critical",  // Default to critical until evaluated
+      status: "critical", // Default to critical until evaluated
     };
   });
 
@@ -106,8 +106,8 @@ const processBloodInventory = (data) => {
   arr.forEach((unit) => {
     // Only count units that haven't expired and have a valid blood type
     if (summary[unit.BloodType] && new Date(unit.DateExpired) > now) {
-      const qty = Number(unit.Quantity) || 1;  // Default to 1 if quantity not specified
-      const vol = Number(unit.Volume) || 0;    // Default to 0 if volume not specified
+      const qty = Number(unit.Quantity) || 1; // Default to 1 if quantity not specified
+      const vol = Number(unit.Volume) || 0; // Default to 0 if volume not specified
 
       // Update component-specific counts
       summary[unit.BloodType][unit.ComponentType] += qty;
@@ -123,11 +123,11 @@ const processBloodInventory = (data) => {
   Object.keys(summary).forEach((type) => {
     const total = summary[type].total;
     if (total > 20) {
-      summary[type].status = "sufficient";  // More than 20 units is sufficient
+      summary[type].status = "sufficient"; // More than 20 units is sufficient
     } else if (total > 10) {
-      summary[type].status = "medium";      // 11-20 units is medium
+      summary[type].status = "medium"; // 11-20 units is medium
     } else {
-      summary[type].status = "critical";    // 0-10 units is critical
+      summary[type].status = "critical"; // 0-10 units is critical
     }
   });
 
@@ -136,45 +136,45 @@ const processBloodInventory = (data) => {
 
 /**
  * BloodStorage component for managing blood inventory
- * 
+ *
  * @returns {JSX.Element} The rendered BloodStorage component
  */
 const BloodStorage = () => {
   // Core hooks and state
-  const { t } = useTranslation();  // Translation hook
-  const [bloodInventory, setBloodInventory] = useState([]);  // Blood inventory data from API
-  const [loading, setLoading] = useState(true);  // Loading state for API calls
-  const [error, setError] = useState(null);  // Error state for API calls
-  const [showAddForm, setShowAddForm] = useState(false);  // Controls visibility of add blood form
+  const { t } = useTranslation(); // Translation hook
+  const [bloodInventory, setBloodInventory] = useState([]); // Blood inventory data from API
+  const [loading, setLoading] = useState(true); // Loading state for API calls
+  const [error, setError] = useState(null); // Error state for API calls
+  const [showAddForm, setShowAddForm] = useState(false); // Controls visibility of add blood form
 
   // Filter states for inventory table
-  const [filterStartDate, setFilterStartDate] = useState("");  // Start date filter
-  const [filterEndDate, setFilterEndDate] = useState("");  // End date filter
-  const [filterSourceType, setFilterSourceType] = useState("all");  // Source type filter (donation/import/all)
+  const [filterStartDate, setFilterStartDate] = useState(""); // Start date filter
+  const [filterEndDate, setFilterEndDate] = useState(""); // End date filter
+  const [filterSourceType, setFilterSourceType] = useState("all"); // Source type filter (donation/import/all)
 
   // Pagination states for inventory history table
-  const [currentPage, setCurrentPage] = useState(1);  // Current page number
-  const [itemsPerPage, setItemsPerPage] = useState(10);  // Number of items per page
+  const [currentPage, setCurrentPage] = useState(1); // Current page number
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Number of items per page
 
   // State for the manual blood entry form
   const [newUnit, setNewUnit] = useState({
-    bloodType: "A+",  // Default blood type
-    volume: 450,  // Default volume (450ml is standard for whole blood donation)
-    sourceType: "Donation",  // Default source type
-    collectionDate: new Date().toISOString().split('T')[0],  // Default collection date (today)
+    bloodType: "A+", // Default blood type
+    volume: 450, // Default volume (450ml is standard for whole blood donation)
+    sourceType: "Donation", // Default source type
+    collectionDate: new Date().toISOString().split("T")[0], // Default collection date (today)
   });
-  const [adding, setAdding] = useState(false);  // Loading state for adding blood unit
+  const [adding, setAdding] = useState(false); // Loading state for adding blood unit
 
   // Delete confirmation modal state
-  const [showDeleteModal, setShowDeleteModal] = useState(false);  // Controls visibility of delete modal
-  const [deleteItemId, setDeleteItemId] = useState(null);  // ID of blood unit to delete
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Controls visibility of delete modal
+  const [deleteItemId, setDeleteItemId] = useState(null); // ID of blood unit to delete
 
   /**
    * Fetches blood inventory data from the API
    * Updates state with the fetched data or error message
    */
   const fetchInventory = () => {
-    setLoading(true);  // Start loading
+    setLoading(true); // Start loading
 
     // Get authentication token
     const token = localStorage.getItem("token");
@@ -196,13 +196,13 @@ const BloodStorage = () => {
           // No valid data format, set empty array
           setBloodInventory([]);
         }
-        setLoading(false);  // End loading
+        setLoading(false); // End loading
       })
       .catch((err) => {
         // Handle fetch errors
         setError(err.message || "Unable to load blood storage data.");
-        setBloodInventory([]);  // Reset inventory on error
-        setLoading(false);  // End loading
+        setBloodInventory([]); // Reset inventory on error
+        setLoading(false); // End loading
       });
   };
 
@@ -241,8 +241,8 @@ const BloodStorage = () => {
   });
 
   // Calculate pagination values
-  const totalItems = filteredBloodInventory.length;  // Total number of filtered items
-  const totalPages = Math.ceil(totalItems / itemsPerPage);  // Total number of pages
+  const totalItems = filteredBloodInventory.length; // Total number of filtered items
+  const totalPages = Math.ceil(totalItems / itemsPerPage); // Total number of pages
 
   /**
    * Effect hook to reset to first page when filters change
@@ -255,14 +255,18 @@ const BloodStorage = () => {
   // Get current page items based on pagination settings
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredBloodInventory.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredBloodInventory.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   /**
    * Pagination functions to navigate between pages
    */
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);  // Go to specific page
-  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));  // Go to next page
-  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));  // Go to previous page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber); // Go to specific page
+  const nextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages)); // Go to next page
+  const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1)); // Go to previous page
 
   /**
    * Calculate totals for filtered inventory
@@ -270,35 +274,35 @@ const BloodStorage = () => {
    */
   // Total number of blood bags/units
   const totalQuantity = filteredBloodInventory.reduce(
-    (sum, unit) => sum + (Number(unit.Quantity) || 1),  // Default to 1 if quantity not specified
+    (sum, unit) => sum + (Number(unit.Quantity) || 1), // Default to 1 if quantity not specified
     0
   );
   // Total volume in ml
   const totalVolume = filteredBloodInventory.reduce(
-    (sum, unit) => sum + (Number(unit.Volume) || 0),  // Default to 0 if volume not specified
+    (sum, unit) => sum + (Number(unit.Volume) || 0), // Default to 0 if volume not specified
     0
   );
 
   /**
    * Handles input changes in the manual blood entry form
    * Updates the newUnit state with the changed values
-   * 
+   *
    * @param {Event} e - The input change event
    */
   const handleInputChange = (e) => {
-    const { name, value } = e.target;  // Get field name and new value
-    setNewUnit((prev) => ({ ...prev, [name]: value }));  // Update state preserving other fields
+    const { name, value } = e.target; // Get field name and new value
+    setNewUnit((prev) => ({ ...prev, [name]: value })); // Update state preserving other fields
   };
 
   /**
    * Handles the submission of the manual blood entry form
    * Adds a new blood unit to the inventory through API
-   * 
+   *
    * @param {Event} e - The form submission event
    */
   const handleAddBloodUnit = async (e) => {
-    e.preventDefault();  // Prevent default form submission
-    setAdding(true);     // Set loading state
+    e.preventDefault(); // Prevent default form submission
+    setAdding(true); // Set loading state
 
     try {
       // Get authentication token
@@ -313,9 +317,9 @@ const BloodStorage = () => {
         },
         body: JSON.stringify({
           ...newUnit,
-          Quantity: Number(newUnit.Quantity),  // Ensure quantity is a number
-          Volume: Number(newUnit.Volume),      // Ensure volume is a number
-          SourceType: "import",                // Mark as manually imported
+          Quantity: Number(newUnit.Quantity), // Ensure quantity is a number
+          Volume: Number(newUnit.Volume), // Ensure volume is a number
+          SourceType: "import", // Mark as manually imported
         }),
       });
 
@@ -327,7 +331,7 @@ const BloodStorage = () => {
         bloodType: "A+",
         volume: 450,
         sourceType: "Donation",
-        collectionDate: new Date().toISOString().split('T')[0],
+        collectionDate: new Date().toISOString().split("T")[0],
       });
 
       // Reload inventory data to include the new unit
@@ -346,11 +350,11 @@ const BloodStorage = () => {
 
   /**
    * Opens the delete confirmation modal for a blood unit
-   * 
+   *
    * @param {string} id - The ID of the blood unit to delete
    */
   const openDeleteModal = (id) => {
-    setDeleteItemId(id);     // Set the ID of unit to delete
+    setDeleteItemId(id); // Set the ID of unit to delete
     setShowDeleteModal(true); // Show the confirmation modal
   };
 
@@ -359,7 +363,7 @@ const BloodStorage = () => {
    */
   const closeDeleteModal = () => {
     setShowDeleteModal(false); // Hide the confirmation modal
-    setDeleteItemId(null);    // Clear the ID of unit to delete
+    setDeleteItemId(null); // Clear the ID of unit to delete
   };
 
   /**
@@ -393,7 +397,7 @@ const BloodStorage = () => {
 
   /**
    * Gets the translated name for a blood component type
-   * 
+   *
    * @param {string} componentType - The blood component type key
    * @returns {string} Translated name of the component
    */
@@ -402,19 +406,19 @@ const BloodStorage = () => {
       case "WholeBlood":
         return t("bloodStorage.wholeBlood"); // Whole blood
       case "Plasma":
-        return t("bloodStorage.plasma");     // Blood plasma
+        return t("bloodStorage.plasma"); // Blood plasma
       case "Platelets":
-        return t("bloodStorage.platelets");  // Blood platelets
+        return t("bloodStorage.platelets"); // Blood platelets
       case "RedCells":
-        return t("bloodStorage.redCells");   // Red blood cells
+        return t("bloodStorage.redCells"); // Red blood cells
       default:
-        return componentType;                // Return original if no translation
+        return componentType; // Return original if no translation
     }
   };
 
   /**
    * Gets the translated name for a blood source type
-   * 
+   *
    * @param {string} sourceType - The source type key (donation/import)
    * @returns {string} Translated name of the source type
    */
@@ -423,9 +427,9 @@ const BloodStorage = () => {
       case "donation":
         return t("bloodStorage.donation"); // From direct donation
       case "import":
-        return t("bloodStorage.import");   // Manually imported
+        return t("bloodStorage.import"); // Manually imported
       default:
-        return sourceType;                 // Return original if no translation
+        return sourceType; // Return original if no translation
     }
   };
 
@@ -597,6 +601,16 @@ const BloodStorage = () => {
                 </div>
 
                 <div className="filter-form-group">
+                  <label>{t("bloodStorage.collectionDate")}:</label>
+                  <input
+                    type="date"
+                    name="DateAdded"
+                    value={newUnit.DateAdded}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="filter-form-group">
                   <label>{t("bloodStorage.note")}:</label>
                   <input
                     type="text"
@@ -755,7 +769,9 @@ const BloodStorage = () => {
             {filteredBloodInventory.length > 0 && (
               <div className="pagination-controls">
                 <div className="pagination-info">
-                  {t("bloodStorage.showing")} {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, totalItems)} {t("bloodStorage.of")} {totalItems} {t("bloodStorage.entries")}
+                  {t("bloodStorage.showing")} {indexOfFirstItem + 1} -{" "}
+                  {Math.min(indexOfLastItem, totalItems)} {t("bloodStorage.of")}{" "}
+                  {totalItems} {t("bloodStorage.entries")}
                 </div>
                 <div className="pagination-buttons">
                   <button
@@ -789,7 +805,9 @@ const BloodStorage = () => {
                         </button>
                       )}
 
-                      {currentPage > 3 && <span className="pagination-ellipsis">...</span>}
+                      {currentPage > 3 && (
+                        <span className="pagination-ellipsis">...</span>
+                      )}
 
                       {currentPage > 1 && (
                         <button
@@ -800,9 +818,7 @@ const BloodStorage = () => {
                         </button>
                       )}
 
-                      <button
-                        className="pagination-button active"
-                      >
+                      <button className="pagination-button active">
                         {currentPage}
                       </button>
 
@@ -815,7 +831,9 @@ const BloodStorage = () => {
                         </button>
                       )}
 
-                      {currentPage < totalPages - 2 && <span className="pagination-ellipsis">...</span>}
+                      {currentPage < totalPages - 2 && (
+                        <span className="pagination-ellipsis">...</span>
+                      )}
 
                       {currentPage < totalPages - 1 && (
                         <button
