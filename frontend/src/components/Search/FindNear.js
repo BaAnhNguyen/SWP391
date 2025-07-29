@@ -231,6 +231,11 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
     setInviteAllResults({ success: 0, error: 0 });  // Reset results
   };
 
+  // Closes the individual invite success modal
+  const closeInviteSuccessModal = () => {
+    setShowInviteSuccessModal(false);
+  };
+
   /**
    * Confirms the batch invitation process after user approval
    * Closes the confirmation modal and starts sending invitations
@@ -272,7 +277,7 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
             >
               {invitingAll
                 ? t("donorInvite.sending")  // Show sending text while in progress
-                : t("donorInvite.inviteAll")} // Normal text when ready to send
+                : t("donorInvite.inviteAll")}
             </button>
           </div>
           {/* Donor results listing */}
@@ -334,12 +339,8 @@ function FindNear({ needRequestId, excludedUserId, bloodGroup }) {
                       disabled={sending[user._id]} // Disable during API call
                     >
                       {sending[user._id]
-<<<<<<< HEAD
-                        ? t("donorInvite.sending")
-                        : t("donorInvite.sendInvite")}
-=======
                         ? t("donorInvite.sending") // Show loading state
-                        : t("donorInvite.sendInvite")} // Normal state
+                        : t("donorInvite.sendInvite")}
                     </button>
                     {/* Cancel button to hide invite options */}
                     <button
