@@ -303,15 +303,6 @@ const DonateRequestForm = ({ onRequestCreated }) => {
         </div>
       )}
 
-      {error && (
-        <div className="error-message">
-          <strong>Lỗi:</strong> {error}
-          <p>
-            Vui lòng kiểm tra thông tin và thử lại. Nếu lỗi vẫn tiếp diễn, hãy
-            liên hệ quản trị viên.
-          </p>
-        </div>
-      )}
       {nextEligibleDate && (
         <p style={{ marginTop: "1rem", color: "orange" }}>
           Bạn có thể hiến máu lại từ ngày:{" "}
@@ -407,6 +398,16 @@ const DonateRequestForm = ({ onRequestCreated }) => {
           >
             {questionsLoading ? "Đang tải..." : "Tiếp theo"}
           </button>
+
+          {error && (
+            <div className="error-message" style={{ marginTop: "1rem" }}>
+              <strong>Lỗi:</strong> {error}
+              <p>
+                Vui lòng kiểm tra thông tin và thử lại. Nếu lỗi vẫn tiếp diễn,
+                hãy liên hệ quản trị viên.
+              </p>
+            </div>
+          )}
         </form>
       )}
 
@@ -490,7 +491,7 @@ const DonateRequestForm = ({ onRequestCreated }) => {
           <div className="form-actions">
             <button
               type="button"
-              className="back-button"
+              className="backk-button"
               onClick={() => setStep(1)}
             >
               Quay lại
@@ -503,6 +504,16 @@ const DonateRequestForm = ({ onRequestCreated }) => {
               {loading ? "Đang xử lý..." : "Đăng ký"}
             </button>
           </div>
+
+          {error && (
+            <div className="error-message" style={{ marginTop: "1rem" }}>
+              <strong>Lỗi:</strong> {error}
+              <p>
+                Vui lòng kiểm tra thông tin và thử lại. Nếu lỗi vẫn tiếp diễn,
+                hãy liên hệ quản trị viên.
+              </p>
+            </div>
+          )}
         </form>
       )}
     </div>
