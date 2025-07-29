@@ -27,12 +27,12 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const [dateAlertMessage, setDateAlertMessage] = useState("");
   const [showDateSuccessModal, setShowDateSuccessModal] = useState(false);
   const [dateSuccessMessage, setDateSuccessMessage] = useState("");
-  const [activeTab, setActiveTab] = useState("complete");
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteRequestId, setDeleteRequestId] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [failedReasonError, setFailedReasonError] = useState("");
   const [rejectionData, setRejectionData] = useState({
     requestId: null,
     reason: "",
@@ -49,9 +49,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
     volume: 350,
     confirmedBloodGroup: "",
     confirmedComponent: "",
-  });
-  const [cancellationData, setCancellationData] = useState({
-    reason: "",
   });
   const [selectedId, setSelectedId] = useState(null);
   //failed
@@ -88,7 +85,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
       setRequests(data);
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching requests:", err);
     } finally {
       setLoading(false);
     }
@@ -160,10 +156,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
       confirmedBloodGroup: request.bloodGroup || "",
       confirmedComponent: request.component || "",
     });
-    setCancellationData({
-      reason: "",
-    });
-    setActiveTab("complete");
     setShowHealthCheck(true);
   };
 
@@ -369,13 +361,11 @@ const DonateRequestList = ({ userRole, refresh }) => {
     }
 
     //validate
-    if (activeTab === "complete") {
-      const errors = validateHealthCheck(healthCheckData);
-      setHealthErrors(errors);
-      if (Object.keys(errors).length > 0) {
-        // Nếu có lỗi thì không gửi đi
-        return;
-      }
+    const errors = validateHealthCheck(healthCheckData);
+    setHealthErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      // Nếu có lỗi thì không gửi đi
+      return;
     }
 
     try {
@@ -431,91 +421,71 @@ const DonateRequestList = ({ userRole, refresh }) => {
         }
       };
 
-      if (activeTab === "complete") {
-        // Validate quantity
-        if (!healthCheckData.quantity || healthCheckData.quantity < 1) {
-          setSuccessMessage(t("donateRequest.invalidQuantity"));
-          setShowSuccessModal(true);
-          return;
-        }
-
-        // Đảm bảo số lượng là số hợp lệ
-        const qty = Number(healthCheckData.quantity);
-        if (isNaN(qty) || qty < 1) {
-          setSuccessMessage(t("donateRequest.invalidQuantity"));
-          setShowSuccessModal(true);
-          return;
-        }
-        const vol = Number(healthCheckData.volume);
-        if (isNaN(vol) || vol < 50) {
-          setSuccessMessage(t("Invalid volume(50ml)"));
-          setShowSuccessModal(true);
-          return;
-        }
-        // Validate nhóm máu/thành phần
-        if (!healthCheckData.confirmedBloodGroup) {
-          setSuccessMessage("Vui lòng chọn nhóm máu xác nhận");
-          setShowSuccessModal(true);
-          return;
-        }
-        if (!healthCheckData.confirmedComponent) {
-          setSuccessMessage("Vui lòng chọn thành phần máu xác nhận");
-          setShowSuccessModal(true);
-          return;
-        }
-
-        const requestData = {
-          healthCheckStatus: "completed",
-          quantity: qty,
-          volume: vol,
-          healthCheck: {
-            weight: healthCheckData.weight
-              ? parseFloat(healthCheckData.weight)
-              : null,
-            height: healthCheckData.height
-              ? parseFloat(healthCheckData.height)
-              : null,
-            bloodPressure: healthCheckData.bloodPressure?.trim() || null,
-            heartRate: healthCheckData.heartRate
-              ? parseFloat(healthCheckData.heartRate)
-              : null,
-            alcoholLevel: healthCheckData.alcoholLevel
-              ? parseFloat(healthCheckData.alcoholLevel)
-              : null,
-            temperature: healthCheckData.temperature
-              ? parseFloat(healthCheckData.temperature)
-              : null,
-            hemoglobin: healthCheckData.hemoglobin
-              ? parseFloat(healthCheckData.hemoglobin)
-              : null,
-          },
-          confirmedBloodGroup: healthCheckData.confirmedBloodGroup,
-          confirmedComponent: healthCheckData.confirmedComponent,
-        };
-
-        const data = await makeApiCall(requestData);
-        console.log("Complete response data:", data);
-        setSuccessMessage(t("donateRequest.completedSuccessfully"));
+      // Validate quantity
+      if (!healthCheckData.quantity || healthCheckData.quantity < 1) {
+        setSuccessMessage(t("donateRequest.invalidQuantity"));
         setShowSuccessModal(true);
-        if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
-      } else if (activeTab === "cancel") {
-        // Validate reason and follow-up date
-        if (!cancellationData.reason.trim()) {
-          setSuccessMessage(t("donateRequest.reasonRequired"));
-          setShowSuccessModal(true);
-          return;
-        }
-
-        //reject
-        await handleStatusUpdate(
-          healthCheckRequest._id,
-          "Rejected",
-          cancellationData.reason.trim()
-        );
-
-        setSuccessMessage(t("donateRequest.canceledSuccessfully"));
-        setShowSuccessModal(true);
+        return;
       }
+
+      // Đảm bảo số lượng là số hợp lệ
+      const qty = Number(healthCheckData.quantity);
+      if (isNaN(qty) || qty < 1) {
+        setSuccessMessage(t("donateRequest.invalidQuantity"));
+        setShowSuccessModal(true);
+        return;
+      }
+      const vol = Number(healthCheckData.volume);
+      if (isNaN(vol) || vol < 50) {
+        setSuccessMessage(t("Invalid volume(50ml)"));
+        setShowSuccessModal(true);
+        return;
+      }
+      // Validate nhóm máu/thành phần
+      if (!healthCheckData.confirmedBloodGroup) {
+        setSuccessMessage("Vui lòng chọn nhóm máu xác nhận");
+        setShowSuccessModal(true);
+        return;
+      }
+      if (!healthCheckData.confirmedComponent) {
+        setSuccessMessage("Vui lòng chọn thành phần máu xác nhận");
+        setShowSuccessModal(true);
+        return;
+      }
+
+      const requestData = {
+        healthCheckStatus: "completed",
+        quantity: qty,
+        volume: vol,
+        healthCheck: {
+          weight: healthCheckData.weight
+            ? parseFloat(healthCheckData.weight)
+            : null,
+          height: healthCheckData.height
+            ? parseFloat(healthCheckData.height)
+            : null,
+          bloodPressure: healthCheckData.bloodPressure?.trim() || null,
+          heartRate: healthCheckData.heartRate
+            ? parseFloat(healthCheckData.heartRate)
+            : null,
+          alcoholLevel: healthCheckData.alcoholLevel
+            ? parseFloat(healthCheckData.alcoholLevel)
+            : null,
+          temperature: healthCheckData.temperature
+            ? parseFloat(healthCheckData.temperature)
+            : null,
+          hemoglobin: healthCheckData.hemoglobin
+            ? parseFloat(healthCheckData.hemoglobin)
+            : null,
+        },
+        confirmedBloodGroup: healthCheckData.confirmedBloodGroup,
+        confirmedComponent: healthCheckData.confirmedComponent,
+      };
+
+      const data = await makeApiCall(requestData);
+      setSuccessMessage(t("donateRequest.completedSuccessfully"));
+      setShowSuccessModal(true);
+      if (data.donationHistoryId) setSelectedId(data.donationHistoryId);
 
       // Close health check modal but keep success modal open
       handleCloseHealthCheck();
@@ -529,14 +499,6 @@ const DonateRequestList = ({ userRole, refresh }) => {
   const handleHealthCheckChange = (e) => {
     const { name, value } = e.target;
     setHealthCheckData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleCancellationChange = (e) => {
-    const { name, value } = e.target;
-    setCancellationData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -858,6 +820,10 @@ const DonateRequestList = ({ userRole, refresh }) => {
                       onClick={(e) => {
                         e.stopPropagation();
                         handleStatusUpdate(request._id, "Approved");
+                        setSuccessMessage(
+                          t("donateRequest.approvedSuccessfully")
+                        );
+                        setShowSuccessModal(true);
                       }}
                       className="approve-button"
                     >
@@ -1015,263 +981,208 @@ const DonateRequestList = ({ userRole, refresh }) => {
                 &times;
               </button>
             </div>
-
-            <div className="health-check-tabs">
-              <button
-                className={`health-check-tab ${
-                  activeTab === "complete" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("complete")}
-              >
-                {t("donateRequest.completeTab")}
-              </button>
-              <button
-                className={`health-check-tab ${
-                  activeTab === "cancel" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("cancel")}
-              >
-                {t("donateRequest.cancelTab")}
-              </button>
-            </div>
             <form onSubmit={handleHealthCheckSubmit}>
-              {/* Basic Health Metrics - only show in complete tab */}
-              {activeTab === "complete" && (
-                <div className="health-check-form">
-                  <div className="form-field">
-                    <label>{t("donateRequest.weight")} (kg)</label>
-                    <input
-                      type="number"
-                      name="weight"
-                      value={healthCheckData.weight}
-                      onChange={handleHealthCheckChange}
-                      step="0.1"
-                      className={
-                        healthErrors.weight ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.weight && (
-                      <div className="field-error">{healthErrors.weight}</div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.height")} (cm)</label>
-                    <input
-                      type="number"
-                      name="height"
-                      value={healthCheckData.height}
-                      onChange={handleHealthCheckChange}
-                      step="0.1"
-                      className={
-                        healthErrors.height ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.height && (
-                      <div className="field-error">{healthErrors.height}</div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.bloodPressure")}</label>
-                    <input
-                      type="text"
-                      name="bloodPressure"
-                      value={healthCheckData.bloodPressure}
-                      onChange={handleHealthCheckChange}
-                      placeholder="120/80"
-                      className={
-                        healthErrors.bloodPressure ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.bloodPressure && (
-                      <div className="field-error">
-                        {healthErrors.bloodPressure}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.heartRate")} (bpm)</label>
-                    <input
-                      type="number"
-                      name="heartRate"
-                      value={healthCheckData.heartRate}
-                      onChange={handleHealthCheckChange}
-                      className={
-                        healthErrors.heartRate ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.heartRate && (
-                      <div className="field-error">
-                        {healthErrors.heartRate}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.alcoholLevel")}</label>
-                    <input
-                      type="number"
-                      name="alcoholLevel"
-                      value={healthCheckData.alcoholLevel}
-                      onChange={handleHealthCheckChange}
-                      step="0.01"
-                      className={
-                        healthErrors.alcoholLevel ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.alcoholLevel && (
-                      <div className="field-error">
-                        {healthErrors.alcoholLevel}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.temperature")} (°C)</label>
-                    <input
-                      type="number"
-                      name="temperature"
-                      value={healthCheckData.temperature}
-                      onChange={handleHealthCheckChange}
-                      step="0.1"
-                      className={
-                        healthErrors.temperature ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.temperature && (
-                      <div className="field-error">
-                        {healthErrors.temperature}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.hemoglobin")} (g/dL)</label>
-                    <input
-                      type="number"
-                      name="hemoglobin"
-                      value={healthCheckData.hemoglobin}
-                      onChange={handleHealthCheckChange}
-                      step="0.1"
-                      className={
-                        healthErrors.hemoglobin ? "field-error-border" : ""
-                      }
-                    />
-                    {healthErrors.hemoglobin && (
-                      <div className="field-error">
-                        {healthErrors.hemoglobin}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.confirmedBloodGroup")}</label>
-                    <select
-                      name="confirmedBloodGroup"
-                      value={healthCheckData.confirmedBloodGroup}
-                      onChange={handleHealthCheckChange}
-                      required
-                      className={
-                        healthErrors.confirmedBloodGroup
-                          ? "field-error-border"
-                          : ""
-                      }
-                    >
-                      <option value="A+">A+</option>
-                      <option value="A-">A-</option>
-                      <option value="B+">B+</option>
-                      <option value="B-">B-</option>
-                      <option value="O+">O+</option>
-                      <option value="O-">O-</option>
-                      <option value="AB+">AB+</option>
-                      <option value="AB-">AB-</option>
-                    </select>
-                    {healthErrors.confirmedBloodGroup && (
-                      <div className="field-error">
-                        {healthErrors.confirmedBloodGroup}
-                      </div>
-                    )}
-                  </div>
-                  <div className="form-field">
-                    <label>{t("donateRequest.confirmedComponent")}</label>
-                    <select
-                      name="confirmedComponent"
-                      value={healthCheckData.confirmedComponent}
-                      onChange={handleHealthCheckChange}
-                      required
-                      className={
-                        healthErrors.confirmedComponent
-                          ? "field-error-border"
-                          : ""
-                      }
-                    >
-                      <option value="WholeBlood">
-                        {t("common.component.wholeblood")}
-                      </option>
-                      <option value="Plasma">
-                        {t("common.component.plasma")}
-                      </option>
-                      <option value="Platelets">
-                        {t("common.component.platelets")}
-                      </option>
-                      <option value="RedCells">
-                        {t("common.component.redcells")}
-                      </option>
-                      <option value="RedCells">
-                        {t("common.component.unknown")}
-                      </option>
-                    </select>
-                    {healthErrors.confirmedComponent && (
-                      <div className="field-error">
-                        {healthErrors.confirmedComponent}
-                      </div>
-                    )}
-                  </div>
+              <div className="health-check-form">
+                <div className="form-field">
+                  <label>{t("donateRequest.weight")} (kg)</label>
+                  <input
+                    type="number"
+                    name="weight"
+                    value={healthCheckData.weight}
+                    onChange={handleHealthCheckChange}
+                    step="0.1"
+                    className={healthErrors.weight ? "field-error-border" : ""}
+                  />
+                  {healthErrors.weight && (
+                    <div className="field-error">{healthErrors.weight}</div>
+                  )}
                 </div>
-              )}
-              {/* Conditional form fields */}
-              {activeTab === "complete" ? (
-                <>
-                  <div className="form-field quantity-field large-quantity">
-                    <label>{t("donateRequest.quantity")}</label>
-                    <input
-                      type="number"
-                      name="quantity"
-                      min="1"
-                      value={healthCheckData.quantity}
-                      onChange={handleHealthCheckChange}
-                      className={
-                        healthErrors.quantity ? "field-error-border" : ""
-                      }
-                    />
-                  </div>
-                  <div className="form-field quantity-field large-quantity">
-                    <label>{t("donateRequest.bloodVolume")} (ml)</label>
-                    <input
-                      type="number"
-                      name="volume"
-                      min="50"
-                      value={healthCheckData.volume}
-                      onChange={handleHealthCheckChange}
-                      required
-                      className={
-                        healthErrors.volume ? "field-error-border" : ""
-                      }
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="cancel-form">
-                  <div className="form-field full-width">
-                    <label>{t("donateRequest.cancellationReason")}</label>
-                    <textarea
-                      name="reason"
-                      value={cancellationData.reason}
-                      onChange={handleCancellationChange}
-                      placeholder={t(
-                        "donateRequest.cancellationReasonPlaceholder"
-                      )}
-                      required
-                      className="large-textarea"
-                    ></textarea>
-                  </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.height")} (cm)</label>
+                  <input
+                    type="number"
+                    name="height"
+                    value={healthCheckData.height}
+                    onChange={handleHealthCheckChange}
+                    step="0.1"
+                    className={healthErrors.height ? "field-error-border" : ""}
+                  />
+                  {healthErrors.height && (
+                    <div className="field-error">{healthErrors.height}</div>
+                  )}
                 </div>
-              )}
+                <div className="form-field">
+                  <label>{t("donateRequest.bloodPressure")}</label>
+                  <input
+                    type="text"
+                    name="bloodPressure"
+                    value={healthCheckData.bloodPressure}
+                    onChange={handleHealthCheckChange}
+                    placeholder="120/80"
+                    className={
+                      healthErrors.bloodPressure ? "field-error-border" : ""
+                    }
+                  />
+                  {healthErrors.bloodPressure && (
+                    <div className="field-error">
+                      {healthErrors.bloodPressure}
+                    </div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.heartRate")} (bpm)</label>
+                  <input
+                    type="number"
+                    name="heartRate"
+                    value={healthCheckData.heartRate}
+                    onChange={handleHealthCheckChange}
+                    className={
+                      healthErrors.heartRate ? "field-error-border" : ""
+                    }
+                  />
+                  {healthErrors.heartRate && (
+                    <div className="field-error">{healthErrors.heartRate}</div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.alcoholLevel")}</label>
+                  <input
+                    type="number"
+                    name="alcoholLevel"
+                    value={healthCheckData.alcoholLevel}
+                    onChange={handleHealthCheckChange}
+                    step="0.01"
+                    className={
+                      healthErrors.alcoholLevel ? "field-error-border" : ""
+                    }
+                  />
+                  {healthErrors.alcoholLevel && (
+                    <div className="field-error">
+                      {healthErrors.alcoholLevel}
+                    </div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.temperature")} (°C)</label>
+                  <input
+                    type="number"
+                    name="temperature"
+                    value={healthCheckData.temperature}
+                    onChange={handleHealthCheckChange}
+                    step="0.1"
+                    className={
+                      healthErrors.temperature ? "field-error-border" : ""
+                    }
+                  />
+                  {healthErrors.temperature && (
+                    <div className="field-error">
+                      {healthErrors.temperature}
+                    </div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.hemoglobin")} (g/dL)</label>
+                  <input
+                    type="number"
+                    name="hemoglobin"
+                    value={healthCheckData.hemoglobin}
+                    onChange={handleHealthCheckChange}
+                    step="0.1"
+                    className={
+                      healthErrors.hemoglobin ? "field-error-border" : ""
+                    }
+                  />
+                  {healthErrors.hemoglobin && (
+                    <div className="field-error">{healthErrors.hemoglobin}</div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.confirmedBloodGroup")}</label>
+                  <select
+                    name="confirmedBloodGroup"
+                    value={healthCheckData.confirmedBloodGroup}
+                    onChange={handleHealthCheckChange}
+                    required
+                    className={
+                      healthErrors.confirmedBloodGroup
+                        ? "field-error-border"
+                        : ""
+                    }
+                  >
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                  {healthErrors.confirmedBloodGroup && (
+                    <div className="field-error">
+                      {healthErrors.confirmedBloodGroup}
+                    </div>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label>{t("donateRequest.confirmedComponent")}</label>
+                  <select
+                    name="confirmedComponent"
+                    value={healthCheckData.confirmedComponent}
+                    onChange={handleHealthCheckChange}
+                    required
+                    className={
+                      healthErrors.confirmedComponent
+                        ? "field-error-border"
+                        : ""
+                    }
+                  >
+                    <option value="WholeBlood">
+                      {t("common.component.wholeblood")}
+                    </option>
+                    <option value="Plasma">
+                      {t("common.component.plasma")}
+                    </option>
+                    <option value="Platelets">
+                      {t("common.component.platelets")}
+                    </option>
+                    <option value="RedCells">
+                      {t("common.component.redcells")}
+                    </option>
+                    <option value="RedCells">
+                      {t("common.component.unknown")}
+                    </option>
+                  </select>
+                  {healthErrors.confirmedComponent && (
+                    <div className="field-error">
+                      {healthErrors.confirmedComponent}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="form-field quantity-field large-quantity">
+                <label>{t("donateRequest.quantity")}</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  value={healthCheckData.quantity}
+                  onChange={handleHealthCheckChange}
+                  className={healthErrors.quantity ? "field-error-border" : ""}
+                />
+              </div>
+              <div className="form-field quantity-field large-quantity">
+                <label>{t("donateRequest.bloodVolume")} (ml)</label>
+                <input
+                  type="number"
+                  name="volume"
+                  min="50"
+                  value={healthCheckData.volume}
+                  onChange={handleHealthCheckChange}
+                  required
+                  className={healthErrors.volume ? "field-error-border" : ""}
+                />
+              </div>
               <div className="form-actions">
                 <button
                   type="button"
@@ -1280,6 +1191,7 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   style={{
                     backgroundColor: "#6c757d",
                     marginRight: 8,
+                    marginTop: 21,
                     color: "white",
                     border: "none",
                     borderRadius: "8px",
@@ -1288,50 +1200,50 @@ const DonateRequestList = ({ userRole, refresh }) => {
                     cursor: "pointer",
                     textTransform: "uppercase",
                     width: "170px",
+                    height: "60px",
+                    fontSize: "17px",
                   }}
                 >
                   {t("common.cancel")}
                 </button>
-                {activeTab === "complete" && (
-                  <>
-                    <button
-                      type="submit"
-                      className="submit-button"
-                      style={{
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "10px 16px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        textTransform: "uppercase",
-                        width: "170px",
-                      }}
-                    >
-                      {t("donateRequest.confirmComplete")}
-                    </button>
-                    <button
-                      type="button"
-                      className="submit-button"
-                      style={{
-                        backgroundColor: "#dc3545",
-                        marginLeft: 8,
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "10px 16px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        textTransform: "uppercase",
-                        width: "170px",
-                      }}
-                      onClick={() => setShowFailedModal(true)}
-                    >
-                      {t("donateRequest.markFailed")}
-                    </button>
-                  </>
-                )}
+                <button
+                  type="submit"
+                  className="submit-button"
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "10px 16px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                    width: "170px",
+                    height: "60px",
+                  }}
+                >
+                  {t("donateRequest.confirmComplete")}
+                </button>
+                <button
+                  type="button"
+                  className="submit-button"
+                  style={{
+                    backgroundColor: "#dc3545",
+                    marginLeft: 8,
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "10px 16px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                    width: "170px",
+                    height: "60px",
+                  }}
+                  onClick={() => setShowFailedModal(true)}
+                >
+                  {t("donateRequest.markFailed")}
+                </button>
               </div>
             </form>
           </div>
@@ -1542,49 +1454,119 @@ const DonateRequestList = ({ userRole, refresh }) => {
             if (e.target.className === "modal-overlay") {
               setShowFailedModal(false);
               setFailedReason("");
+              setFailedReasonError("");
             }
           }}
         >
-          <div className="modal-content">
-            <h3>{t("donateRequest.failedReason")}</h3>
-            <textarea
-              value={failedReason}
-              onChange={(e) => setFailedReason(e.target.value)}
-              rows={4}
-              className="large-textarea"
-              style={{ width: "100%", marginTop: 12 }}
-            />
+          <div className="modal-content" style={{ maxWidth: "600px" }}>
+            <h3
+              style={{
+                textAlign: "center",
+                color: "#E53E3E",
+                marginBottom: "20px",
+                fontSize: "24px",
+              }}
+            >
+              {t("donateRequest.failedReason")}
+            </h3>
+            <div style={{ position: "relative" }}>
+              <textarea
+                value={failedReason}
+                onChange={(e) => {
+                  setFailedReason(e.target.value);
+                  setFailedReasonError("");
+                }}
+                rows={5}
+                className="large-textarea"
+                style={{
+                  width: "100%",
+                  padding: "15px",
+                  border: failedReasonError
+                    ? "1px solid #E53E3E"
+                    : "1px solid #ccc",
+                  borderRadius: "5px",
+                  fontSize: "16px",
+                }}
+                placeholder={t("donateRequest.failedReasonPlaceholder")}
+              />
+              {failedReasonError && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "-40px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    backgroundColor: "white",
+                    padding: "8px 15px",
+                    borderRadius: "4px",
+                    border: "1px solid #e0e0e0",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                    color: "#E53E3E",
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "14px",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: "#E53E3E",
+                      backgroundColor: "#FEEBC8",
+                      borderRadius: "50%",
+                      width: "24px",
+                      height: "24px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: "8px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    !
+                  </span>
+                  {t(
+                    "donateRequest.reasonRequired",
+                    "Please fill out this field."
+                  )}
+                </div>
+              )}
+            </div>
             <div
               style={{
-                marginTop: 16,
+                marginTop: "40px",
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: "center",
+                gap: "20px",
               }}
             >
               <button
                 onClick={() => {
                   setShowFailedModal(false);
                   setFailedReason("");
+                  setFailedReasonError("");
                 }}
                 style={{
-                  backgroundColor: "#6c757d",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "10px 16px",
+                  backgroundColor: "#F5F5F5",
+                  color: "#333",
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "4px",
+                  padding: "12px 30px",
                   fontWeight: "bold",
                   cursor: "pointer",
-                  textTransform: "uppercase",
-                  marginRight: 8,
+                  fontSize: "16px",
+                  width: "150px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                 }}
               >
-                {t("common.cancel")}
+                {t("common.cancel", "HỦY")}
               </button>
               <button
                 onClick={async () => {
                   if (!failedReason.trim()) {
-                    alert(
-                      t("donateRequest.reasonRequired", "Please enter a reason")
+                    setFailedReasonError(
+                      t(
+                        "donateRequest.reasonRequired",
+                        "Please fill out this field."
+                      )
                     );
                     return;
                   }
@@ -1630,7 +1612,9 @@ const DonateRequestList = ({ userRole, refresh }) => {
 
                     if (!res.ok) {
                       const error = await res.json();
-                      throw new Error(error.message || t("donateRequest.errorFail"));
+                      throw new Error(
+                        error.message || t("donateRequest.errorFail")
+                      );
                     }
 
                     setShowFailedModal(false);
@@ -1652,9 +1636,19 @@ const DonateRequestList = ({ userRole, refresh }) => {
                   cursor: "pointer",
                   textTransform: "uppercase",
                   width: "170px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  lineHeight: "1.2",
+                  padding: "10px 30px",
+                  fontWeight: "bold",
+                  borderRadius: "4px",
+                  width: "180px",
+                  fontSize: "16px",
                 }}
               >
-                {t("donateRequest.confirmFailed")}
+                {t("donateRequest.confirmFailed", "CONFIRM FAILED")}
               </button>
             </div>
           </div>
